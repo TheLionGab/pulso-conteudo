@@ -1,0 +1,389 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Inter";
+          font-weight: 500;
+          font-style: normal;
+          src: url("assets/fonts/Inter_500Medium.ttf") format("truetype");
+          font-display: block;
+        }
+        @font-face {
+          font-family: "Inter";
+          font-weight: 700;
+          font-style: normal;
+          src: url("assets/fonts/Inter_700Bold.ttf") format("truetype");
+          font-display: block;
+        }
+        @font-face {
+          font-family: "Inter";
+          font-weight: 900;
+          font-style: normal;
+          src: url("assets/fonts/Inter_900Black.ttf") format("truetype");
+          font-display: block;
+        }
+
+        #root {
+          width: 1080px;
+          height: 1920px;
+          position: relative;
+          overflow: hidden;
+          container-type: size;
+          font-family: "Inter", system-ui, sans-serif;
+        }
+
+        .f03-bg {
+          position: absolute;
+          inset: 0;
+          background: #05070a;
+        }
+        .f03-stage {
+          position: absolute;
+          inset: 0;
+        }
+
+        .f03-chrome {
+          position: absolute;
+          top: 4.2cqh;
+          left: 5.5cqw;
+          right: 5.5cqw;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+        .f03-kicker-block .f03-rule {
+          width: 3.3cqw;
+          height: 2px;
+          background: #10b981;
+          margin-bottom: 1.1cqw;
+        }
+        .f03-kicker {
+          font-family: "Inter", monospace;
+          font-weight: 500;
+          font-size: 1.6cqw;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #10b981;
+        }
+        .f03-num {
+          font-family: "Inter", monospace;
+          font-weight: 500;
+          font-size: 1.6cqw;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #717f94;
+        }
+
+        .f03-device {
+          position: absolute;
+          top: 13cqh;
+          left: 50%;
+          margin-left: -27.5cqw;
+          width: 55cqw;
+          height: 68cqh;
+          background: #05070a;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 4.8cqw;
+          padding: 1.1cqw;
+          opacity: 0;
+        }
+        .f03-screen {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          background: #0f1419;
+          border-radius: 3.9cqw;
+          overflow: hidden;
+        }
+        .f03-notch {
+          position: absolute;
+          top: 1.2cqw;
+          left: 50%;
+          margin-left: -5.5cqw;
+          width: 11cqw;
+          height: 2.4cqw;
+          background: #05070a;
+          border-radius: 1.2cqw;
+          z-index: 6;
+        }
+        .f03-screen-stack {
+          position: absolute;
+          inset: 0;
+          padding: 5cqw 4cqw 3cqw 4cqw;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .f03-app-header {
+          display: flex;
+          align-items: baseline;
+          gap: 1.2cqw;
+          padding-bottom: 1.8cqw;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .f03-app-title {
+          font-weight: 700;
+          font-size: 3.2cqw;
+          color: #ffffff;
+        }
+        .f03-app-loc {
+          font-weight: 500;
+          font-size: 2.4cqw;
+          color: #94a3b8;
+        }
+        .f03-app-label {
+          margin-left: auto;
+          font-family: "Inter", monospace;
+          font-weight: 500;
+          font-size: 1.4cqw;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #10b981;
+        }
+
+        .f03-card {
+          margin-top: 2.6cqw;
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          opacity: 0;
+        }
+
+        .f03-badge-row {
+          display: flex;
+          align-items: center;
+          gap: 1cqw;
+        }
+        .f03-badge {
+          display: inline-flex;
+          align-items: center;
+          padding: 0.6cqw 1.4cqw;
+          border-radius: 999px;
+          font-family: "Inter", monospace;
+          font-weight: 500;
+          font-size: 1.4cqw;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+        .f03-badge-tipo {
+          background: rgba(16, 185, 129, 0.12);
+          border: 1px solid rgba(16, 185, 129, 0.42);
+          color: #10b981;
+        }
+        .f03-badge-severidade {
+          background: rgba(245, 158, 11, 0.14);
+          border: 1px solid rgba(245, 158, 11, 0.45);
+          color: #f59e0b;
+        }
+
+        .f03-nome {
+          margin-top: 1.6cqw;
+          font-weight: 700;
+          font-size: 3.4cqw;
+          line-height: 1.15;
+          color: #ffffff;
+        }
+        .f03-cientifico {
+          margin-top: 0.5cqw;
+          font-weight: 500;
+          font-style: italic;
+          font-size: 2cqw;
+          color: #94a3b8;
+        }
+
+        .f03-conf-row {
+          margin-top: 2.2cqw;
+          display: flex;
+          align-items: baseline;
+          gap: 0.8cqw;
+        }
+        .f03-conf-label {
+          font-family: "Inter", monospace;
+          font-weight: 500;
+          font-size: 1.4cqw;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: #717f94;
+        }
+        .f03-conf-value {
+          font-weight: 700;
+          font-size: 2.6cqw;
+          color: #10b981;
+          font-variant-numeric: tabular-nums;
+        }
+        .f03-conf-bar-track {
+          margin-top: 0.9cqw;
+          width: 100%;
+          height: 1cqw;
+          border-radius: 0.5cqw;
+          background: rgba(255, 255, 255, 0.08);
+          overflow: hidden;
+        }
+        .f03-conf-bar-fill {
+          width: 0%;
+          height: 100%;
+          border-radius: 0.5cqw;
+          background: #10b981;
+        }
+
+        .f03-resumo {
+          margin-top: 2cqw;
+          font-weight: 500;
+          font-size: 2cqw;
+          line-height: 1.4;
+          color: #cbd5e1;
+        }
+
+        .f03-rec-block {
+          margin-top: 2.2cqw;
+          padding: 1.8cqw;
+          border-radius: 2cqw;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .f03-rec-label {
+          font-family: "Inter", monospace;
+          font-weight: 500;
+          font-size: 1.3cqw;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: #10b981;
+        }
+        .f03-rec-text {
+          margin-top: 0.7cqw;
+          font-weight: 500;
+          font-size: 1.9cqw;
+          line-height: 1.4;
+          color: #ffffff;
+        }
+        .f03-fonte {
+          margin-top: 1cqw;
+          font-weight: 500;
+          font-size: 1.5cqw;
+          color: #94a3b8;
+        }
+
+        .f03-disclaimer {
+          margin-top: auto;
+          padding-top: 1.6cqw;
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          font-weight: 500;
+          font-size: 1.4cqw;
+          line-height: 1.4;
+          color: #94a3b8;
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="03-resultado"
+        data-duration="7.0"
+        data-width="1080"
+        data-height="1920"
+      >
+        <div class="clip f03-bg" data-start="0" data-duration="7.0" data-track-index="0"></div>
+
+        <div class="clip f03-stage" data-start="0" data-duration="7.0" data-track-index="1">
+          <div class="f03-chrome" id="f03-chrome">
+            <div class="f03-kicker-block">
+              <div class="f03-rule"></div>
+              <div class="f03-kicker">/ Diagnóstico por foto</div>
+            </div>
+            <div class="f03-num">Nº 03</div>
+          </div>
+
+          <div class="f03-device" id="f03-device">
+            <div class="f03-screen">
+              <div class="f03-notch"></div>
+              <div class="f03-screen-stack">
+                <div class="f03-app-header">
+                  <span class="f03-app-title">Diagnóstico</span>
+                  <span class="f03-app-loc">· resultado</span>
+                  <span class="f03-app-label">IA</span>
+                </div>
+
+                <div class="f03-card" id="f03-card">
+                  <div class="f03-badge-row">
+                    <span class="f03-badge f03-badge-tipo">Doença</span>
+                    <span class="f03-badge f03-badge-severidade">Severidade média-alta</span>
+                  </div>
+
+                  <div class="f03-nome">Ferrugem asiática da soja</div>
+                  <div class="f03-cientifico">Phakopsora pachyrhizi</div>
+
+                  <div class="f03-conf-row">
+                    <span class="f03-conf-label">Confiança</span>
+                    <span class="f03-conf-value" id="f03-conf-value">0%</span>
+                  </div>
+                  <div class="f03-conf-bar-track">
+                    <div class="f03-conf-bar-fill" id="f03-conf-bar-fill"></div>
+                  </div>
+
+                  <div class="f03-resumo">
+                    Pústulas alaranjadas no verso da folha, padrão típico da
+                    ferrugem asiática em soja.
+                  </div>
+
+                  <div class="f03-rec-block" id="f03-rec-block">
+                    <div class="f03-rec-label">Recomendação de manejo</div>
+                    <div class="f03-rec-text">
+                      Rotação de fungicida por modo de ação (FRAC), monitoramento
+                      semanal a partir do estádio V4.
+                    </div>
+                    <div class="f03-fonte">Fonte: Base Embrapa</div>
+                  </div>
+
+                  <div class="f03-disclaimer" id="f03-disclaimer">
+                    Confirme com seu agrônomo. Use produto registrado no MAPA.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="assets/vendor/gsap.min.js"></script>
+      <script>
+        (function () {
+          window.__timelines = window.__timelines || {};
+          var tl = gsap.timeline({ paused: true });
+          window.__timelines["03-resultado"] = tl;
+
+          /* ---------- card lands with a confident pop ---------- */
+          tl.fromTo("#f03-device", { scale: 0.97, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.5)" }, 0.0);
+          tl.fromTo("#f03-card", { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.15);
+
+          /* ---------- confidence count-up (deterministic, no repeat) ---------- */
+          var confState = { value: 0 };
+          var confEl = null;
+          tl.to(
+            confState,
+            {
+              value: 92,
+              duration: 0.9,
+              ease: "power2.out",
+              onUpdate: function () {
+                if (!confEl) confEl = document.getElementById("f03-conf-value");
+                confEl.textContent = Math.round(confState.value) + "%";
+              },
+            },
+            0.5
+          );
+          tl.fromTo("#f03-conf-bar-fill", { width: "0%" }, { width: "92%", duration: 0.9, ease: "power2.out" }, 0.5);
+
+          /* ---------- recommendation block settles after the read beat ---------- */
+          tl.fromTo("#f03-rec-block", { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, 1.6);
+          tl.fromTo("#f03-disclaimer", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 2.0);
+
+          // hold the full result readable until the cut at 7.0s
+        })();
+      </script>
+    </template>
+  </body>
+</html>

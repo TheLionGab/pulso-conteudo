@@ -1,0 +1,29 @@
+Brief do usuário (Gabriel / The Lion — dono do Pulso do Campo):
+
+"Novidade MÁXIMA. Vou conseguir o valor da cotação com todas as cidades do
+BRASIL. E valor não vai ser tipo IMEA com variância alta. Vai ser de
+compradores REAIS ou preço que algum comprador ofereceu e buscamos no site."
+
+Produto: Pulso do Campo — app Expo/React Native para produtores rurais
+brasileiros. Já tem: cotações (soja, milho, boi), clima, diagnóstico de praga
+por foto com IA, comunidade, radar de decisão de venda.
+
+A novidade a anunciar:
+- Cobertura de cotações em TODAS as cidades do Brasil (não só praças de
+  referência regionais).
+- O preço mostrado é OFERTA DE COMPRA REAL: valor que um comprador de grãos
+  efetivamente publicou/ofereceu, coletado dos sites dos compradores.
+- Contraste com o modelo atual do mercado: índices regionais (ex.: IMEA) têm
+  variância alta e não representam o preço da porteira do produtor; a oferta
+  de comprador real é acionável — dá para vender por aquele valor.
+
+Mensagem única: "Cotação de comprador real, na sua cidade — em qualquer
+cidade do Brasil."
+
+CTA: "Já disponível no Pulso do Campo."
+
+Valores plausíveis para mock (não inventar números fora da realidade):
+- Soja: R$ 125–135/saca 60kg (ex.: R$ 129,50)
+- Milho: R$ 55–68/saca (ex.: R$ 62,80)
+Cidades exemplo: Sorriso-MT, Rio Verde-GO, Cascavel-PR, Luís Eduardo
+Magalhães-BA, Dourados-MS, Uberlândia-MG, Balsas-MA.

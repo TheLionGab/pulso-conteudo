@@ -1,0 +1,178 @@
+<template>
+  <div id="root" data-composition-id="02-vazio" data-duration="4.1" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; font-style: normal; font-display: block; }
+
+      #root {
+        position: absolute; inset: 0;
+        width: 1080px; height: 1920px;
+        overflow: hidden; container-type: size;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      .f02-bg { position: absolute; inset: 0; background: #05070a; }
+
+      .f02-chrome {
+        position: absolute; left: 59px; right: 59px; top: 96px;
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-weight: 500; font-size: 24px;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+      .f02-chrome-label { color: #94a3b8; }
+
+      .f02-head {
+        position: absolute; left: 59px; right: 59px; top: 212px;
+        font-weight: 900; font-size: 76px; line-height: 1.05;
+        letter-spacing: -0.03em; color: #ffffff;
+        will-change: transform, opacity;
+      }
+
+      /* the grid — 142 municipalities as a field of cells */
+      .f02-grid {
+        position: absolute;
+        left: 59px; right: 59px; top: 500px;
+        display: grid;
+        grid-template-columns: repeat(18, 1fr);
+        gap: 12px;
+      }
+      .f02-cell {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        background: #10161d;
+        border: 1px solid rgba(255,255,255,0.05);
+        opacity: 0;
+        will-change: opacity;
+      }
+      .f02-cell.is-lit {
+        background: rgba(16,185,129,0.16);
+        border-color: rgba(16,185,129,0.42);
+      }
+
+      .f02-legend {
+        position: absolute; left: 59px; right: 59px; top: 968px;
+        display: flex; gap: 44px;
+        font-weight: 500; font-size: 24px;
+        letter-spacing: 0.1em; text-transform: uppercase;
+        color: #717f94;
+        opacity: 0;
+        will-change: opacity;
+      }
+      .f02-legend i {
+        display: inline-block;
+        width: 22px; height: 22px;
+        margin-right: 14px;
+        vertical-align: -3px;
+        font-style: normal;
+      }
+      .f02-legend .sw-lit { background: rgba(16,185,129,0.16); border: 1px solid rgba(16,185,129,0.42); }
+      .f02-legend .sw-dark { background: #10161d; border: 1px solid rgba(255,255,255,0.05); }
+      .f02-legend .lbl-lit { color: #10b981; }
+
+      /* the arithmetic */
+      .f02-math {
+        position: absolute; left: 59px; right: 59px; top: 1076px;
+        display: flex; align-items: baseline; gap: 26px;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .f02-math-n {
+        font-weight: 900; font-size: 96px; line-height: 1;
+        letter-spacing: -0.035em; color: #ffffff;
+        font-variant-numeric: tabular-nums;
+      }
+      .f02-math-op {
+        font-weight: 500; font-size: 46px;
+        color: #717f94;
+      }
+      .f02-math-cap {
+        position: absolute; left: 59px; right: 59px; top: 1198px;
+        font-weight: 500; font-size: 26px;
+        letter-spacing: 0.12em; text-transform: uppercase;
+        color: #717f94;
+        opacity: 0;
+        will-change: opacity;
+      }
+
+      .f02-punch {
+        position: absolute; left: 59px; right: 59px; top: 1300px;
+        font-weight: 700; font-size: 52px; line-height: 1.24;
+        letter-spacing: -0.022em; color: #ffffff;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .f02-punch em { font-style: normal; color: #10b981; }
+    </style>
+
+    <div class="clip f02-bg" data-start="0" data-duration="4.1" data-track-index="0"></div>
+
+    <div class="clip f02-chrome" id="f02-chrome" data-start="0" data-duration="4.1" data-track-index="1">
+      <span class="f02-chrome-label">O problema</span>
+      <span>02</span>
+    </div>
+
+    <div class="clip f02-head" id="f02-head" data-start="0" data-duration="4.1" data-track-index="2">
+      Índice cobre o estado.<br />Você vende num município.
+    </div>
+
+    <div class="clip f02-grid" id="f02-grid" data-start="0" data-duration="4.1" data-track-index="3"></div>
+
+    <div class="clip f02-legend" id="f02-legend" data-start="0" data-duration="4.1" data-track-index="4">
+      <span><i class="sw-lit"></i><span class="lbl-lit">Com mesa</span></span>
+      <span><i class="sw-dark"></i>Sem cotação publicada</span>
+    </div>
+
+    <div class="clip f02-math" id="f02-math" data-start="0" data-duration="4.1" data-track-index="5">
+      <span class="f02-math-n">142</span>
+      <span class="f02-math-op">municípios ×</span>
+      <span class="f02-math-n">6</span>
+      <span class="f02-math-op">culturas</span>
+    </div>
+
+    <div class="clip f02-math-cap" id="f02-math-cap" data-start="0" data-duration="4.1" data-track-index="6">
+      = 852 preços que precisam existir todo dia
+    </div>
+
+    <div class="clip f02-punch" id="f02-punch" data-start="0" data-duration="4.1" data-track-index="7">
+      Quase nenhum é <em>publicado</em>.<br />Então o motor precisa resolvê-los.
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      /* 142 cells built deterministically — no Math.random anywhere.
+         The lit ones are a fixed stride so the same frame renders the
+         same way on every seek. */
+      var grid = document.getElementById("f02-grid");
+      var cells = [];
+      for (var i = 0; i < 142; i++) {
+        var d = document.createElement("div");
+        d.className = "f02-cell" + (i % 11 === 3 ? " is-lit" : "");
+        grid.appendChild(d);
+        cells.push(d);
+      }
+
+      tl.fromTo("#f02-chrome", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.32, ease: "power2.out" }, 0.04);
+      tl.fromTo("#f02-head", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.44, ease: "power3.out" }, 0.14);
+
+      /* the field fills in — a sweep, not a pop, so the eye reads scale */
+      tl.to(cells, { opacity: 1, duration: 0.5, ease: "power2.out", stagger: 0.0055 }, 0.58);
+
+      tl.fromTo("#f02-legend", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 1.5);
+      tl.fromTo("#f02-math", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.38, ease: "power3.out" }, 1.78);
+      tl.fromTo("#f02-math-cap", { opacity: 0 }, { opacity: 1, duration: 0.32, ease: "power2.out" }, 2.16);
+      tl.fromTo("#f02-punch", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.42, ease: "power3.out" }, 2.62);
+
+      window.__timelines["02-vazio"] = tl;
+    })();
+  </script>
+</template>

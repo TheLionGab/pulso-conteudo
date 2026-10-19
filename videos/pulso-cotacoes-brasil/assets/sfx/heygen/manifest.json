@@ -1,0 +1,48 @@
+{
+  "provider": "heygen",
+  "bgm_query": "minimal fintech agriculture app underscore calm confident subtle pulse instrumental no vocals",
+  "cues": [
+    {
+      "file": "assets/sfx/heygen/whoosh-short.mp3",
+      "query": "short smooth UI whoosh transition airy modern app",
+      "duration_s": 1.422699,
+      "score": 0.6560800671577454
+    },
+    {
+      "file": "assets/sfx/heygen/click-soft.mp3",
+      "query": "soft premium mobile UI tap click subtle",
+      "duration_s": 0.57597,
+      "score": 0.6103151440620422
+    },
+    {
+      "file": "assets/sfx/heygen/pop.mp3",
+      "query": "soft UI pop notification mobile",
+      "duration_s": 0.57597,
+      "score": 0.5987366437911987
+    },
+    {
+      "file": "assets/sfx/heygen/typing.mp3",
+      "query": "keyboard typing mobile search field",
+      "duration_s": 54.648455,
+      "score": 0.5578771829605103
+    },
+    {
+      "file": "assets/sfx/heygen/impact-bass-2.mp3",
+      "query": "deep soft bass impact price reveal controlled",
+      "duration_s": 2.386004,
+      "score": 0.6517426371574402
+    },
+    {
+      "file": "assets/sfx/heygen/riser.mp3",
+      "query": "short subtle riser app store CTA",
+      "duration_s": 1.966709,
+      "score": 0.5947064161300659
+    },
+    {
+      "file": "assets/sfx/heygen/impact-bass-1.mp3",
+      "query": "cinematic bass hit lockup",
+      "duration_s": 3.058023,
+      "score": 0.6783057451248169
+    }
+  ]
+}

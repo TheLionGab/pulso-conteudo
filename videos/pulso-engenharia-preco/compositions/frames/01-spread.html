@@ -1,0 +1,218 @@
+<template>
+  <div id="root" data-composition-id="01-spread" data-duration="4.0" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; font-style: normal; font-display: block; }
+
+      #root {
+        position: absolute;
+        inset: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        container-type: size;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      .f01-bg { position: absolute; inset: 0; background: #05070a; }
+
+      .f01-chrome {
+        position: absolute;
+        left: 59px; right: 59px; top: 96px;
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-weight: 500; font-size: 24px;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+      .f01-chrome-label { color: #94a3b8; }
+
+      .f01-kicker {
+        position: absolute;
+        left: 59px; right: 59px; top: 210px;
+        font-weight: 500; font-size: 26px;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+
+      .f01-head {
+        position: absolute;
+        left: 59px; right: 59px; top: 268px;
+        font-weight: 900; font-size: 78px; line-height: 1.04;
+        letter-spacing: -0.03em;
+        color: #ffffff;
+        will-change: transform, opacity;
+      }
+
+      /* praça cards — stacked pair */
+      .f01-card {
+        position: absolute;
+        left: 59px; right: 59px;
+        background: #0f1419;
+        border: 1px solid rgba(255,255,255,0.08);
+        padding: 44px 48px;
+        will-change: transform, opacity;
+      }
+      .f01-card-alta { top: 516px; height: 268px; }
+      .f01-card-baixa { top: 812px; height: 268px; border-top: 2px solid #10b981; }
+
+      .f01-praca {
+        font-weight: 500; font-size: 27px;
+        letter-spacing: 0.1em; text-transform: uppercase;
+        color: #94a3b8;
+      }
+      .f01-card-baixa .f01-praca { color: #10b981; }
+
+      .f01-valor {
+        margin-top: 26px;
+        font-weight: 900; font-size: 104px; line-height: 1;
+        letter-spacing: -0.035em;
+        color: #ffffff;
+        font-variant-numeric: tabular-nums;
+        will-change: opacity;
+      }
+      .f01-unidade {
+        margin-left: 14px;
+        font-weight: 500; font-size: 30px;
+        letter-spacing: 0.06em;
+        color: #717f94;
+      }
+
+      /* the gap — the whole point of the frame */
+      .f01-gap {
+        position: absolute;
+        left: 59px; right: 59px; top: 1136px;
+        height: 246px;
+        background: #0b1f18;
+        border: 1px solid rgba(16,185,129,0.34);
+        padding: 40px 48px;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .f01-gap-label {
+        font-weight: 500; font-size: 26px;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: #10b981;
+      }
+      .f01-gap-valor {
+        margin-top: 22px;
+        font-weight: 900; font-size: 118px; line-height: 1;
+        letter-spacing: -0.035em;
+        color: #10b981;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .f01-mult {
+        position: absolute;
+        left: 59px; right: 59px; top: 1428px;
+        font-weight: 700; font-size: 46px; line-height: 1.26;
+        letter-spacing: -0.02em;
+        color: #ffffff;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .f01-mult em { font-style: normal; color: #10b981; }
+
+      .f01-fonte {
+        position: absolute;
+        left: 59px; right: 59px; top: 1596px;
+        font-weight: 400; font-size: 24px; line-height: 1.5;
+        color: #5b6577;
+        opacity: 0;
+        will-change: opacity;
+      }
+    </style>
+
+    <div class="clip f01-bg" data-start="0" data-duration="4.0" data-track-index="0"></div>
+
+    <div class="clip f01-chrome" id="f01-chrome" data-start="0" data-duration="4.0" data-track-index="1">
+      <span class="f01-chrome-label">Engenharia de preço</span>
+      <span>01</span>
+    </div>
+
+    <div class="clip f01-kicker" id="f01-kicker" data-start="0" data-duration="4.0" data-track-index="2">
+      Mesma soja · mesmo dia · mesmo estado
+    </div>
+
+    <div class="clip f01-head" id="f01-head" data-start="0" data-duration="4.0" data-track-index="3">
+      Duas praças de Mato&nbsp;Grosso.
+    </div>
+
+    <div class="clip f01-card f01-card-alta" id="f01-card-alta" data-start="0" data-duration="4.0" data-track-index="4">
+      <div class="f01-praca">Rondonópolis</div>
+      <div class="f01-valor">R$ <span id="f01-num-alta">0,00</span><span class="f01-unidade">/sc</span></div>
+    </div>
+
+    <div class="clip f01-card f01-card-baixa" id="f01-card-baixa" data-start="0" data-duration="4.0" data-track-index="5">
+      <div class="f01-praca">Porto dos Gaúchos</div>
+      <div class="f01-valor">R$ <span id="f01-num-baixa">0,00</span><span class="f01-unidade">/sc</span></div>
+    </div>
+
+    <div class="clip f01-gap" id="f01-gap" data-start="0" data-duration="4.0" data-track-index="6">
+      <div class="f01-gap-label">Diferença por saca</div>
+      <div class="f01-gap-valor">R$ <span id="f01-num-gap">0,00</span></div>
+    </div>
+
+    <div class="clip f01-mult" id="f01-mult" data-start="0" data-duration="4.0" data-track-index="7">
+      Em 1.000 sacas, isso é <em>R$ 28.000</em>.
+    </div>
+
+    <div class="clip f01-fonte" id="f01-fonte" data-start="0" data-duration="4.0" data-track-index="8">
+      Âncoras de polo calibradas em mesas físicas, não em índice.
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      function brl(n) {
+        return n.toFixed(2).replace(".", ",");
+      }
+      function countUp(id, to, at, dur) {
+        var state = { v: 0 };
+        var el = null;
+        tl.to(
+          state,
+          {
+            v: to,
+            duration: dur,
+            ease: "power2.out",
+            onUpdate: function () {
+              if (!el) el = document.getElementById(id);
+              el.textContent = brl(state.v);
+            },
+          },
+          at
+        );
+      }
+
+      /* chrome + kicker + head settle first — the frame states its terms */
+      tl.fromTo("#f01-chrome", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.34, ease: "power2.out" }, 0.04);
+      tl.fromTo("#f01-kicker", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.34, ease: "power2.out" }, 0.14);
+      tl.fromTo("#f01-head", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.42, ease: "power3.out" }, 0.2);
+
+      /* the two praças arrive as a pair, high one first */
+      tl.fromTo("#f01-card-alta", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.52);
+      countUp("f01-num-alta", 141.0, 0.6, 0.62);
+
+      tl.fromTo("#f01-card-baixa", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 1.02);
+      countUp("f01-num-baixa", 113.0, 1.1, 0.62);
+
+      /* the gap is the payoff — it lands after both numbers have settled */
+      tl.fromTo("#f01-gap", { opacity: 0, scaleY: 0.86, transformOrigin: "50% 0%" }, { opacity: 1, scaleY: 1, duration: 0.42, ease: "power3.out" }, 1.94);
+      countUp("f01-num-gap", 28.0, 2.02, 0.52);
+
+      tl.fromTo("#f01-mult", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.38, ease: "power3.out" }, 2.72);
+      tl.fromTo("#f01-fonte", { opacity: 0 }, { opacity: 1, duration: 0.34, ease: "power2.out" }, 3.06);
+
+      window.__timelines["01-spread"] = tl;
+    })();
+  </script>
+</template>

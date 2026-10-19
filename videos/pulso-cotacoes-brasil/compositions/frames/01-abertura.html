@@ -1,0 +1,336 @@
+<template id="abertura01-template" data-width="1080" data-height="1920">
+<script src="assets/vendor/gsap.min.js"></script>
+
+<style>
+/* fontes locais (staged) */
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_400Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_500Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_700Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_900Black.ttf') format('truetype'); font-weight: 900; font-style: normal; font-display: block; }
+
+  #root {
+    position: relative;
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    container-type: size;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+
+  /* b-roll — lavoura ao amanhecer, Kling VIDEO 3.0 Turbo (KLING-PROMPTS.md frame 01) */
+  .a01-video-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  /* full-bleed ground — dark register, agora overlay translúcido sobre o b-roll */
+  .a01-bg {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 7, 10, 0.72);
+    z-index: 0;
+  }
+
+  /* ---------- Scene 1 — app icon, centered, glow-pulse ---------- */
+  .a01-icon-scene {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .a01-icon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -97px;
+    margin-top: -97px;
+    width: 194px;
+    height: 194px;
+    border-radius: 43px; /* icon exception — 22% corner radius, like the phone-device exception elsewhere */
+    background: #0f1419;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .a01-icon-glow {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 130px;
+    height: 130px;
+    margin: -65px 0 0 -65px;
+    border-radius: 50%;
+    background: #10b981;
+    filter: blur(22px);
+    opacity: 0;
+  }
+
+  /* the real brand mark (apps/meu-talhao/assets/brand/pulso-do-campo.svg) */
+  .a01-mark {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 156px;
+    height: 156px;
+    margin: -78px 0 0 -78px;
+    overflow: visible;
+    transform-origin: 50% 50%;
+    will-change: transform;
+  }
+  .a01-mark .pdc-p {
+    fill: none;
+    stroke: url(#pdcg-01);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* tap ripple — single clean ring, same center as the icon dot */
+  .a01-ripple {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 200px;
+    height: 200px;
+    margin: -100px 0 0 -100px;
+    border-radius: 50%;
+    border: 3px solid #10b981;
+    opacity: 0;
+  }
+
+  /* ---------- Scene 2/3 — oversized cursor ---------- */
+  .a01-cursor {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    left: 50%;
+    top: 50%;
+    margin-left: -30px;
+    margin-top: -18.75px;
+    z-index: 5;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45));
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  /* ---------- Scene 3 — vertical wipe reveal: the app screen underneath ---------- */
+  .a01-wipe {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: #0f1419; /* same screen surface as 03-comprador's .f03-screen */
+    clip-path: inset(100% 0% 0% 0%);
+  }
+
+  .a01-wipe-edge {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0), rgba(16, 185, 129, 0.9), rgba(16, 185, 129, 0));
+    opacity: 0.9;
+  }
+
+  .a01-header-row {
+    position: absolute;
+    top: 48px;
+    left: 48px;
+    right: 48px;
+    display: flex;
+    align-items: baseline;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .a01-header-title {
+    font-family: "Inter", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 1;
+    color: #ffffff;
+  }
+</style>
+
+<div id="root" data-composition-id="01-abertura" data-duration="3.1" data-width="1080" data-height="1920">
+  <video
+    id="a01-video-bg"
+    class="clip a01-video-bg"
+    data-start="0"
+    data-duration="3.1"
+    data-track-index="0"
+    data-media-start="0"
+    data-volume="0"
+    data-has-audio="false"
+    muted
+    playsinline
+    src="assets/broll/frame01-lavoura-amanhecer.mp4"
+  ></video>
+  <div class="clip a01-bg" data-start="0" data-duration="3.1" data-track-index="0"></div>
+
+  <div class="clip a01-icon-scene" data-start="0" data-duration="3.1" data-track-index="1">
+    <div class="a01-icon" id="a01-icon">
+      <div class="a01-icon-glow" id="a01-icon-glow"></div>
+      <svg class="a01-mark" id="a01-mark" viewBox="0 0 1024 1024" aria-hidden="true">
+        <defs>
+          <linearGradient id="pdcg-01" x1="220" y1="310" x2="804" y2="830" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#6EE7B7"></stop>
+            <stop offset="0.48" stop-color="#10B981"></stop>
+            <stop offset="1" stop-color="#047857"></stop>
+          </linearGradient>
+        </defs>
+        <path class="pdc-p" d="M220 462H350L405 405L467 536L548 310L618 462H804" stroke-width="58" stroke-dasharray="1000" stroke-dashoffset="1000"></path>
+        <path class="pdc-p" d="M512 584V832" stroke-width="58" stroke-dasharray="300" stroke-dashoffset="300"></path>
+        <path class="pdc-p" d="M452 584C438 680 406 760 360 830" stroke-width="48" opacity="0.88" stroke-dasharray="300" stroke-dashoffset="300"></path>
+        <path class="pdc-p" d="M572 584C586 680 618 760 664 830" stroke-width="48" opacity="0.88" stroke-dasharray="300" stroke-dashoffset="300"></path>
+        <path class="pdc-p" d="M398 594C352 678 306 754 246 814" stroke-width="38" opacity="0.48" stroke-dasharray="300" stroke-dashoffset="300"></path>
+        <path class="pdc-p" d="M626 594C672 678 718 754 778 814" stroke-width="38" opacity="0.48" stroke-dasharray="300" stroke-dashoffset="300"></path>
+      </svg>
+    </div>
+    <div class="a01-ripple" id="a01-ripple"></div>
+  </div>
+
+  <div class="clip a01-cursor" id="a01-cursor" data-start="0" data-duration="3.1" data-track-index="2">
+    <svg viewBox="0 0 40 40" width="100%" height="100%" aria-hidden="true">
+      <path
+        d="M8 5 L8 33 L15.5 26.5 L20.5 36.5 L25.5 34 L20.5 24 L31 24 Z"
+        fill="#ffffff"
+        stroke="#05070a"
+        stroke-width="1.6"
+        stroke-linejoin="round"
+      ></path>
+    </svg>
+  </div>
+
+  <div class="clip a01-wipe" id="a01-wipe" data-start="0" data-duration="3.1" data-track-index="3">
+    <div class="a01-wipe-edge" id="a01-wipe-edge"></div>
+    <div class="a01-header-row" id="a01-header-row">
+      <span class="a01-header-title">Cotações</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    window.__timelines = window.__timelines || {};
+    var tl = gsap.timeline({ paused: true });
+
+    /* ---------------------------------------------------------------
+       Scene 1 (0.0–0.9s) — palco escuro vazio; ícone do app aparece
+       centrado; glow verde pulsa 2 ciclos rápidos ("toque aqui") e
+       assenta num nível baixo e estável antes do cursor entrar.
+       --------------------------------------------------------------- */
+    tl.fromTo(
+      "#a01-icon",
+      { scale: 0.6, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.4, ease: "power3.out" },
+      0.05
+    );
+
+    /* the mark self-draws inside the icon: pulse line first, then the
+       field rows fan out beneath it — the brand's own signature as the
+       first motion of the video */
+    tl.to(
+      "#a01-mark .pdc-p",
+      { attr: { "stroke-dashoffset": 0 }, duration: 0.5, ease: "power2.out", stagger: 0.05 },
+      0.18
+    );
+
+    tl.fromTo(
+      "#a01-icon-glow",
+      { opacity: 0, scale: 0.75 },
+      { opacity: 0.6, scale: 1.15, duration: 0.14, ease: "sine.out" },
+      0.42
+    );
+    tl.to(
+      "#a01-icon-glow",
+      { opacity: 0.15, scale: 0.85, duration: 0.13, ease: "sine.in" },
+      0.56
+    );
+    tl.to(
+      "#a01-icon-glow",
+      { opacity: 0.6, scale: 1.15, duration: 0.14, ease: "sine.out" },
+      0.70
+    );
+    tl.to(
+      "#a01-icon-glow",
+      { opacity: 0.3, scale: 1.0, duration: 0.18, ease: "sine.inOut" },
+      0.84
+    );
+
+    /* ---------------------------------------------------------------
+       Scene 2 (0.9–1.7s) — cursor oversized entra de fora do frame
+       (canto inferior direito, off-screen law) e percorre a diagonal
+       até o ícone, ponta mirando exatamente o centro.
+       --------------------------------------------------------------- */
+    /* off-screen entry driven by transform (x/y), never left/top — stays
+       sub-pixel smooth under the seek-by-frame capture engine. Base CSS
+       rests the cursor at its final 50%/50% spot; the tween starts it
+       displaced by exactly the old 112%→50% delta in px (1080×0.62,
+       1920×0.62) and animates back to x:0,y:0. */
+    tl.fromTo(
+      "#a01-cursor",
+      { x: 669.6, y: 1190.4 },
+      { x: 0, y: 0, duration: 0.72, ease: "power3.out", immediateRender: false },
+      0.90
+    );
+
+    /* ---------------------------------------------------------------
+       Scene 3 (1.7–2.6s) — tap na chegada: squash/expand da ponta do
+       cursor + reação do ponto do ícone; ripple verde único do ponto
+       de toque; no pico do ripple, wipe vertical (bottom→top) revela
+       a tela do app com o header "Cotações"; hold final até o corte.
+       --------------------------------------------------------------- */
+    tl.to(
+      "#a01-cursor",
+      { scale: 0.84, duration: 0.09, ease: "power2.in", transformOrigin: "20% 12.5%" },
+      1.62
+    );
+    tl.to(
+      "#a01-cursor",
+      { scale: 1, duration: 0.22, ease: "power2.out", transformOrigin: "20% 12.5%" },
+      1.72
+    );
+
+    /* target reaction — separate, parallel tween on the mark */
+    tl.to("#a01-mark", { scale: 0.88, duration: 0.09, ease: "power2.in" }, 1.62);
+    tl.to("#a01-mark", { scale: 1, duration: 0.28, ease: "back.out(2.2)" }, 1.72);
+
+    /* single clean ripple ring from the tap point */
+    tl.fromTo(
+      "#a01-ripple",
+      { scale: 0.3, opacity: 0.85 },
+      { scale: 1.15, opacity: 0, duration: 0.42, ease: "power2.out" },
+      1.68
+    );
+
+    /* vertical wipe — driven manually (deterministic, seek-safe) so the
+       clip-path boundary and its leading-edge highlight line stay in
+       lockstep; the click ignites this beat. */
+    var wipeState = { p: 100 };
+    var wipeEl = null;
+    var edgeEl = null;
+    tl.to(
+      wipeState,
+      {
+        p: 0,
+        duration: 0.55,
+        ease: "power3.out",
+        onUpdate: function () {
+          if (!wipeEl) wipeEl = document.getElementById("a01-wipe");
+          if (!edgeEl) edgeEl = document.getElementById("a01-wipe-edge");
+          wipeEl.style.clipPath = "inset(" + wipeState.p + "% 0% 0% 0%)";
+          edgeEl.style.top = wipeState.p + "%";
+        },
+      },
+      1.95
+    );
+
+    tl.to("#a01-wipe-edge", { opacity: 0, duration: 0.18, ease: "power2.out" }, 2.32);
+
+    window.__timelines["01-abertura"] = tl;
+  })();
+</script>
+</template>

@@ -1,0 +1,133 @@
+<template>
+  <div id="root" data-composition-id="01-ignora" data-duration="4.4" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; font-style: normal; font-display: block; }
+
+      #root {
+        position: absolute; inset: 0;
+        width: 1080px; height: 1920px;
+        overflow: hidden; container-type: size;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      .i-bg { position: absolute; inset: 0; background: #05070a; }
+
+      .i-chrome {
+        position: absolute; left: 59px; right: 59px; top: 96px;
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-weight: 500; font-size: 24px;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+      .i-chrome-label { color: #94a3b8; }
+
+      .i-head {
+        position: absolute; left: 59px; right: 59px; top: 220px;
+        font-weight: 900; font-size: 82px; line-height: 1.04;
+        letter-spacing: -0.032em; color: #ffffff;
+        will-change: transform, opacity;
+      }
+      .i-head em { font-style: normal; color: #f59e0b; }
+
+      /* the comment, quoted as code — the decision is written down */
+      .i-code {
+        position: absolute; left: 59px; right: 59px; top: 552px;
+        background: #0b0f14;
+        border: 1px solid rgba(255,255,255,0.09);
+        border-left: 3px solid #f59e0b;
+        padding: 40px 44px;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .i-code-path {
+        font-weight: 500; font-size: 24px;
+        letter-spacing: 0.1em; color: #717f94;
+      }
+      .i-code-line {
+        margin-top: 24px;
+        font-weight: 700; font-size: 44px; line-height: 1.3;
+        letter-spacing: -0.01em; color: #ffffff;
+      }
+      .i-code-line span { color: #f59e0b; }
+
+      .i-why {
+        position: absolute; left: 59px; right: 59px; top: 880px;
+        font-weight: 900; font-size: 60px; line-height: 1.14;
+        letter-spacing: -0.028em; color: #ffffff;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+
+      .i-body {
+        position: absolute; left: 59px; right: 59px; top: 1080px;
+        font-weight: 400; font-size: 35px; line-height: 1.42;
+        color: #94a3b8;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .i-body b { font-weight: 700; color: #ffffff; }
+
+      .i-src {
+        position: absolute; left: 59px; right: 59px; top: 1400px;
+        font-weight: 400; font-size: 23px; line-height: 1.5;
+        color: #5b6577;
+        opacity: 0;
+        will-change: opacity;
+      }
+    </style>
+
+    <div class="clip i-bg" data-start="0" data-duration="4.4" data-track-index="0"></div>
+
+    <div class="clip i-chrome" id="i-chrome" data-start="0" data-duration="4.4" data-track-index="1">
+      <span class="i-chrome-label">De onde vem o número</span>
+      <span>01</span>
+    </div>
+
+    <div class="clip i-head" id="i-head" data-start="0" data-duration="4.4" data-track-index="2">
+      O Pulso ignora o<br /><em>IMEA</em> de propósito.
+    </div>
+
+    <div class="clip i-code" id="i-code" data-start="0" data-duration="4.4" data-track-index="3">
+      <div class="i-code-path">worker/ingest/pipeline.py · linha 15</div>
+      <div class="i-code-line">"<span>IMEA/CONAB desconsiderados</span> para balcão."</div>
+    </div>
+
+    <div class="clip i-why" id="i-why" data-start="0" data-duration="4.4" data-track-index="4">
+      Não é descuido. Está escrito no código.
+    </div>
+
+    <div class="clip i-body" id="i-body" data-start="0" data-duration="4.4" data-track-index="5">
+      Índice responde quanto a região <b>vale</b>. O produtor precisa saber
+      quanto o comprador da esquina <b>paga</b>. São perguntas diferentes.
+    </div>
+
+    <div class="clip i-src" id="i-src" data-start="0" data-duration="4.4" data-track-index="6">
+      Docstring de run_full_ingest, repo mercado-fisico-mt.
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      tl.fromTo("#i-chrome", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.32, ease: "power2.out" }, 0.04);
+      tl.fromTo("#i-head", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.48, ease: "power3.out" }, 0.14);
+
+      /* the quoted line is the evidence — it lands alone, held */
+      tl.fromTo("#i-code", { opacity: 0, x: -22 }, { opacity: 1, x: 0, duration: 0.42, ease: "power3.out" }, 0.86);
+
+      tl.fromTo("#i-why", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.44, ease: "power3.out" }, 1.86);
+      tl.fromTo("#i-body", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.42, ease: "power3.out" }, 2.5);
+      tl.fromTo("#i-src", { opacity: 0 }, { opacity: 1, duration: 0.34, ease: "power2.out" }, 3.2);
+
+      window.__timelines["01-ignora"] = tl;
+    })();
+  </script>
+</template>

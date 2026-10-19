@@ -1,0 +1,357 @@
+<template>
+  <div id="root" data-composition-id="06-contraste" data-duration="5.5" data-width="1080" data-height="1920">
+    <style>
+      @font-face {
+        font-family: "Inter";
+        src: url("assets/fonts/Inter_400Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "Inter";
+        src: url("assets/fonts/Inter_500Medium.ttf") format("truetype");
+        font-weight: 500;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "Inter";
+        src: url("assets/fonts/Inter_700Bold.ttf") format("truetype");
+        font-weight: 700;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "Inter";
+        src: url("assets/fonts/Inter_900Black.ttf") format("truetype");
+        font-weight: 900;
+        font-style: normal;
+        font-display: block;
+      }
+
+      #root {
+        position: absolute;
+        inset: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        container-type: size;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      /* full-bleed ground — dedicated clip layer, never on #root */
+      .f06-bg {
+        position: absolute;
+        inset: 0;
+        background: #05070a;
+      }
+
+      .f06-stage {
+        position: absolute;
+        inset: 0;
+        perspective: 1600px;
+      }
+
+      /* ── chrome bar (slide-chrome: label left · number right · hairline) ── */
+      .f06-chrome {
+        position: absolute;
+        left: 59px;
+        right: 59px;
+        top: 96px;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-family: "Inter", ui-monospace, monospace;
+        font-weight: 500;
+        font-size: 24px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+      .f06-chrome .f06-chrome-label {
+        color: #94a3b8;
+      }
+
+      /* ── the stacked comparison pair (9:16 → top card vs bottom card) ── */
+      .f06-card {
+        position: absolute;
+        left: 59px;
+        right: 59px;
+        background: #0f1419;
+        border: 1px solid rgba(255,255,255,0.08);
+        padding: 52px 48px;
+        transform-style: preserve-3d;
+        will-change: transform, opacity;
+      }
+      .f06-card-indice {
+        top: 224px;
+        height: 560px;
+      }
+      .f06-card-comprador {
+        top: 866px;
+        height: 692px;
+        border-top: 2px solid #10b981;
+      }
+
+      .f06-card-label {
+        font-family: "Inter", ui-monospace, monospace;
+        font-weight: 500;
+        font-size: 27px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+      .f06-card-comprador .f06-card-label {
+        color: #10b981;
+      }
+
+      /* blurred index band — vague by design */
+      .f06-range { font-family: "Inter", system-ui, sans-serif;
+        margin-top: 64px;
+        font-weight: 700;
+        font-size: 76px;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        color: #94a3b8;
+        filter: blur(6px);
+        will-change: transform, opacity;
+      }
+      .f06-range-note {
+        margin-top: 44px;
+        font-family: "Inter", ui-monospace, monospace;
+        font-weight: 500;
+        font-size: 22px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+
+      /* muted area chart — the índice's own uncertainty, rendered instead of stated */
+      .f06-chart {
+        position: absolute;
+        left: 48px;
+        right: 48px;
+        bottom: 40px;
+        height: 148px;
+        opacity: 0;
+        will-change: opacity;
+      }
+      .f06-chart-area {
+        fill: rgba(148, 163, 184, 0.1);
+      }
+      .f06-chart-line {
+        fill: none;
+        stroke: #5b6577;
+        stroke-width: 3;
+        stroke-linecap: round;
+      }
+
+      /* crisp buyer price — the one display moment of the frame */
+      .f06-price {
+        font-family: "Inter", system-ui, sans-serif;
+        margin-top: 56px;
+        font-weight: 900;
+        font-size: 150px;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        color: #10b981;
+        white-space: nowrap;
+        will-change: transform, opacity;
+      }
+      .f06-price .f06-price-unit {
+        font-size: 56px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin-left: 6px;
+      }
+      .f06-city {
+        margin-top: 52px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-family: "Inter", ui-monospace, monospace;
+        font-weight: 500;
+        font-size: 26px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #94a3b8;
+        will-change: transform, opacity;
+      }
+      .f06-city .f06-rule-stub {
+        width: 36px;
+        height: 2px;
+        background: #10b981;
+      }
+
+      /* seam divider between the two panels */
+      .f06-divider {
+        position: absolute;
+        left: 59px;
+        right: 59px;
+        top: 824px;
+        height: 1px;
+        background: rgba(255,255,255,0.08);
+        transform-origin: 0% 50%;
+        will-change: transform;
+      }
+
+      /* ── badges at each card's inner edge (siblings of the cards, never inside) ── */
+      .f06-badge {
+        position: absolute;
+        font-family: "Inter", ui-monospace, monospace;
+        font-weight: 500;
+        font-size: 24px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        padding: 16px 30px;
+        white-space: nowrap;
+        transform-origin: 50% 50%;
+        will-change: transform, opacity;
+      }
+      .f06-badge-media {
+        left: 107px;
+        top: 754px; /* overlaps the índice card's bottom edge */
+        background: #05070a;
+        border: 1px solid #717f94;
+        color: #94a3b8;
+      }
+      .f06-badge-negocio {
+        right: 107px;
+        top: 836px; /* overlaps the comprador card's top edge */
+        background: #10b981;
+        color: #05070a;
+      }
+    </style>
+
+    <div class="clip f06-bg" data-start="0" data-duration="5.5" data-track-index="0"></div>
+
+    <div class="clip f06-stage" data-start="0" data-duration="5.5" data-track-index="1">
+      <div class="f06-chrome" id="f06-chrome">
+        <span class="f06-chrome-label">contraste</span>
+        <span>no. 06</span>
+      </div>
+
+      <div class="f06-card f06-card-indice" id="f06-card-indice" data-layout-allow-overflow="true">
+        <div class="f06-card-label f06-copy-a">&Iacute;ndice regional</div>
+        <div class="f06-range f06-copy-a">R$ 118&ndash;142</div>
+        <div class="f06-range-note f06-copy-a">faixa estimada / sc</div>
+
+        <svg class="f06-chart" id="f06-chart" viewBox="0 0 866 148" preserveAspectRatio="none" aria-hidden="true">
+          <path
+            class="f06-chart-area"
+            d="M0,88 C60,58 120,108 180,78 C240,48 300,98 360,68 C420,38 480,93 540,63 C600,33 660,88 720,58 C780,28 820,68 866,53 L866,148 L0,148 Z"
+          />
+          <path
+            class="f06-chart-line"
+            id="f06-chart-line"
+            d="M0,88 C60,58 120,108 180,78 C240,48 300,98 360,68 C420,38 480,93 540,63 C600,33 660,88 720,58 C780,28 820,68 866,53"
+          />
+        </svg>
+      </div>
+
+      <div class="f06-divider" id="f06-divider"></div>
+
+      <div class="f06-card f06-card-comprador" id="f06-card-comprador">
+        <div class="f06-card-label f06-copy-b">Oferta de comprador</div>
+        <div class="f06-price f06-copy-b">R$ 133,50<span class="f06-price-unit">/sc</span></div>
+        <div class="f06-city f06-copy-b">
+          <span class="f06-rule-stub"></span>
+          <span>Campo Verde, MT</span>
+        </div>
+      </div>
+
+      <div class="f06-badge f06-badge-media" id="f06-badge-media">m&eacute;dia</div>
+      <div class="f06-badge f06-badge-negocio" id="f06-badge-negocio">
+        pre&ccedil;o que fecha neg&oacute;cio
+      </div>
+    </div>
+
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script>
+      (function () {
+        window.__timelines = window.__timelines || {};
+        var tl = gsap.timeline({ paused: true });
+
+        /* Scene 1 (0.0–2.1s) — chrome sets the frame, then the ÍNDICE card
+           enters from the LEFT wing with the split-tilt pivot (rotationY
+           overshoot settling flat — the comparison-split signature, top half).
+           Retimed 6.245s→5.0s (×0.8006, no VO to pace against). */
+        tl.fromTo(
+          "#f06-chrome",
+          { y: -34, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.48, ease: "power3.out" },
+          0.04,
+        );
+
+        tl.fromTo(
+          "#f06-card-indice",
+          { x: -430, rotationY: 24, scale: 0.86, opacity: 0 },
+          { x: 0, rotationY: 0, scale: 1, opacity: 1, duration: 0.72, ease: "power3.out" },
+          0.24,
+        );
+        tl.fromTo(
+          ".f06-card-indice .f06-copy-a",
+          { y: 26, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.44, ease: "power2.out", stagger: 0.1 },
+          0.5,
+        );
+
+        /* the índice's own uncertainty rendered as a muted area chart, drawn
+           in right after the range text settles — replaces a second stated
+           claim with a shown one. */
+        var chartLine = document.getElementById("f06-chart-line");
+        var chartLen = chartLine.getTotalLength();
+        chartLine.style.strokeDasharray = "" + chartLen;
+        chartLine.style.strokeDashoffset = "" + chartLen;
+        tl.fromTo("#f06-chart", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.75);
+        tl.to(chartLine, { strokeDashoffset: 0, duration: 0.65, ease: "power2.inOut" }, 0.75);
+
+        /* Scene 2 (2.0–3.7s) — seam draws, then the COMPRADOR card mirrors
+           the entry from the RIGHT wing (opposite rotationY sign — the
+           mirrored half of the signature move). */
+        tl.fromTo(
+          "#f06-divider",
+          { scaleX: 0 },
+          { scaleX: 1, duration: 0.4, ease: "power2.out" },
+          2.0,
+        );
+        tl.fromTo(
+          "#f06-card-comprador",
+          { x: 430, rotationY: -24, scale: 0.86, opacity: 0 },
+          { x: 0, rotationY: 0, scale: 1, opacity: 1, duration: 0.72, ease: "power3.out" },
+          2.1,
+        );
+        tl.fromTo(
+          ".f06-card-comprador .f06-copy-b",
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.44, ease: "power2.out", stagger: 0.11 },
+          2.35,
+        );
+
+        /* Scene 3 (3.68s–end) — badges spring-pop at each inner edge, left
+           then right — the shot's lone overshoot. Then an absolute held
+           read to the cut: no idle, no drift. */
+        tl.fromTo(
+          "#f06-badge-media",
+          { scale: 0, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" },
+          3.68,
+        );
+        tl.fromTo(
+          "#f06-badge-negocio",
+          { scale: 0, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" },
+          3.92,
+        );
+
+        window.__timelines["06-contraste"] = tl;
+      })();
+    </script>
+  </div>
+</template>

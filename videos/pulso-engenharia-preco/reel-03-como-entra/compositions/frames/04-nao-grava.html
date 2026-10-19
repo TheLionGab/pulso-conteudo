@@ -1,0 +1,177 @@
+<template>
+  <div id="root" data-composition-id="04-nao-grava" data-duration="4.8" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; font-style: normal; font-display: block; }
+
+      #root {
+        position: absolute; inset: 0;
+        width: 1080px; height: 1920px;
+        overflow: hidden; container-type: size;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      .g-bg { position: absolute; inset: 0; background: #05070a; }
+
+      .g-chrome {
+        position: absolute; left: 59px; right: 59px; top: 96px;
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-weight: 500; font-size: 24px;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+      .g-chrome-label { color: #94a3b8; }
+
+      .g-head {
+        position: absolute; left: 59px; right: 59px; top: 206px;
+        font-weight: 900; font-size: 70px; line-height: 1.06;
+        letter-spacing: -0.03em; color: #ffffff;
+        will-change: transform, opacity;
+      }
+
+      /* the split: 19 measured, 123 derived */
+      .g-split {
+        position: absolute; left: 59px; right: 59px; top: 400px;
+        display: flex; gap: 22px;
+      }
+      .g-half {
+        flex: 1;
+        background: #0f1419;
+        border: 1px solid rgba(255,255,255,0.08);
+        padding: 32px 34px;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .g-half-a { border-left: 3px solid #10b981; }
+      .g-half-b { border-left: 3px solid #5b6577; }
+      .g-half-n {
+        font-weight: 900; font-size: 88px; line-height: 1;
+        letter-spacing: -0.035em; color: #10b981;
+        font-variant-numeric: tabular-nums;
+      }
+      .g-half-b .g-half-n { color: #94a3b8; }
+      .g-half-k {
+        margin-top: 16px;
+        font-weight: 500; font-size: 25px;
+        letter-spacing: 0.08em; text-transform: uppercase;
+        color: #94a3b8;
+      }
+      .g-half-d {
+        margin-top: 14px;
+        font-weight: 400; font-size: 27px; line-height: 1.36;
+        color: #717f94;
+      }
+
+      /* the guarantee */
+      .g-guard {
+        position: absolute; left: 59px; right: 59px; top: 760px;
+        height: 344px;
+        background: #0b1f18;
+        border: 1px solid rgba(16,185,129,0.34);
+        padding: 40px 44px;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .g-guard-k {
+        font-weight: 500; font-size: 25px;
+        letter-spacing: 0.12em; text-transform: uppercase;
+        color: #10b981;
+      }
+      .g-guard-v {
+        margin-top: 22px;
+        font-weight: 700; font-size: 50px; line-height: 1.2;
+        letter-spacing: -0.022em; color: #ffffff;
+      }
+      .g-guard-n {
+        margin-top: 20px;
+        font-weight: 400; font-size: 29px; line-height: 1.4;
+        color: #94a3b8;
+      }
+
+      .g-thesis {
+        position: absolute; left: 59px; right: 59px; top: 1172px;
+        font-weight: 900; font-size: 58px; line-height: 1.16;
+        letter-spacing: -0.028em; color: #ffffff;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .g-thesis em { font-style: normal; color: #10b981; }
+
+      .g-src {
+        position: absolute; left: 59px; right: 59px; top: 1400px;
+        font-weight: 400; font-size: 23px; line-height: 1.5;
+        color: #5b6577;
+        opacity: 0;
+        will-change: opacity;
+      }
+    </style>
+
+    <div class="clip g-bg" data-start="0" data-duration="4.8" data-track-index="0"></div>
+
+    <div class="clip g-chrome" id="g-chrome" data-start="0" data-duration="4.8" data-track-index="1">
+      <span class="g-chrome-label">O que chega na tela</span>
+      <span>04</span>
+    </div>
+
+    <div class="clip g-head" id="g-head" data-start="0" data-duration="4.8" data-track-index="2">
+      19 medidos.<br />123 derivados.
+    </div>
+
+    <div class="clip g-split" id="g-split" data-start="0" data-duration="4.8" data-track-index="3">
+      <div class="g-half g-half-a" id="g-half-a">
+        <div class="g-half-n">19</div>
+        <div class="g-half-k">Com mesa</div>
+        <div class="g-half-d">Preço de comprador nomeado.</div>
+      </div>
+      <div class="g-half g-half-b" id="g-half-b">
+        <div class="g-half-n">123</div>
+        <div class="g-half-k">Sem mesa</div>
+        <div class="g-half-d">Descem a escada até achar prova.</div>
+      </div>
+    </div>
+
+    <div class="clip g-guard" id="g-guard" data-start="0" data-duration="4.8" data-track-index="4">
+      <div class="g-guard-k">E quando não acha</div>
+      <div class="g-guard-v">A linha não é gravada.</div>
+      <div class="g-guard-n">
+        Resolução sem preço é descartada antes de chegar no banco. O app não
+        recebe um número fraco — não recebe número nenhum.
+      </div>
+    </div>
+
+    <div class="clip g-thesis" id="g-thesis" data-start="0" data-duration="4.8" data-track-index="5">
+      É mais barato <em>calar</em> do que errar o preço de alguém.
+    </div>
+
+    <div class="clip g-src" id="g-src" data-start="0" data-duration="4.8" data-track-index="6">
+      pipeline.py, linhas 66 e 67 — resolved_price None é pulado no upsert.
+      142 municípios no total: pipeline.py, linha 53.
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      tl.fromTo("#g-chrome", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.32, ease: "power2.out" }, 0.04);
+      tl.fromTo("#g-head", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.44, ease: "power3.out" }, 0.14);
+
+      tl.fromTo("#g-half-a", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.36, ease: "power3.out" }, 0.62);
+      tl.fromTo("#g-half-b", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.36, ease: "power3.out" }, 0.82);
+
+      /* the guarantee is the payoff — it lands on its own beat */
+      tl.fromTo("#g-guard", { opacity: 0, scaleY: 0.9, transformOrigin: "50% 0%" }, { opacity: 1, scaleY: 1, duration: 0.42, ease: "power3.out" }, 1.54);
+
+      tl.fromTo("#g-thesis", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.44, ease: "power3.out" }, 2.62);
+      tl.fromTo("#g-src", { opacity: 0 }, { opacity: 1, duration: 0.34, ease: "power2.out" }, 3.3);
+
+      window.__timelines["04-nao-grava"] = tl;
+    })();
+  </script>
+</template>

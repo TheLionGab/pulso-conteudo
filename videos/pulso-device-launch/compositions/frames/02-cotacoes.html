@@ -1,0 +1,34 @@
+<template>
+  <div id="root" data-composition-id="02-device" data-duration="5.0" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; }
+      #root { position:absolute; inset:0; width:1080px; height:1920px; overflow:hidden; font-family:"Inter",system-ui,sans-serif; background:#05070a; }
+      .kicker { position:absolute; left:59px; top:120px; font-weight:700; font-size:26px; letter-spacing:.14em; text-transform:uppercase; color:#10b981; opacity:0; }
+      .headline { position:absolute; left:59px; right:59px; top:170px; font-weight:900; font-size:72px; line-height:1.05; letter-spacing:-.03em; color:#fff; opacity:0; }
+      .phone-wrap { position:absolute; left:50%; top:420px; width:520px; height:1120px; margin-left:-260px; opacity:0; }
+      .phone { position:absolute; inset:0; border-radius:56px; border:3px solid rgba(255,255,255,.12); background:#0a0e12; box-shadow:0 40px 120px rgba(0,0,0,.65),0 0 80px rgba(16,185,129,.12); overflow:hidden; }
+      .phone-notch { position:absolute; left:50%; top:14px; width:180px; height:34px; margin-left:-90px; background:#05070a; border-radius:20px; z-index:3; }
+      .shot { position:absolute; left:0; top:0; width:100%; height:100%; object-fit:cover; object-position:top center; transform-origin:center top; }
+      .shine { position:absolute; inset:0; background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.08) 50%,transparent 60%); transform:translateX(-120%); }
+      .caption { position:absolute; left:59px; right:59px; bottom:180px; text-align:center; font-weight:700; font-size:34px; color:#94a3b8; opacity:0; }
+    </style>
+    <div class="clip kicker" id="k" data-start="0" data-duration="5" data-track-index="0">Cotações</div>
+    <div class="clip headline" id="h" data-start="0" data-duration="5" data-track-index="1">Preço da praça.<br/>Não média.</div>
+    <div class="clip phone-wrap" id="pw" data-start="0" data-duration="5" data-track-index="2">
+      <div class="phone"><div class="phone-notch"></div><img class="shot" id="shot" src="assets/device/cotacoes-campo-verde.png" alt="" /></div>
+      <div class="shine" id="shine"></div>
+    </div>
+    <div class="clip caption" id="cap" data-start="0" data-duration="5" data-track-index="3">Captura real · iPhone 13</div>
+    <script>
+      (function(){var tl=gsap.timeline({paused:true});
+        tl.fromTo("#k",{opacity:0,y:16},{opacity:1,y:0,duration:.4,ease:"power3.out"},.1);
+        tl.fromTo("#h",{opacity:0,y:28},{opacity:1,y:0,duration:.55,ease:"power4.out"},.25);
+        tl.fromTo("#pw",{opacity:0,y:80,scale:.92},{opacity:1,y:0,scale:1,duration:.7,ease:"power3.out"},.45);
+        tl.fromTo("#shot",{scale:1},{scale:1.08,duration:4.2,ease:"none"},.8);
+        tl.fromTo("#shine",{x:"-120%"},{x:"120%",duration:1.2,ease:"power2.inOut"},1.2);
+        tl.fromTo("#cap",{opacity:0,y:14},{opacity:1,y:0,duration:.4,ease:"power3.out"},1.0);
+        window.__timelines=window.__timelines||{};window.__timelines["02-device"]=tl;})();
+    </script>
+  </div>
+</template>

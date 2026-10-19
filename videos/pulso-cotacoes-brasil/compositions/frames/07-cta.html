@@ -1,0 +1,330 @@
+<template id="cta07-template" data-width="1080" data-height="1920">
+<script src="assets/vendor/gsap.min.js"></script>
+
+<style>
+/* fontes locais (staged) */
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_400Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_500Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_700Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_900Black.ttf') format('truetype'); font-weight: 900; font-style: normal; font-display: block; }
+
+  
+
+  #root {
+    position: relative;
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    container-type: size;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+
+  /* full-bleed ground — dark register (clip layer, never on #root) */
+  .cta07-bg {
+    position: absolute;
+    inset: 0;
+    background: #05070a;
+  }
+
+  .cta07-content {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* mono catalogue numeral — decorative chrome */
+  .cta07-num {
+    position: absolute;
+    top: 60px;
+    left: 60px;
+    font-family: "Inter", ui-monospace, monospace;
+    font-weight: 500;
+    font-size: 19px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #717f94;
+    opacity: 0;
+  }
+
+  /* centered lockup cluster */
+  .cta07-cluster {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 470px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* rule stub — the system's only ornament */
+  .cta07-rule {
+    width: 40px;
+    height: 3px;
+    background: #10b981;
+    margin-bottom: 46px;
+  }
+
+  /* the real brand mark (apps/meu-talhao/assets/brand/pulso-do-campo.svg),
+     self-drawn — same signature that opened the video in Frame 1 */
+  .cta07-mark-wrap {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    margin-bottom: 30px;
+  }
+  .cta07-mark {
+    position: absolute;
+    inset: 0;
+    width: 320px;
+    height: 320px;
+    overflow: visible;
+    transform-origin: 50% 50%;
+    will-change: transform, opacity;
+  }
+  .cta07-mark .pdc-p {
+    fill: none;
+    stroke: url(#pdcg-07);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .cta07-mark-glow {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 220px;
+    height: 220px;
+    margin: -110px 0 0 -110px;
+    border-radius: 50%;
+    background: #10b981;
+    filter: blur(48px);
+    opacity: 0;
+  }
+  .cta07-ring {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 340px;
+    height: 340px;
+    margin: -170px 0 0 -170px;
+    overflow: visible;
+    opacity: 0;
+    pointer-events: none;
+    transform-origin: 50% 50%;
+  }
+
+  /* wordmark — Inter 800, the app's own lockup (LogoPulsoDoCampo.tsx) */
+  .cta07-wordmark {
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 118px;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+  }
+  .cta07-word {
+    display: inline-block;
+    will-change: transform, opacity, filter;
+  }
+  .cta07-word + .cta07-word {
+    margin-left: 0.24em;
+  }
+
+  /* sub-line — brand tagline, cream-muted, one line */
+  .cta07-sub {
+    margin-top: 74px;
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 1.4;
+    color: #94a3b8;
+    white-space: nowrap;
+  }
+  .cta07-sub-word {
+    display: inline-block;
+  }
+  .cta07-sub-word + .cta07-sub-word {
+    margin-left: 0.28em;
+  }
+
+  /* CTA chip — mono chrome, sharp rectangle, green on dark */
+  .cta07-chip {
+    margin-top: 66px;
+    display: inline-block;
+    padding: 22px 38px;
+    border: 1px solid #10b981;
+    color: #10b981;
+    font-family: "Inter", ui-monospace, monospace;
+    font-weight: 500;
+    font-size: 28px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+</style>
+
+<div id="root" data-composition-id="07-cta" data-duration="4.0" data-width="1080" data-height="1920">
+  <div class="clip cta07-bg" data-start="0" data-duration="4.0" data-track-index="0"></div>
+
+  <div class="clip cta07-content" data-start="0" data-duration="4.0" data-track-index="1">
+    <div class="cta07-num" id="cta07-num">No. 07</div>
+
+    <div class="cta07-cluster" id="cta07-cluster">
+      <div class="cta07-rule" id="cta07-rule"></div>
+
+      <div class="cta07-mark-wrap" id="cta07-mark-wrap">
+        <div class="cta07-mark-glow" id="cta07-mark-glow"></div>
+        <svg class="cta07-ring" id="cta07-ring" viewBox="0 0 140 140" aria-hidden="true">
+          <circle
+            id="cta07-ring-circle"
+            cx="70"
+            cy="70"
+            r="46"
+            fill="none"
+            stroke="#10b981"
+            stroke-width="1.6"
+            stroke-linecap="butt"
+            stroke-dasharray="289.03"
+            stroke-dashoffset="289.03"
+            transform="rotate(-90 70 70)"
+          ></circle>
+        </svg>
+        <svg class="cta07-mark" id="cta07-mark" viewBox="0 0 1024 1024" aria-hidden="true">
+          <defs>
+            <linearGradient id="pdcg-07" x1="220" y1="310" x2="804" y2="830" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#6EE7B7"></stop>
+              <stop offset="0.48" stop-color="#10B981"></stop>
+              <stop offset="1" stop-color="#047857"></stop>
+            </linearGradient>
+          </defs>
+          <path class="pdc-p" d="M220 462H350L405 405L467 536L548 310L618 462H804" stroke-width="58" stroke-dasharray="1000" stroke-dashoffset="1000"></path>
+          <path class="pdc-p" d="M512 584V832" stroke-width="58" stroke-dasharray="300" stroke-dashoffset="300"></path>
+          <path class="pdc-p" d="M452 584C438 680 406 760 360 830" stroke-width="48" opacity="0.88" stroke-dasharray="300" stroke-dashoffset="300"></path>
+          <path class="pdc-p" d="M572 584C586 680 618 760 664 830" stroke-width="48" opacity="0.88" stroke-dasharray="300" stroke-dashoffset="300"></path>
+          <path class="pdc-p" d="M398 594C352 678 306 754 246 814" stroke-width="38" opacity="0.48" stroke-dasharray="300" stroke-dashoffset="300"></path>
+          <path class="pdc-p" d="M626 594C672 678 718 754 778 814" stroke-width="38" opacity="0.48" stroke-dasharray="300" stroke-dashoffset="300"></path>
+        </svg>
+      </div>
+
+      <div class="cta07-wordmark" id="cta07-wordmark">
+        <span class="cta07-word">Pulso</span><span class="cta07-word">do</span><span class="cta07-word">Campo</span>
+      </div>
+
+      <div class="cta07-sub" id="cta07-sub">
+        <span class="cta07-sub-word">Já</span><span class="cta07-sub-word">na</span><span
+          class="cta07-sub-word"
+          >App</span
+        ><span class="cta07-sub-word">Store.</span>
+      </div>
+
+      <div class="cta07-chip" id="cta07-chip">App Store · grátis</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    window.__timelines = window.__timelines || {};
+    var tl = gsap.timeline({ paused: true });
+
+    /* ---------------------------------------------------------------
+       Scene 1 (0.0–1.4s) — palco limpo; o wordmark monta por cascata
+       de palavras (staggered slide + overshoot liso), ponto verde
+       acende ao lado. Auto-conduzido (sem VO); retimed 4.48s→4.0s
+       (×0.8929).
+       --------------------------------------------------------------- */
+    tl.fromTo(
+      "#cta07-rule",
+      { scaleX: 0 },
+      { scaleX: 1, duration: 0.45, ease: "power3.out" },
+      0.07
+    );
+
+    /* the mark self-draws first — pulse line, then the field rows —
+       closing the circle opened by the icon in Frame 1 */
+    tl.fromTo(
+      "#cta07-mark",
+      { scale: 0.86, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.5, ease: "power3.out" },
+      0.12
+    );
+    tl.to(
+      "#cta07-mark .pdc-p",
+      { attr: { "stroke-dashoffset": 0 }, duration: 0.62, ease: "power2.out", stagger: 0.07 },
+      0.2
+    );
+    tl.fromTo(
+      "#cta07-mark-glow",
+      { opacity: 0 },
+      { opacity: 0.55, duration: 0.5, ease: "power2.out" },
+      0.7
+    );
+
+    tl.fromTo(
+      ".cta07-word",
+      { y: 70, opacity: 0, filter: "blur(10px)" },
+      {
+        y: 0,
+        opacity: 1,
+        filter: "blur(0px)",
+        duration: 0.6,
+        ease: "power4.out",
+        stagger: 0.11,
+      },
+      0.78
+    );
+
+    tl.fromTo("#cta07-num", { opacity: 0 }, { opacity: 0.4, duration: 0.45, ease: "power2.out" }, 0.45);
+
+    /* ---------------------------------------------------------------
+       Scene 2 (1.45–2.6s) — o ponto emite UM pulso de anel (self-draw
+       + expand + fade); a sub-linha entra em cream-muted, uma linha só.
+       --------------------------------------------------------------- */
+    tl.fromTo("#cta07-ring", { opacity: 0 }, { opacity: 1, duration: 0.07 }, 1.45);
+    tl.fromTo(
+      "#cta07-ring-circle",
+      { strokeDashoffset: 289.03 },
+      { strokeDashoffset: 0, duration: 0.45, ease: "power2.inOut" },
+      1.46
+    );
+    tl.fromTo(
+      "#cta07-ring",
+      { scale: 1 },
+      { scale: 2.5, duration: 0.85, ease: "power2.out" },
+      1.79
+    );
+    tl.to("#cta07-ring", { opacity: 0, duration: 0.49, ease: "power2.out" }, 2.1);
+
+    tl.fromTo(
+      ".cta07-sub-word",
+      { y: 26, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.45, ease: "power3.out", stagger: 0.12 },
+      1.86
+    );
+
+    /* ---------------------------------------------------------------
+       Scene 3 (2.93s–fim) — chip mono surge com spring-pop discreto;
+       held read até o fim, vida apenas no glow do ponto (jitter
+       sutil, tweens explícitos).
+       --------------------------------------------------------------- */
+    tl.fromTo(
+      "#cta07-chip",
+      { scale: 0.6, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(1.8)" },
+      2.93
+    );
+
+    tl.to("#cta07-mark-glow", { opacity: 0.35, duration: 0.38, ease: "sine.inOut" }, 3.23);
+    tl.to("#cta07-mark-glow", { opacity: 0.6, duration: 0.39, ease: "sine.inOut" }, 3.61);
+
+    /* near-imperceptible continuous scale-up through the hold */
+    tl.fromTo(
+      "#cta07-cluster",
+      { scale: 1 },
+      { scale: 1.035, duration: 4.0, ease: "none" },
+      0
+    );
+
+    window.__timelines["07-cta"] = tl;
+  })();
+</script>
+</template>

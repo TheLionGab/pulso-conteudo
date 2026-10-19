@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Carrossel — janela de pulverização</title>
+    <!--
+      Carrossel de feed (1080x1350, 7 slides). Pilar "Como se calcula".
+
+      TODO número desta peça saiu de executar apps/meu-talhao/lib/operationWindow.ts,
+      não de estimativa. Os pesos (vento .45 / umidade .30 / temperatura .25), os
+      limiares e as quatro confianças citadas estão no `SLIDES` abaixo com o caso
+      que os gera. Reproduzir:
+
+        node --experimental-strip-types -e "import('.../lib/operationWindow.ts')
+          .then(m => console.log(m.evaluateOperationWindows(
+            { temperatura: 20, umidade: 80, vento: 10, probabilidadeChuva: 0 })))"
+
+      Se `operationWindow.ts` mudar peso ou limiar, esta peça vira desinformação:
+      re-executar e re-renderizar antes de republicar.
+
+      ?slide=1..7   qual slide
+      &t=<ms>       instante da animação (função pura; ver engine/browser.mjs)
+    -->
+    <link rel="stylesheet" href="tokens.css" />
+    <style>
+      html,
+      body {
+        width: 1080px;
+        height: 1350px;
+      }
+
+      .stage {
+        position: relative;
+        width: 1080px;
+        height: 1350px;
+        isolation: isolate;
+      }
+
+      .content {
+        position: absolute;
+        inset: 88px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ---------- topo ---------- */
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+
+      .brand svg {
+        width: 60px;
+        height: 60px;
+        display: block;
+      }
+
+      .brand-name {
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--text);
+      }
+
+      .counter {
+        margin-left: auto;
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        color: var(--text-muted);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .eyebrow {
+        margin-top: 56px;
+        display: inline-flex;
+        align-items: center;
+        align-self: flex-start;
+        gap: 14px;
+        padding: 14px 26px;
+        border: 1px solid var(--success-border);
+        border-radius: 9999px;
+        background: var(--success-soft);
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--brand-300);
+      }
+
+      .eyebrow .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--brand-400);
+        box-shadow: 0 0 16px rgba(74, 222, 128, 0.9);
+      }
+
+      /* ---------- texto ---------- */
+
+      h1 {
+        margin-top: 36px;
+        font-size: 78px;
+        font-weight: 900;
+        line-height: 1.06;
+        letter-spacing: -0.035em;
+        color: var(--text);
+      }
+
+      .stage[data-size='sm'] h1 {
+        font-size: 64px;
+      }
+
+      /* As quebras do título são decididas no `SLIDES`, não pelo navegador:
+         carrossel com quebra automática muda de slide para slide e o bloco
+         perde o ritmo. */
+      h1 .line {
+        display: block;
+      }
+
+      h1 .em {
+        background: linear-gradient(100deg, #a7f3d0 0%, var(--brand-300) 38%, var(--brand-500) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      h1 .warn {
+        color: var(--warn);
+      }
+
+      .sub {
+        margin-top: 32px;
+        font-size: 36px;
+        font-weight: 400;
+        line-height: 1.42;
+        color: var(--text-secondary);
+      }
+
+      .sub strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      /* ---------- blocos ---------- */
+
+      /* `auto` nas duas pontas centraliza o miolo na sobra vertical. Com
+         `margin-top: auto` só, o bloco colava no rodapé e abria um vazio no
+         meio do slide — a composição quebrava em duas ilhas. */
+      .blocks {
+        margin: auto 0;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+      }
+
+      /* Card com os tokens reais do app: shell.surface + shell.border. */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        padding: 40px 44px;
+      }
+
+      .card.accent {
+        background: var(--success-soft);
+        border-color: var(--success-border);
+      }
+
+      .card.warnish {
+        background: var(--warn-soft);
+        border-color: var(--warn-border);
+      }
+
+      .card-label {
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+
+      .card-value {
+        margin-top: 12px;
+        font-size: 68px;
+        font-weight: 900;
+        letter-spacing: -0.03em;
+        color: var(--text);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .card-value .unit {
+        font-size: 38px;
+        font-weight: 700;
+        color: var(--text-secondary);
+        letter-spacing: 0;
+      }
+
+      .card-note {
+        margin-top: 14px;
+        font-size: 28px;
+        line-height: 1.4;
+        color: var(--text-secondary);
+      }
+
+      /* Barras de peso — a largura É o peso, não decoração. */
+      .weights {
+        display: flex;
+        flex-direction: column;
+        gap: 26px;
+      }
+
+      .weight {
+        display: flex;
+        align-items: center;
+        gap: 26px;
+      }
+
+      .weight-name {
+        width: 240px;
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .weight-track {
+        flex: 1;
+        height: 26px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+      }
+
+      .weight-fill {
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--brand-600), var(--brand-400));
+        transform-origin: left center;
+        transform: scaleX(var(--pct));
+      }
+
+      .weight.dim .weight-fill {
+        background: linear-gradient(90deg, #334155, #475569);
+      }
+
+      .weight-pct {
+        width: 110px;
+        text-align: right;
+        font-size: 34px;
+        font-weight: 800;
+        color: var(--text);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* Régua de status */
+      .ruler {
+        display: flex;
+        gap: 16px;
+      }
+
+      .band {
+        flex: 1;
+        border-radius: var(--radius-lg);
+        padding: 32px 28px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+      }
+
+      .band .range {
+        font-size: 40px;
+        font-weight: 900;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -0.02em;
+      }
+
+      .band .name {
+        margin-top: 8px;
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+
+      .band.open {
+        background: var(--success-soft);
+        border-color: var(--success-border);
+      }
+      .band.open .range {
+        color: var(--brand-300);
+      }
+      .band.warn {
+        background: var(--warn-soft);
+        border-color: var(--warn-border);
+      }
+      .band.warn .range {
+        color: var(--warn);
+      }
+      .band.shut {
+        background: var(--danger-soft);
+        border-color: var(--danger-border);
+      }
+      .band.shut .range {
+        color: var(--danger);
+      }
+
+      /* Medidor de confiança */
+      .gauge-value {
+        display: flex;
+        align-items: baseline;
+        gap: 20px;
+      }
+
+      .gauge-number {
+        font-size: 150px;
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: -0.05em;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .gauge-status {
+        font-size: 34px;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        padding: 12px 26px;
+        border-radius: 9999px;
+      }
+
+      .gauge.is-open .gauge-number {
+        color: var(--brand-300);
+      }
+      .gauge.is-open .gauge-status {
+        color: var(--brand-300);
+        background: var(--success-soft);
+        border: 1px solid var(--success-border);
+      }
+      .gauge.is-warn .gauge-number {
+        color: var(--warn);
+      }
+      .gauge.is-warn .gauge-status {
+        color: var(--warn);
+        background: var(--warn-soft);
+        border: 1px solid var(--warn-border);
+      }
+
+      .gauge-track {
+        margin-top: 24px;
+        height: 22px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+      }
+
+      .gauge-fill {
+        height: 100%;
+        border-radius: 999px;
+        transform-origin: left center;
+        transform: scaleX(var(--pct));
+      }
+
+      .gauge.is-open .gauge-fill {
+        background: linear-gradient(90deg, var(--brand-600), var(--brand-400));
+      }
+      .gauge.is-warn .gauge-fill {
+        background: linear-gradient(90deg, #b45309, var(--warn));
+      }
+
+      /* ---------- rodapé ---------- */
+
+      .footer {
+        margin-top: 34px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        font-size: 26px;
+        font-weight: 500;
+        color: var(--text-muted);
+      }
+
+      .footer .rule {
+        flex: 1;
+        height: 1px;
+        background: var(--divider);
+      }
+
+      .swipe {
+        color: var(--brand-300);
+        font-weight: 700;
+        letter-spacing: 0.08em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage" id="stage">
+      <div class="bg"></div>
+      <div class="glow"></div>
+      <div class="grain"></div>
+
+      <div class="content">
+        <div class="brand">
+          <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" fill="none">
+            <defs>
+              <linearGradient id="mark" x1="220" y1="310" x2="804" y2="830" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#6EE7B7" />
+                <stop offset="0.48" stop-color="#10B981" />
+                <stop offset="1" stop-color="#047857" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M220 462H350L405 405L467 536L548 310L618 462H804"
+              stroke="url(#mark)"
+              stroke-width="58"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path d="M512 584V832" stroke="url(#mark)" stroke-width="58" stroke-linecap="round" />
+            <path
+              d="M452 584C438 680 406 760 360 830"
+              stroke="url(#mark)"
+              stroke-width="48"
+              stroke-linecap="round"
+              opacity="0.88"
+            />
+            <path
+              d="M572 584C586 680 618 760 664 830"
+              stroke="url(#mark)"
+              stroke-width="48"
+              stroke-linecap="round"
+              opacity="0.88"
+            />
+            <path
+              d="M398 594C352 678 306 754 246 814"
+              stroke="url(#mark)"
+              stroke-width="38"
+              stroke-linecap="round"
+              opacity="0.48"
+            />
+            <path
+              d="M626 594C672 678 718 754 778 814"
+              stroke="url(#mark)"
+              stroke-width="38"
+              stroke-linecap="round"
+              opacity="0.48"
+            />
+          </svg>
+          <span class="brand-name">Pulso do Campo</span>
+          <span class="counter" id="counter"></span>
+        </div>
+
+        <div class="eyebrow"><span class="dot"></span><span id="eyebrow"></span></div>
+        <h1 id="headline"></h1>
+        <p class="sub" id="sub"></p>
+
+        <div class="blocks" id="blocks"></div>
+
+        <div class="footer">
+          <span id="footer"></span>
+          <span class="rule"></span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ─────────────────────────────────────────────────────────────
+      // Fonte dos números: apps/meu-talhao/lib/operationWindow.ts
+      //   pesos pulverização .25 temp / .30 umidade / .45 vento
+      //   linearScore(valor, ideal, limiar) → 100 no ideal, 0 no limiar
+      //   statusFromConfianca: >=70 aberta · >=40 atenção · senão fechada
+      // Confianças citadas conferidas executando evaluateOperationWindows.
+      // ─────────────────────────────────────────────────────────────
+
+      // Precisão importa mais aqui do que em qualquer outra peça: o valor deste
+      // carrossel é ser exato. Vento no limiar leva a nota a 55 = ATENÇÃO, não
+      // "fechada" — dizer o contrário na capa entrega uma peça que o próprio
+      // slide 4 desmente.
+      const SLIDES = [
+        {
+          eyebrow: 'Como se calcula',
+          headline: [
+            'Vento de 10 km/h',
+            'derruba sua janela',
+            'de pulverização.',
+            '<span class="em">30 °C, não.</span>',
+          ],
+          sub: 'Os dois estão no limite. <strong>Só um tira a janela do verde.</strong> A diferença está no peso de cada fator.',
+          footer: 'Arrasta →',
+          swipe: true,
+        },
+        {
+          eyebrow: 'A régua',
+          headline: ['O app dá uma nota', 'de 0 a 100 para', '<span class="em">pulverizar hoje.</span>'],
+          sub: 'A nota vira status. Não é “dá ou não dá” — tem uma faixa no meio.',
+          blocks: `
+            <div class="ruler">
+              <div class="band shut"><div class="range">0–39</div><div class="name">Fechada</div></div>
+              <div class="band warn"><div class="range">40–69</div><div class="name">Atenção</div></div>
+              <div class="band open"><div class="range">70–100</div><div class="name">Aberta</div></div>
+            </div>`,
+          footer: 'lib/operationWindow.ts',
+        },
+        {
+          eyebrow: 'Os pesos',
+          headline: ['Três fatores entram.', '<span class="em">Com pesos diferentes.</span>'],
+          sub: 'É aqui que quase todo mundo erra: trata os três como se valessem o mesmo.',
+          blocks: `
+            <div class="weights">
+              <div class="weight"><div class="weight-name">Vento</div>
+                <div class="weight-track"><div class="weight-fill" style="--pct:1"></div></div>
+                <div class="weight-pct">45%</div></div>
+              <div class="weight"><div class="weight-name">Umidade</div>
+                <div class="weight-track"><div class="weight-fill" style="--pct:0.667"></div></div>
+                <div class="weight-pct">30%</div></div>
+              <div class="weight dim"><div class="weight-name">Temperatura</div>
+                <div class="weight-track"><div class="weight-fill" style="--pct:0.556"></div></div>
+                <div class="weight-pct">25%</div></div>
+            </div>`,
+          footer: 'Barra proporcional ao peso real',
+        },
+        {
+          eyebrow: 'Vento · peso 45%',
+          size: 'sm',
+          headline: ['No limiar de 10 km/h,', 'o fator vento <span class="warn">zera</span>.'],
+          sub: 'Com temperatura e umidade <strong>perfeitas</strong>, a nota cai para:',
+          blocks: `
+            <div class="gauge is-warn">
+              <div class="gauge-value">
+                <span class="gauge-number">55</span>
+                <span class="gauge-status">Atenção</span>
+              </div>
+              <div class="gauge-track"><div class="gauge-fill" style="--pct:0.55"></div></div>
+            </div>`,
+          footer: 'temp 20 °C · umidade 80% · vento 10 km/h',
+        },
+        {
+          eyebrow: 'Temperatura · peso 25%',
+          size: 'sm',
+          headline: ['No limiar de 30 °C,', 'a janela <span class="em">continua aberta</span>.'],
+          sub: 'Mesma situação: os outros dois perfeitos, este no limite.',
+          blocks: `
+            <div class="gauge is-open">
+              <div class="gauge-value">
+                <span class="gauge-number">75</span>
+                <span class="gauge-status">Aberta</span>
+              </div>
+              <div class="gauge-track"><div class="gauge-fill" style="--pct:0.75"></div></div>
+            </div>`,
+          footer: 'temp 30 °C · umidade 80% · vento 0 km/h',
+        },
+        {
+          eyebrow: 'Umidade · peso 30%',
+          size: 'sm',
+          headline: ['A 55% de umidade,', 'a janela passa <span class="em">raspando</span>.'],
+          sub: '70 é exatamente o corte entre aberta e atenção. Um ponto abaixo e muda de faixa.',
+          blocks: `
+            <div class="gauge is-open">
+              <div class="gauge-value">
+                <span class="gauge-number">70</span>
+                <span class="gauge-status">Aberta</span>
+              </div>
+              <div class="gauge-track"><div class="gauge-fill" style="--pct:0.70"></div></div>
+            </div>`,
+          footer: 'temp 20 °C · umidade 55% · vento 0 km/h',
+        },
+        {
+          eyebrow: 'O que fazer com isso',
+          headline: ['Antes de ligar a bomba,', 'olhe o <span class="em">vento</span> primeiro.'],
+          sub: 'É o fator de maior peso e o que muda mais rápido no dia. O Pulso do Campo faz essa conta com o clima da sua região, junto com mercado e operação.',
+          blocks: `
+            <div class="card accent">
+              <div class="card-label">Importante</div>
+              <div class="card-note">Estes limiares são calibrados para a região de Mato&nbsp;Grosso. Recomendação agronômica é do seu técnico — o app organiza o sinal, não assina a decisão.</div>
+            </div>`,
+          footer: 'Pulso do Campo · Radar do dia',
+        },
+      ];
+
+      const params = new URLSearchParams(location.search);
+      const index = Number(params.get('slide') ?? '1') - 1;
+      const slide = SLIDES[index];
+      if (!slide) throw new Error(`slide inválido: use 1..${SLIDES.length}`);
+
+      const stage = document.getElementById('stage');
+      if (slide.size) stage.dataset.size = slide.size;
+
+      document.getElementById('counter').textContent = `${index + 1}/${SLIDES.length}`;
+      document.getElementById('eyebrow').textContent = slide.eyebrow;
+      document.getElementById('headline').innerHTML = slide.headline
+        .map((l) => `<span class="line">${l}</span>`)
+        .join('');
+      document.getElementById('sub').innerHTML = slide.sub;
+      document.getElementById('blocks').innerHTML = slide.blocks ?? '';
+
+      const footer = document.getElementById('footer');
+      footer.textContent = slide.footer;
+      if (slide.swipe) footer.className = 'swipe';
+
+      document.fonts.ready.then(() => {
+        document.documentElement.dataset.ready = '1';
+      });
+    </script>
+  </body>
+</html>

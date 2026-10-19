@@ -1,0 +1,396 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Inter";
+          font-weight: 500;
+          font-style: normal;
+          src: url("assets/fonts/Inter_500Medium.ttf") format("truetype");
+          font-display: block;
+        }
+        @font-face {
+          font-family: "Inter";
+          font-weight: 700;
+          font-style: normal;
+          src: url("assets/fonts/Inter_700Bold.ttf") format("truetype");
+          font-display: block;
+        }
+        @font-face {
+          font-family: "Inter";
+          font-weight: 900;
+          font-style: normal;
+          src: url("assets/fonts/Inter_900Black.ttf") format("truetype");
+          font-display: block;
+        }
+
+        #root {
+          width: 1080px;
+          height: 1920px;
+          position: relative;
+          overflow: hidden;
+          container-type: size;
+          font-family: "Inter", system-ui, sans-serif;
+        }
+
+        .f02-bg {
+          position: absolute;
+          inset: 0;
+          background: #05070a;
+        }
+        .f02-stage {
+          position: absolute;
+          inset: 0;
+        }
+
+        .f02-chrome {
+          position: absolute;
+          top: 4.2cqh;
+          left: 5.5cqw;
+          right: 5.5cqw;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+        .f02-kicker-block .f02-rule {
+          width: 3.3cqw;
+          height: 2px;
+          background: #10b981;
+          margin-bottom: 1.1cqw;
+        }
+        .f02-kicker {
+          font-family: "Inter", monospace;
+          font-weight: 500;
+          font-size: 1.6cqw;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #10b981;
+        }
+        .f02-num {
+          font-family: "Inter", monospace;
+          font-weight: 500;
+          font-size: 1.6cqw;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #717f94;
+        }
+
+        .f02-device {
+          position: absolute;
+          top: 16.5cqh;
+          left: 50%;
+          margin-left: -27.5cqw;
+          width: 55cqw;
+          height: 60cqh;
+          background: #05070a;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 4.8cqw;
+          padding: 1.1cqw;
+        }
+        .f02-screen {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          background: #0f1419;
+          border-radius: 3.9cqw;
+          overflow: hidden;
+        }
+        .f02-notch {
+          position: absolute;
+          top: 1.2cqw;
+          left: 50%;
+          margin-left: -5.5cqw;
+          width: 11cqw;
+          height: 2.4cqw;
+          background: #05070a;
+          border-radius: 1.2cqw;
+          z-index: 6;
+        }
+        .f02-screen-stack {
+          position: absolute;
+          inset: 0;
+          padding: 6cqw 4cqw 3.6cqw 4cqw;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .f02-app-header {
+          display: flex;
+          align-items: baseline;
+          gap: 1.2cqw;
+          padding-bottom: 2.2cqw;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          opacity: 0;
+        }
+        .f02-app-title {
+          font-weight: 700;
+          font-size: 3.2cqw;
+          color: #ffffff;
+        }
+        .f02-app-loc {
+          font-weight: 500;
+          font-size: 2.4cqw;
+          color: #94a3b8;
+        }
+        .f02-app-label {
+          margin-left: auto;
+          font-family: "Inter", monospace;
+          font-weight: 500;
+          font-size: 1.4cqw;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #10b981;
+        }
+
+        .f02-viewfinder {
+          position: relative;
+          flex: 1;
+          margin-top: 3.2cqw;
+          border-radius: 2.2cqw;
+          background: #0b1116;
+          overflow: hidden;
+        }
+
+        .f02-leaf-wrap {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 30cqw;
+          height: 39cqw;
+          margin-left: -15cqw;
+          margin-top: -20.5cqw;
+          opacity: 0;
+        }
+        .f02-leaf-svg {
+          width: 100%;
+          height: 100%;
+          overflow: visible;
+        }
+        .f02-leaf-fill {
+          fill: rgba(16, 185, 129, 0.16);
+          stroke: none;
+        }
+        .f02-leaf-outline {
+          fill: none;
+          stroke: #10b981;
+          stroke-width: 3.5;
+          stroke-linejoin: round;
+        }
+        .f02-leaf-vein {
+          fill: none;
+          stroke: #10b981;
+          stroke-width: 2.4;
+          stroke-linecap: round;
+          opacity: 0.65;
+        }
+
+        .f02-scanline {
+          position: absolute;
+          left: 4%;
+          right: 4%;
+          top: 0;
+          height: 3px;
+          background: linear-gradient(90deg, rgba(16, 185, 129, 0) 0%, #10b981 50%, rgba(16, 185, 129, 0) 100%);
+          box-shadow: 0 0 22px 3px rgba(16, 185, 129, 0.55);
+          opacity: 0;
+        }
+
+        .f02-status-block {
+          margin-top: 2.6cqw;
+        }
+        .f02-status-row {
+          display: flex;
+          align-items: center;
+          gap: 0.8cqw;
+        }
+        .f02-status-text {
+          font-weight: 700;
+          font-size: 2.6cqw;
+          color: #ffffff;
+        }
+        .f02-dot {
+          font-weight: 900;
+          font-size: 2.6cqw;
+          color: #10b981;
+          opacity: 0.25;
+        }
+
+        .f02-spinner {
+          margin-left: auto;
+          width: 3.4cqw;
+          height: 3.4cqw;
+          border-radius: 50%;
+          border: 2.5px solid rgba(255, 255, 255, 0.14);
+          border-top-color: #10b981;
+        }
+
+        .f02-progress-track {
+          margin-top: 1.8cqw;
+          width: 100%;
+          height: 1.6cqw;
+          border-radius: 0.8cqw;
+          background: rgba(255, 255, 255, 0.08);
+          overflow: hidden;
+        }
+        .f02-progress-fill {
+          width: 0%;
+          height: 100%;
+          border-radius: 0.8cqw;
+          background: #10b981;
+        }
+        .f02-progress-pct {
+          margin-top: 1.2cqw;
+          text-align: right;
+          font-family: "Inter", monospace;
+          font-weight: 500;
+          font-size: 1.5cqw;
+          letter-spacing: 0.08em;
+          color: #94a3b8;
+          font-variant-numeric: tabular-nums;
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="02-analisando"
+        data-duration="5.0"
+        data-width="1080"
+        data-height="1920"
+      >
+        <div class="clip f02-bg" data-start="0" data-duration="5.0" data-track-index="0"></div>
+
+        <div class="clip f02-stage" data-start="0" data-duration="5.0" data-track-index="1">
+          <div class="f02-chrome" id="f02-chrome">
+            <div class="f02-kicker-block">
+              <div class="f02-rule"></div>
+              <div class="f02-kicker">/ Análise por IA</div>
+            </div>
+            <div class="f02-num">Nº 02</div>
+          </div>
+
+          <div class="f02-device" id="f02-device">
+            <div class="f02-screen">
+              <div class="f02-notch"></div>
+              <div class="f02-screen-stack">
+                <div class="f02-app-header" id="f02-header">
+                  <span class="f02-app-title">Diagnóstico</span>
+                  <span class="f02-app-loc">· foto capturada</span>
+                  <span class="f02-app-label">IA</span>
+                </div>
+
+                <div class="f02-viewfinder" id="f02-viewfinder">
+                  <div class="f02-leaf-wrap" id="f02-leaf-wrap">
+                    <svg class="f02-leaf-svg" viewBox="0 0 200 260" aria-hidden="true">
+                      <path
+                        class="f02-leaf-fill"
+                        d="M100 8 C145 34 178 92 168 152 C160 205 128 244 100 252 C72 244 40 205 32 152 C22 92 55 34 100 8 Z"
+                      ></path>
+                      <path
+                        class="f02-leaf-outline"
+                        d="M100 8 C145 34 178 92 168 152 C160 205 128 244 100 252 C72 244 40 205 32 152 C22 92 55 34 100 8 Z"
+                      ></path>
+                      <path class="f02-leaf-vein" d="M100 34 L100 234"></path>
+                      <path class="f02-leaf-vein" d="M100 76 L58 106"></path>
+                      <path class="f02-leaf-vein" d="M100 76 L142 106"></path>
+                      <path class="f02-leaf-vein" d="M100 118 L54 152"></path>
+                      <path class="f02-leaf-vein" d="M100 118 L146 152"></path>
+                      <path class="f02-leaf-vein" d="M100 160 L60 192"></path>
+                      <path class="f02-leaf-vein" d="M100 160 L140 192"></path>
+                      <path class="f02-leaf-vein" d="M100 200 L76 222"></path>
+                      <path class="f02-leaf-vein" d="M100 200 L124 222"></path>
+                    </svg>
+                  </div>
+                  <div class="f02-scanline" id="f02-scanline"></div>
+                </div>
+
+                <div class="f02-status-block" id="f02-status-block">
+                  <div class="f02-status-row">
+                    <span class="f02-status-text">Analisando foto</span>
+                    <span class="f02-dot" id="f02-dot-1">.</span>
+                    <span class="f02-dot" id="f02-dot-2">.</span>
+                    <span class="f02-dot" id="f02-dot-3">.</span>
+                    <div class="f02-spinner" id="f02-spinner"></div>
+                  </div>
+                  <div class="f02-progress-track">
+                    <div class="f02-progress-fill" id="f02-progress-fill"></div>
+                  </div>
+                  <div class="f02-progress-pct" id="f02-progress-pct">0%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="assets/vendor/gsap.min.js"></script>
+      <script>
+        (function () {
+          window.__timelines = window.__timelines || {};
+          var tl = gsap.timeline({ paused: true });
+          window.__timelines["02-analisando"] = tl;
+
+          /* pre-measure once at setup (never at tween time) so the scan
+             sweep can animate a transform instead of `top` — `top` snaps to
+             integer device pixels under the seek-by-frame capture engine
+             and stutters on a slow ease-out tail. */
+          var viewfinderH = document.getElementById("f02-viewfinder").getBoundingClientRect().height;
+
+          /* ---------- captured photo settles into the analyzer ---------- */
+          tl.fromTo("#f02-header", { y: -12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" }, 0.05);
+          tl.fromTo("#f02-leaf-wrap", { opacity: 0, scale: 1.04 }, { opacity: 1, scale: 1, duration: 0.4, ease: "power2.out" }, 0.15);
+
+          /* ---------- scan-line sweeps: 3 finite passes, synced to the typing SFX ---------- */
+          tl.fromTo("#f02-scanline", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out" }, 0.25);
+          var sweeps = [0.3, 1.7, 3.1];
+          sweeps.forEach(function (start) {
+            tl.fromTo(
+              "#f02-scanline",
+              { y: -0.02 * viewfinderH },
+              { y: viewfinderH, duration: 1.3, ease: "none" },
+              start
+            );
+          });
+          tl.to("#f02-scanline", { opacity: 0, duration: 0.3, ease: "power2.out" }, 4.6);
+
+          /* ---------- "Analisando foto..." dots — finite pulses, no repeat:-1 ---------- */
+          ["#f02-dot-1", "#f02-dot-2", "#f02-dot-3"].forEach(function (sel, i) {
+            tl.fromTo(
+              sel,
+              { opacity: 0.25 },
+              { opacity: 1, duration: 0.4, ease: "sine.inOut", yoyo: true, repeat: 9 },
+              0.3 + i * 0.15
+            );
+          });
+
+          /* ---------- spinner — finite rotations, deterministic ---------- */
+          tl.fromTo("#f02-spinner", { rotation: 0 }, { rotation: 360 * 4, duration: 4.4, ease: "none" }, 0.3);
+
+          /* ---------- progress bar + tabular percentage count-up ---------- */
+          tl.fromTo("#f02-status-block", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 0.2);
+          var pctEl = null;
+          var pctState = { value: 0 };
+          tl.to(
+            pctState,
+            {
+              value: 96,
+              duration: 4.4,
+              ease: "power1.inOut",
+              onUpdate: function () {
+                if (!pctEl) pctEl = document.getElementById("f02-progress-pct");
+                pctEl.textContent = Math.round(pctState.value) + "%";
+              },
+            },
+            0.3
+          );
+          tl.fromTo("#f02-progress-fill", { width: "0%" }, { width: "96%", duration: 4.4, ease: "power1.inOut" }, 0.3);
+
+          // hold the near-complete analysis read until the cut at 5.0s
+        })();
+      </script>
+    </template>
+  </body>
+</html>

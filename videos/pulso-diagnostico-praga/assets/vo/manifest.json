@@ -1,0 +1,25 @@
+[
+  {
+    "provider": "heygen-starfish"
+  },
+  {
+    "file": "assets/vo/vo-01.mp3",
+    "text": "Tira uma foto da folha.",
+    "duration_s": 1.593469
+  },
+  {
+    "file": "assets/vo/vo-02.mp3",
+    "text": "A IA analisa na hora.",
+    "duration_s": 3.213061
+  },
+  {
+    "file": "assets/vo/vo-03.mp3",
+    "text": "Resposta com fonte — não achismo. Confirme com seu agrônomo.",
+    "duration_s": 4.623673
+  },
+  {
+    "file": "assets/vo/vo-04.mp3",
+    "text": "Pulso do Campo. Baixe na App Store.",
+    "duration_s": 3.056327
+  }
+]

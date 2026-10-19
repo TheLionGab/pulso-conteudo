@@ -1,0 +1,59 @@
+{
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "restT": 2600,
+  "files": [
+    {
+      "file": "story-1.png",
+      "bytes": 1558025,
+      "sha256": "504ee007b7aa5a5a"
+    },
+    {
+      "file": "story-1-guia.jpg",
+      "bytes": 223101,
+      "sha256": "25b5bd57c0a92c55"
+    },
+    {
+      "file": "story-2.png",
+      "bytes": 1552344,
+      "sha256": "89fe41e70633a7a7"
+    },
+    {
+      "file": "story-2-guia.jpg",
+      "bytes": 222576,
+      "sha256": "3fce2dad23f86861"
+    },
+    {
+      "file": "story-3.png",
+      "bytes": 1551682,
+      "sha256": "f617fbb54db5fd7f"
+    },
+    {
+      "file": "story-3-guia.jpg",
+      "bytes": 216976,
+      "sha256": "0d9cbc5b98e83ffd"
+    },
+    {
+      "file": "story-1.mp4",
+      "bytes": 773051,
+      "sha256": "22fc2bb26a8dc976",
+      "stream": "h264 (High) (avc1 / 0x31637661), yuv420p, 1080x1920 [SAR 1:1 DAR 9:16], 1026 kb/s, 30 fps, 30 tbr, 15360 tbn, 60 tbc (default)",
+      "frames": 180
+    },
+    {
+      "file": "story-2.mp4",
+      "bytes": 765217,
+      "sha256": "690415b6c20a1292",
+      "stream": "h264 (High) (avc1 / 0x31637661), yuv420p, 1080x1920 [SAR 1:1 DAR 9:16], 1016 kb/s, 30 fps, 30 tbr, 15360 tbn, 60 tbc (default)",
+      "frames": 180
+    },
+    {
+      "file": "story-3.mp4",
+      "bytes": 757475,
+      "sha256": "f25dcdf08cb7d6c3",
+      "stream": "h264 (High) (avc1 / 0x31637661), yuv420p, 1080x1920 [SAR 1:1 DAR 9:16], 1006 kb/s, 30 fps, 30 tbr, 15360 tbn, 60 tbc (default)",
+      "frames": 180
+    }
+  ]
+}

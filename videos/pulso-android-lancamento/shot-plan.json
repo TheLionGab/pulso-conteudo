@@ -1,0 +1,36 @@
+{
+  "envelope": {
+    "duration_s": 12,
+    "fps": 30,
+    "canvas": { "width": 1080, "height": 1920 },
+    "style": "dark-tech-agro, same identity as pulso-cotacoes-brasil and pulso-engenharia-preco",
+    "palette": ["#05070a", "#10b981", "#16A34A", "#ffffff", "#94a3b8"],
+    "font": "Inter",
+    "export": "mp4"
+  },
+  "category": "logo-reveal",
+  "asset_needs": [
+    { "role": "app-store-mark", "kind": "logo", "source": ".media/images/logo_003.svg" },
+    { "role": "google-play-mark", "kind": "logo", "source": ".media/images/logo_002.svg" }
+  ],
+  "shot_brief": "O nome 'Pulso do Campo' assenta no centro, um kicker sobe dizendo 'Já disponível em', e os dois selos (App Store à esquerda, Google Play à direita) entram em sequência com um hit de escala + glow verde, ficam lado a lado, e o quadro fecha em hold. Sem narração; SFX pontual nos dois hits e um whoosh na entrada do nome.",
+  "beats": [
+    { "t": 0.0, "event": "app icon + nome 'Pulso do Campo' entram, escala + fade" },
+    { "t": 1.0, "event": "kicker 'Já disponível em' sobe" },
+    { "t": 1.6, "event": "selo App Store entra pela esquerda, hit de escala" },
+    { "t": 2.1, "event": "selo Google Play entra pela direita, hit de escala" },
+    { "t": 2.8, "event": "glow verde único atrás dos dois selos" },
+    { "t": 3.4, "event": "hold final até 12s" }
+  ],
+  "content": {
+    "block": "logo-outro (customizado para 2 marcas lado a lado)",
+    "customize": {
+      "headline": "Pulso do Campo",
+      "kicker": "Já disponível em",
+      "marks": [
+        { "asset": ".media/images/logo_003.svg", "label": "App Store", "side": "left" },
+        { "asset": ".media/images/logo_002.svg", "label": "Google Play", "side": "right" }
+      ]
+    }
+  }
+}

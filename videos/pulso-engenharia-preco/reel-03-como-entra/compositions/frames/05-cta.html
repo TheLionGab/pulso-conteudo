@@ -1,0 +1,128 @@
+<template>
+  <div id="root" data-composition-id="05-cta" data-duration="4.2" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; font-style: normal; font-display: block; }
+
+      #root {
+        position: absolute; inset: 0;
+        width: 1080px; height: 1920px;
+        overflow: hidden; container-type: size;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      .k-bg { position: absolute; inset: 0; background: #05070a; }
+
+      .k-line {
+        position: absolute; left: 59px; right: 59px; top: 640px;
+        text-align: center;
+        font-weight: 900; font-size: 60px; line-height: 1.16;
+        letter-spacing: -0.028em; color: #ffffff;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .k-line em { font-style: normal; color: #10b981; }
+
+      .k-lockup {
+        position: absolute; left: 0; right: 0; top: 940px;
+        display: flex; justify-content: center; align-items: center;
+        gap: 26px;
+        will-change: transform, opacity;
+      }
+      .k-mark {
+        width: 96px; height: 96px; overflow: visible;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .k-mark .pdc-p {
+        fill: none;
+        stroke: url(#pdcg-k3);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .k-word {
+        font-weight: 900; font-size: 82px; line-height: 1;
+        letter-spacing: -0.03em; color: #ffffff;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+
+      .k-sub {
+        position: absolute; left: 59px; right: 59px; top: 1090px;
+        text-align: center;
+        font-weight: 400; font-size: 40px; line-height: 1.34;
+        color: #94a3b8;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+
+      .k-chip {
+        position: absolute; left: 50%; top: 1240px;
+        transform: translateX(-50%);
+        padding: 20px 40px;
+        border: 1px solid rgba(16,185,129,0.42);
+        background: rgba(16,185,129,0.08);
+        font-weight: 500; font-size: 28px;
+        letter-spacing: 0.1em; text-transform: uppercase;
+        color: #10b981;
+        opacity: 0;
+        white-space: nowrap;
+        will-change: transform, opacity;
+      }
+    </style>
+
+    <div class="clip k-bg" data-start="0" data-duration="4.2" data-track-index="0"></div>
+
+    <div class="clip k-line" id="k-line" data-start="0" data-duration="4.2" data-track-index="1">
+      Dado sem procedência<br />é <em>chute com fonte</em>.
+    </div>
+
+    <div class="clip k-lockup" id="k-lockup" data-start="0" data-duration="4.2" data-track-index="2">
+      <svg class="k-mark" id="k-mark" viewBox="0 0 1024 1024" aria-hidden="true">
+        <defs>
+          <linearGradient id="pdcg-k3" x1="220" y1="310" x2="804" y2="830" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#6EE7B7"></stop>
+            <stop offset="0.48" stop-color="#10B981"></stop>
+            <stop offset="1" stop-color="#047857"></stop>
+          </linearGradient>
+        </defs>
+        <path class="pdc-p" d="M220 462H350L405 405L467 536L548 310L618 462H804" stroke-width="58" stroke-dasharray="1000" stroke-dashoffset="1000"></path>
+        <path class="pdc-p" d="M512 584V832" stroke-width="58" stroke-dasharray="300" stroke-dashoffset="300"></path>
+        <path class="pdc-p" d="M452 584C438 680 406 760 360 830" stroke-width="48" opacity="0.88" stroke-dasharray="300" stroke-dashoffset="300"></path>
+        <path class="pdc-p" d="M572 584C586 680 618 760 664 830" stroke-width="48" opacity="0.88" stroke-dasharray="300" stroke-dashoffset="300"></path>
+        <path class="pdc-p" d="M398 594C352 678 306 754 246 814" stroke-width="38" opacity="0.48" stroke-dasharray="300" stroke-dashoffset="300"></path>
+        <path class="pdc-p" d="M626 594C672 678 718 754 778 814" stroke-width="38" opacity="0.48" stroke-dasharray="300" stroke-dashoffset="300"></path>
+      </svg>
+      <span class="k-word" id="k-word">Pulso do Campo</span>
+    </div>
+
+    <div class="clip k-sub" id="k-sub" data-start="0" data-duration="4.2" data-track-index="3">
+      Dado real. Praça real.
+    </div>
+
+    <div class="clip k-chip" id="k-chip" data-start="0" data-duration="4.2" data-track-index="4">
+      Já disponível no app
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      tl.fromTo("#k-line", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.46, ease: "power3.out" }, 0.1);
+      tl.to("#k-line", { opacity: 0.24, duration: 0.4, ease: "power2.inOut" }, 1.24);
+
+      tl.to("#k-mark", { opacity: 1, duration: 0.2, ease: "power2.out" }, 1.3);
+      tl.to("#k-mark .pdc-p", { attr: { "stroke-dashoffset": 0 }, duration: 0.5, ease: "power2.out", stagger: 0.05 }, 1.34);
+      tl.fromTo("#k-word", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 1.62);
+
+      tl.fromTo("#k-sub", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.38, ease: "power3.out" }, 2.12);
+      tl.fromTo("#k-chip", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.36, ease: "power3.out" }, 2.52);
+
+      window.__timelines["05-cta"] = tl;
+    })();
+  </script>
+</template>

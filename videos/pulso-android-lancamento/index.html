@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Pulso do Campo — já no Google Play</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      #stage {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #05070a;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="stage"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="12"
+      data-fps="30"
+      data-width="1080"
+      data-height="1920"
+    >
+      <!--
+        Peça única: os dois selos (App Store à esquerda, Google Play à
+        direita) lado a lado, com o lockup "Pulso do Campo". Todo o roteiro
+        de 12s vive no bloco de catálogo logo-outro (customizado para duas
+        marcas), reaproveitado via data-composition-src em vez de reescrito
+        aqui. Ver shot-plan.json.
+      -->
+      <div
+        id="el-logo-outro"
+        data-composition-id="logo-outro"
+        data-composition-src="compositions/logo-outro.html"
+        data-start="0"
+        data-duration="12"
+        data-track-index="0"
+        data-width="1080"
+        data-height="1920"
+      ></div>
+
+      <audio id="el-sfx-whoosh" src="assets/sfx/whoosh-short.mp3" data-start="0" data-duration="0.57" data-track-index="1" data-volume="0.4"></audio>
+      <audio id="el-sfx-hit1" src="assets/sfx/pop.mp3" data-start="1.6" data-duration="0.72" data-track-index="2" data-volume="0.45"></audio>
+      <audio id="el-sfx-hit2" src="assets/sfx/pop.mp3" data-start="2.1" data-duration="0.72" data-track-index="3" data-volume="0.45"></audio>
+      <audio id="el-sfx-click" src="assets/sfx/click-soft.mp3" data-start="2.8" data-duration="0.37" data-track-index="4" data-volume="0.4"></audio>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

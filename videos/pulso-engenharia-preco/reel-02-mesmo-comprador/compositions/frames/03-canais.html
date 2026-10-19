@@ -1,0 +1,170 @@
+<template>
+  <div id="root" data-composition-id="03-canais" data-duration="4.8" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; font-style: normal; font-display: block; }
+
+      #root {
+        position: absolute; inset: 0;
+        width: 1080px; height: 1920px;
+        overflow: hidden; container-type: size;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      .c-bg { position: absolute; inset: 0; background: #05070a; }
+
+      .c-chrome {
+        position: absolute; left: 59px; right: 59px; top: 96px;
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-weight: 500; font-size: 24px;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+      .c-chrome-label { color: #94a3b8; }
+
+      .c-head {
+        position: absolute; left: 59px; right: 59px; top: 206px;
+        font-weight: 900; font-size: 70px; line-height: 1.06;
+        letter-spacing: -0.03em; color: #ffffff;
+        will-change: transform, opacity;
+      }
+      .c-sub {
+        position: absolute; left: 59px; right: 59px; top: 366px;
+        font-weight: 400; font-size: 32px; line-height: 1.4;
+        color: #94a3b8;
+        will-change: transform, opacity;
+      }
+
+      .c-row {
+        position: absolute; left: 59px; right: 59px;
+        display: flex; align-items: center; gap: 26px;
+        padding: 26px 32px;
+        background: #0f1419;
+        border: 1px solid rgba(255,255,255,0.07);
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .c-r1 { top: 496px; }
+      .c-r2 { top: 620px; }
+      .c-r3 { top: 744px; }
+      .c-r4 { top: 868px; }
+
+      .c-dot {
+        width: 16px; height: 16px; flex: 0 0 16px;
+        background: #10b981;
+      }
+      .c-r2 .c-dot { background: #3B82F6; }
+      .c-r3 .c-dot { background: #f59e0b; }
+      .c-r4 .c-dot { background: #a78bfa; }
+
+      .c-name {
+        font-weight: 700; font-size: 31px;
+        letter-spacing: 0.04em; color: #ffffff;
+        flex: 1;
+      }
+      .c-ex {
+        font-weight: 400; font-size: 26px;
+        color: #717f94; text-align: right;
+      }
+
+      .c-note {
+        position: absolute; left: 59px; right: 59px; top: 1046px;
+        font-weight: 700; font-size: 48px; line-height: 1.24;
+        letter-spacing: -0.022em; color: #ffffff;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .c-note em { font-style: normal; color: #10b981; }
+
+      .c-body {
+        position: absolute; left: 59px; right: 59px; top: 1226px;
+        font-weight: 400; font-size: 33px; line-height: 1.42;
+        color: #94a3b8;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+
+      .c-src {
+        position: absolute; left: 59px; right: 59px; top: 1450px;
+        font-weight: 400; font-size: 23px; line-height: 1.5;
+        color: #5b6577;
+        opacity: 0;
+        will-change: opacity;
+      }
+    </style>
+
+    <div class="clip c-bg" data-start="0" data-duration="4.8" data-track-index="0"></div>
+
+    <div class="clip c-chrome" id="c-chrome" data-start="0" data-duration="4.8" data-track-index="1">
+      <span class="c-chrome-label">Quatro canais</span>
+      <span>03</span>
+    </div>
+
+    <div class="clip c-head" id="c-head" data-start="0" data-duration="4.8" data-track-index="2">
+      Não existe "o preço<br />da soja hoje".
+    </div>
+
+    <div class="clip c-sub" id="c-sub" data-start="0" data-duration="4.8" data-track-index="3">
+      Existe o preço de cada canal de compra. São quatro.
+    </div>
+
+    <div class="clip c-row c-r1" id="c-r1" data-start="0" data-duration="4.8" data-track-index="4">
+      <span class="c-dot"></span>
+      <span class="c-name">COOPERATIVA_BALCAO</span>
+      <span class="c-ex">Moega, D+1</span>
+    </div>
+    <div class="clip c-row c-r2" id="c-r2" data-start="0" data-duration="4.8" data-track-index="5">
+      <span class="c-dot"></span>
+      <span class="c-name">INDUSTRIA_ESMAGAMENTO</span>
+      <span class="c-ex">Esmagamento</span>
+    </div>
+    <div class="clip c-row c-r3" id="c-r3" data-start="0" data-duration="4.8" data-track-index="6">
+      <span class="c-dot"></span>
+      <span class="c-name">TRADING_EXPORTACAO</span>
+      <span class="c-ex">Spot, FOB</span>
+    </div>
+    <div class="clip c-row c-r4" id="c-r4" data-start="0" data-duration="4.8" data-track-index="7">
+      <span class="c-dot"></span>
+      <span class="c-name">BIORREFINARIA_ETANOL</span>
+      <span class="c-ex">Etanol de milho</span>
+    </div>
+
+    <div class="clip c-note" id="c-note" data-start="0" data-duration="4.8" data-track-index="8">
+      O motor guarda o canal <em>junto</em> com o preço.
+    </div>
+
+    <div class="clip c-body" id="c-body" data-start="0" data-duration="4.8" data-track-index="9">
+      Sem isso, comparar dois números do mesmo dia não significa nada — e foi
+      exatamente assim que os R$ 118,00 viraram um preço que ninguém pega.
+    </div>
+
+    <div class="clip c-src" id="c-src" data-start="0" data-duration="4.8" data-track-index="10">
+      anchors.py, linha 4 — os quatro valores de buyer_channel.
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      tl.fromTo("#c-chrome", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.32, ease: "power2.out" }, 0.04);
+      tl.fromTo("#c-head", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.44, ease: "power3.out" }, 0.14);
+      tl.fromTo("#c-sub", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.34, ease: "power3.out" }, 0.5);
+
+      /* four channels tick in — one beat each, no overlap */
+      tl.fromTo(["#c-r1", "#c-r2", "#c-r3", "#c-r4"], { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.28, ease: "power3.out", stagger: 0.19 }, 0.84);
+
+      tl.fromTo("#c-note", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.42, ease: "power3.out" }, 2.06);
+      tl.fromTo("#c-body", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 2.66);
+      tl.fromTo("#c-src", { opacity: 0 }, { opacity: 1, duration: 0.34, ease: "power2.out" }, 3.44);
+
+      window.__timelines["03-canais"] = tl;
+    })();
+  </script>
+</template>

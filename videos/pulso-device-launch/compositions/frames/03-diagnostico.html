@@ -1,0 +1,31 @@
+<template>
+  <div id="root" data-composition-id="03-device" data-duration="5.0" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; }
+      #root { position:absolute; inset:0; width:1080px; height:1920px; overflow:hidden; font-family:"Inter",system-ui,sans-serif; background:#05070a; }
+      .kicker { position:absolute; left:59px; top:120px; font-weight:700; font-size:26px; letter-spacing:.14em; text-transform:uppercase; color:#f59e0b; opacity:0; }
+      .headline { position:absolute; left:59px; right:59px; top:170px; font-weight:900; font-size:72px; line-height:1.05; letter-spacing:-.03em; color:#fff; opacity:0; }
+      .phone-wrap { position:absolute; left:50%; top:420px; width:520px; height:1120px; margin-left:-260px; opacity:0; }
+      .phone { position:absolute; inset:0; border-radius:56px; border:3px solid rgba(255,255,255,.12); background:#0a0e12; box-shadow:0 40px 120px rgba(0,0,0,.65),0 0 60px rgba(245,158,11,.1); overflow:hidden; }
+      .phone-notch { position:absolute; left:50%; top:14px; width:180px; height:34px; margin-left:-90px; background:#05070a; border-radius:20px; z-index:3; }
+      .shot { position:absolute; left:0; top:0; width:100%; height:100%; object-fit:cover; object-position:top center; transform-origin:center top; }
+      .caption { position:absolute; left:59px; right:59px; bottom:180px; text-align:center; font-weight:700; font-size:34px; color:#94a3b8; opacity:0; }
+    </style>
+    <div class="clip kicker" id="k" data-start="0" data-duration="5" data-track-index="0">Diagnóstico</div>
+    <div class="clip headline" id="h" data-start="0" data-duration="5" data-track-index="1">Foto. Plano.<br/>Com fonte.</div>
+    <div class="clip phone-wrap" id="pw" data-start="0" data-duration="5" data-track-index="2">
+      <div class="phone"><div class="phone-notch"></div><img class="shot" id="shot" src="assets/device/diagnostico.png" alt="" /></div>
+    </div>
+    <div class="clip caption" id="cap" data-start="0" data-duration="5" data-track-index="3">AgroIA · praga e doença · captura real iPhone 13</div>
+    <script>
+      (function(){var tl=gsap.timeline({paused:true});
+        tl.fromTo("#k",{opacity:0,x:-24},{opacity:1,x:0,duration:.4,ease:"power3.out"},.08);
+        tl.fromTo("#h",{opacity:0,x:-32},{opacity:1,x:0,duration:.55,ease:"power4.out"},.22);
+        tl.fromTo("#pw",{opacity:0,x:60,scale:.94},{opacity:1,x:0,scale:1,duration:.65,ease:"power3.out"},.4);
+        tl.fromTo("#shot",{scale:1.05},{scale:1.12,duration:4.2,ease:"none"},.75);
+        tl.fromTo("#cap",{opacity:0,y:14},{opacity:1,y:0,duration:.4,ease:"power3.out"},.95);
+        window.__timelines=window.__timelines||{};window.__timelines["03-device"]=tl;})();
+    </script>
+  </div>
+</template>

@@ -1,0 +1,21 @@
+{
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "ffmpeg": "/tmp/claude-0/-home-user/c6b0f75f-c64a-5cc2-84c6-f003a858f254/scratchpad/ff/package/ffmpeg",
+  "files": [
+    {
+      "file": "capa.png",
+      "bytes": 1488814,
+      "sha256": "3ea65ac42742c777"
+    },
+    {
+      "file": "reels-vento.mp4",
+      "bytes": 1333450,
+      "sha256": "efe8205e3245ebfd",
+      "stream": "h264 (High) (avc1 / 0x31637661), yuv420p, 1080x1920 [SAR 1:1 DAR 9:16], 582 kb/s, 30 fps, 30 tbr, 15360 tbn, 60 tbc (default)",
+      "frames": 546,
+      "durationSeconds": 18.2
+    }
+  ]
+}

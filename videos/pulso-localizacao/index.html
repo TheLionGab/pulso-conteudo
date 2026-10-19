@@ -1,0 +1,381 @@
+<!doctype html>
+<html
+  lang="pt-BR"
+  data-composition-variables='[
+    {"id":"name","type":"string","label":"Nome da linha (batch)","default":"default"},
+    {"id":"cidade","type":"string","label":"Cidade","default":"Sorriso"},
+    {"id":"estado","type":"string","label":"Estado (UF)","default":"MT"},
+    {"id":"preco","type":"number","label":"Preço (R$/sc)","default":129.5,"min":80,"max":300,"step":0.1}
+  ]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      @font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_400Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: block; }
+      @font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_500Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: block; }
+      @font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_700Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: block; }
+      @font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_900Black.ttf') format('truetype'); font-weight: 900; font-style: normal; font-display: block; }
+      
+      html, body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #05070a;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+      .scene {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* ---------- Scene A: icon tap → price reveal ---------- */
+      .a-icon {
+        position: absolute;
+        left: 50%;
+        top: 320px;
+        margin-left: -66px;
+        width: 132px;
+        height: 132px;
+        border-radius: 29px;
+        background: #0f1419;
+        border: 1px solid rgba(255,255,255,0.08);
+      }
+      .a-icon-glow {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 88px;
+        height: 88px;
+        margin: -44px 0 0 -44px;
+        border-radius: 50%;
+        background: #10b981;
+        filter: blur(16px);
+        opacity: 0;
+      }
+      .a-icon-dot {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 56px;
+        height: 56px;
+        margin: -28px 0 0 -28px;
+        border-radius: 50%;
+        background: #10b981;
+      }
+      .a-ripple {
+        position: absolute;
+        left: 50%;
+        top: 320px;
+        margin-left: -66px;
+        margin-top: -66px;
+        width: 132px;
+        height: 132px;
+        border-radius: 50%;
+        border: 2px solid #10b981;
+        opacity: 0;
+      }
+      .a-wipe {
+        position: absolute;
+        inset: 0;
+        background: #0f1419;
+        clip-path: inset(100% 0% 0% 0%);
+      }
+      .a-header {
+        position: absolute;
+        top: 96px;
+        left: 59px;
+        right: 59px;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding-bottom: 18px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+      .a-header-title {
+        font-weight: 700;
+        font-size: 36px;
+        color: #ffffff;
+      }
+      .a-header-loc {
+        font-family: "Inter", monospace;
+        font-weight: 500;
+        font-size: 22px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #94a3b8;
+      }
+
+      .a-card {
+        position: absolute;
+        top: 640px;
+        left: 59px;
+        right: 59px;
+        background: #0f1419;
+        border: 1px solid rgba(255,255,255,0.08);
+        padding: 56px 52px;
+        opacity: 0;
+      }
+      .a-kicker {
+        font-family: "Inter", monospace;
+        font-weight: 500;
+        font-size: 26px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #10b981;
+      }
+      .a-title {
+        margin-top: 12px;
+        font-weight: 900;
+        font-size: 52px;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        text-transform: lowercase;
+        color: #ffffff;
+      }
+      .a-price-row {
+        margin-top: 40px;
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+      }
+      .a-price-cur {
+        font-weight: 700;
+        font-size: 48px;
+        color: #10b981;
+      }
+      .a-counter {
+        font-variant-numeric: tabular-nums;
+        font-weight: 900;
+        font-size: 148px;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        color: #10b981;
+      }
+      .a-price-suffix {
+        font-weight: 500;
+        font-size: 44px;
+        color: #94a3b8;
+      }
+      .a-meta {
+        margin-top: 36px;
+        font-family: "Inter", monospace;
+        font-weight: 500;
+        font-size: 26px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #94a3b8;
+      }
+      .a-badge {
+        margin-top: 44px;
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        background: #10b981;
+        color: #05070a;
+        padding: 18px 30px;
+        font-family: "Inter", monospace;
+        font-weight: 500;
+        font-size: 24px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        opacity: 0;
+      }
+      .a-badge svg { width: 24px; height: 24px; display: block; }
+
+      /* ---------- Scene B: CTA close ---------- */
+      .b-scene {
+        opacity: 0;
+      }
+      .b-cluster {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 760px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .b-rule {
+        width: 40px;
+        height: 3px;
+        background: #10b981;
+        margin-bottom: 40px;
+      }
+      .b-wordmark {
+        color: #ffffff;
+        font-weight: 900;
+        font-size: 128px;
+        line-height: 0.95;
+        letter-spacing: -0.04em;
+        text-transform: lowercase;
+      }
+      .b-line { display: block; white-space: nowrap; }
+      .b-dot {
+        position: relative;
+        display: inline-block;
+        width: 26px;
+        height: 26px;
+        margin-left: 18px;
+        margin-bottom: 10px;
+        border-radius: 50%;
+        background: #10b981;
+      }
+      .b-sub {
+        margin-top: 56px;
+        font-weight: 500;
+        font-size: 36px;
+        color: #94a3b8;
+      }
+      .b-chip {
+        margin-top: 52px;
+        display: inline-block;
+        padding: 20px 34px;
+        border: 1px solid #10b981;
+        color: #10b981;
+        font-family: "Inter", monospace;
+        font-weight: 500;
+        font-size: 20px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="9.0" data-width="1080" data-height="1920">
+      <div class="clip scene" id="scene-a" data-start="0" data-duration="6.1" data-track-index="0">
+        <div class="a-icon" id="a-icon">
+          <div class="a-icon-glow" id="a-icon-glow"></div>
+          <div class="a-icon-dot" id="a-icon-dot"></div>
+        </div>
+        <div class="a-ripple" id="a-ripple"></div>
+
+        <div class="a-wipe" id="a-wipe">
+          <div class="a-header">
+            <span class="a-header-title">Cotações</span>
+            <span class="a-header-loc">· <span data-var-text="cidade">Sorriso</span>, <span data-var-text="estado">MT</span></span>
+          </div>
+
+          <div class="a-card" id="a-card">
+            <div class="a-kicker">Oferta de compra</div>
+            <div class="a-title">soja</div>
+            <div class="a-price-row">
+              <span class="a-price-cur">R$</span>
+              <span class="a-counter" id="a-counter">0,00</span>
+              <span class="a-price-suffix">/sc</span>
+            </div>
+            <div class="a-meta"><span data-var-text="cidade">Sorriso</span>, <span data-var-text="estado">MT</span> · direto na fonte</div>
+            <div class="a-badge" id="a-badge">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path d="M2.5 8.5 L6.2 12.2 L13.5 4.5" stroke="#05070a" stroke-width="2.2" stroke-linecap="square" />
+              </svg>
+              <span>Comprador verificado</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="clip scene b-scene" id="scene-b" data-start="5.3" data-duration="3.7" data-track-index="1">
+        <div class="b-cluster" id="b-cluster">
+          <div class="b-rule" id="b-rule"></div>
+          <div class="b-wordmark">
+            <span class="b-line">pulso<span class="b-dot" id="b-dot"></span></span>
+            <span class="b-line">do campo</span>
+          </div>
+          <div class="b-sub" id="b-sub">O preço real do seu grão.</div>
+          <div class="b-chip" id="b-chip">Já disponível no app</div>
+        </div>
+      </div>
+
+      <audio id="bgm" src="assets/bgm/bed-confident-minimal.mp3" data-start="0" data-duration="9.0" data-track-index="19" data-volume="0.9"></audio>
+      <audio id="sfx-tap" src="assets/sfx/click-soft.mp3" data-start="0.42" data-duration="0.37" data-track-index="20" data-volume="0.4"></audio>
+      <audio id="sfx-wipe" src="assets/sfx/whoosh-short.mp3" data-start="0.55" data-duration="0.57" data-track-index="21" data-volume="0.35"></audio>
+      <audio id="sfx-badge" src="assets/sfx/pop.mp3" data-start="3.15" data-duration="0.72" data-track-index="22" data-volume="0.35"></audio>
+      <audio id="sfx-zoom" src="assets/sfx/whoosh-short.mp3" data-start="5.3" data-duration="0.57" data-track-index="23" data-volume="0.35"></audio>
+    </div>
+
+    <script>
+      (function () {
+        var vars = window.__hyperframes ? window.__hyperframes.getVariables() : { preco: 129.5 };
+        var PRECO = Number(vars.preco) || 129.5;
+
+        window.__timelines = window.__timelines || {};
+        var tl = gsap.timeline({ paused: true });
+        window.__timelines["main"] = tl;
+
+        /* ---- Scene A (0.0–6.1s) ---- */
+        tl.fromTo("#a-icon", { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "power3.out" }, 0.04);
+        tl.fromTo("#a-icon-glow", { opacity: 0, scale: 0.75 }, { opacity: 0.55, scale: 1.1, duration: 0.32, ease: "sine.out" }, 0.3);
+
+        tl.to("#a-icon", { scale: 0.86, duration: 0.08, ease: "power2.in" }, 0.42);
+        tl.to("#a-icon", { scale: 1, duration: 0.18, ease: "power2.out" }, 0.5);
+        tl.to("#a-icon-dot", { scale: 0.85, duration: 0.08, ease: "power2.in" }, 0.42);
+        tl.to("#a-icon-dot", { scale: 1, duration: 0.24, ease: "back.out(2.2)" }, 0.5);
+        tl.fromTo("#a-ripple", { scale: 0.3, opacity: 0.8 }, { scale: 1.2, opacity: 0, duration: 0.4, ease: "power2.out" }, 0.46);
+
+        var wipeState = { p: 100 };
+        var wipeEl = null;
+        tl.to(
+          wipeState,
+          {
+            p: 0,
+            duration: 0.5,
+            ease: "power3.out",
+            onUpdate: function () {
+              if (!wipeEl) wipeEl = document.getElementById("a-wipe");
+              wipeEl.style.clipPath = "inset(" + wipeState.p + "% 0% 0% 0%)";
+            },
+          },
+          0.55
+        );
+
+        tl.fromTo("#a-card", { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 1.05);
+
+        var counterState = { v: 0 };
+        var counterEl = null;
+        tl.to(
+          counterState,
+          {
+            v: PRECO,
+            duration: 1.8,
+            ease: "power2.out",
+            onUpdate: function () {
+              if (!counterEl) counterEl = document.getElementById("a-counter");
+              counterEl.textContent = counterState.v.toFixed(2).replace(".", ",");
+            },
+          },
+          1.35
+        );
+
+        tl.fromTo("#a-badge", { scale: 0.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.8)" }, 3.15);
+
+        tl.to("#scene-a", { scale: 2.4, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 5.3);
+
+        /* ---- Scene B (5.3–9.0s) ---- */
+        tl.fromTo("#scene-b", { opacity: 0 }, { opacity: 1, duration: 0.05 }, 5.3);
+        tl.fromTo("#b-cluster", { scale: 0.5, filter: "blur(8px)" }, { scale: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 5.3);
+
+        tl.fromTo("#b-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "power3.out" }, 5.4);
+        tl.fromTo(".b-line", { y: 60, opacity: 0, filter: "blur(8px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "power4.out", stagger: 0.1 }, 5.5);
+        tl.fromTo("#b-dot", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2.4)" }, 6.1);
+
+        tl.fromTo("#b-sub", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 6.5);
+        tl.fromTo("#b-chip", { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.8)" }, 6.9);
+      })();
+    </script>
+  </body>
+</html>

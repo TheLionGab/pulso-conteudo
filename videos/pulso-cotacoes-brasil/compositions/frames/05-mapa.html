@@ -1,0 +1,498 @@
+<template>
+  <div id="root" data-composition-id="05-mapa" data-duration="4.1" data-width="1080" data-height="1920">
+    <style>
+/* fontes locais (staged) */
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_400Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_500Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_700Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_900Black.ttf') format('truetype'); font-weight: 900; font-style: normal; font-display: block; }
+
+
+
+      #root {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        container-type: size;
+        font-family: "Inter", system-ui, sans-serif;
+        color: #ffffff;
+      }
+
+      /* ground + faint grid (layer 1) */
+      .f05-bg {
+        position: absolute;
+        inset: 0;
+        background-color: #05070a;
+      }
+      .f05-grid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          repeating-linear-gradient(
+            to right,
+            rgba(250, 250, 249, 0.032) 0px,
+            rgba(250, 250, 249, 0.032) 1px,
+            transparent 1px,
+            transparent 108px
+          ),
+          repeating-linear-gradient(
+            to bottom,
+            rgba(250, 250, 249, 0.032) 0px,
+            rgba(250, 250, 249, 0.032) 1px,
+            transparent 1px,
+            transparent 108px
+          );
+      }
+
+      .f05-stage {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* mono chrome */
+      .f05-mono {
+        font-family: "Inter", ui-monospace, monospace;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-size: 17px;
+        line-height: 1;
+      }
+      .f05-kicker {
+        position: absolute;
+        top: 84px;
+        left: 59px;
+        color: #10b981;
+      }
+      .f05-num {
+        position: absolute;
+        top: 84px;
+        right: 59px;
+        color: #717f94;
+      }
+      .f05-chrome-bar {
+        position: absolute;
+        top: 128px;
+        left: 59px;
+        right: 59px;
+        height: 1px;
+        background-color: rgba(255,255,255,0.08);
+      }
+
+      /* counter block — top right (counting-dynamic-scale) */
+      .f05-counter-block {
+        position: absolute;
+        top: 208px;
+        right: 59px;
+        text-align: right;
+      }
+      .f05-counter-pre {
+        color: #10b981;
+        margin-bottom: 14px;
+      }
+      .f05-counter-wrap {
+        display: flex;
+        justify-content: flex-end;
+        align-items: baseline;
+        width: 460px; /* fixed width — no layout shift as digits grow */
+      }
+      .f05-counter {
+        display: inline-block;
+        font-variant-numeric: tabular-nums;
+        font-weight: 900;
+        font-size: 118px;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        color: #10b981;
+        transform-origin: 100% 50%;
+        will-change: transform;
+      }
+      .f05-counter-label {
+        color: #94a3b8;
+        margin-top: 16px;
+      }
+
+      /* map (layer 2) */
+      .f05-map-wrap {
+        position: absolute;
+        top: 452px;
+        left: 50%;
+        margin-left: -350px;
+        width: 700px;
+        height: 700px;
+      }
+      .f05-map-svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        overflow: visible;
+      }
+      .f05-outline {
+        fill: #10b981;
+        fill-opacity: 0;
+        stroke: #ffffff;
+        stroke-width: 1.6px;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+        vector-effect: non-scaling-stroke;
+      }
+      .f05-dot {
+        fill: #10b981;
+      }
+
+      /* rótulo (layer 3) */
+      .f05-rotulo {
+        position: absolute;
+        top: 1108px;
+        left: 59px;
+      }
+      .f05-rotulo-rule {
+        width: 36px;
+        height: 2px;
+        background-color: #10b981;
+        margin-bottom: 12px;
+      }
+      .f05-rotulo-text {
+        font-size: 15px;
+        color: #717f94;
+      }
+
+      /* headline — display moment */
+      .f05-headline {
+        position: absolute;
+        top: 1218px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-weight: 900;
+        font-size: 150px;
+        line-height: 0.9;
+        letter-spacing: -0.04em;
+        text-transform: lowercase;
+        color: #10b981;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+    </style>
+
+    <div
+      class="clip f05-bg"
+      id="05-mapa-bg"
+      data-start="0"
+      data-duration="4.1"
+      data-track-index="0"
+    >
+      <div class="f05-grid"></div>
+    </div>
+
+    <div
+      class="clip f05-stage"
+      id="05-mapa-stage"
+      data-start="0"
+      data-duration="4.1"
+      data-track-index="1"
+    >
+      <div class="f05-mono f05-kicker" id="05-mapa-kicker" data-layout-allow-overlap="true">/ cobertura nacional</div>
+      <div class="f05-mono f05-num" id="05-mapa-num" data-layout-allow-overlap="true">No. 05</div>
+      <div class="f05-chrome-bar" id="05-mapa-chrome-bar"></div>
+
+      <div class="f05-counter-block" id="05-mapa-counter-block">
+        <div class="f05-mono f05-counter-pre" id="05-mapa-counter-pre">+ de</div>
+        <div class="f05-counter-wrap">
+          <span class="f05-counter" id="05-mapa-counter">0</span>
+        </div>
+        <div class="f05-mono f05-counter-label" id="05-mapa-counter-label">municípios</div>
+      </div>
+
+      <div class="f05-map-wrap">
+        <svg
+          class="f05-map-svg"
+          id="05-mapa-svg"
+          viewBox="-2 -2 106 106"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path class="f05-outline" id="05-mapa-outline" d="" />
+          <g id="05-mapa-dots"></g>
+        </svg>
+      </div>
+
+      <div class="f05-rotulo" id="05-mapa-rotulo">
+        <div class="f05-rotulo-rule"></div>
+        <div class="f05-mono f05-rotulo-text">brasil</div>
+      </div>
+
+      <div class="f05-headline" id="05-mapa-headline">todas.</div>
+    </div>
+
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script>
+      (function () {
+        /* total frame length — retimed from 3.627s (old voiceover-paced cue)
+           to 3.6s of pure sfx-beat / visual-rhythm pacing. Every start time
+           and duration below is the original value * (3.6 / 3.627), applied
+           uniformly so the whole cascade compresses ~0.7% without reshaping it. */
+        var DUR = 3.6;
+
+        /* ---- Brazil silhouette — hand-authored equirectangular projection
+           x = (lon + 74) / 39.2 * 100 · y = (5.3 - lat) / 39.1 * 100 ---- */
+        var PTS = [
+          [10.5, 24.3], // Tabatinga (W Amazonas)
+          [18.1, 10.5], // Cucuí (Colombia border)
+          [26.0, 6.8], // upper Rio Negro arc
+          [33.9, 0.3], // Monte Roraima (north tip)
+          [36.2, 9.7], // Guyana border dip
+          [44.6, 8.7], // Suriname border
+          [49.7, 7.4], // Guiana Francesa border
+          [56.6, 3.3], // Oiapoque (Amapá tip)
+          [61.2, 9.0], // Cabo Norte
+          [62.5, 14.1], // Amazon mouth
+          [66.3, 15.6], // Marajó / Pará coast
+          [75.8, 20.0], // São Luís
+          [90.6, 23.0], // Fortaleza
+          [99.0, 27.1], // Cabo de São Roque
+          [100, 32.0], // Ponta do Seixas (east tip)
+          [99.7, 34.3], // Recife
+          [95.9, 40.4], // Sergipe coast
+          [90.6, 46.8], // Salvador
+          [89.3, 58.3], // south Bahia coast
+          [86.0, 65.5], // Vitória
+          [81.6, 72.1], // Cabo Frio / Rio
+          [70.7, 74.9], // Santos
+          [65.1, 84.1], // Florianópolis
+          [55.9, 95.9], // Rio Grande
+          [52.6, 99.7], // Chuí (south tip)
+          [45.9, 92.8], // Uruguay border
+          [41.8, 90.8], // Uruguaiana
+          [48.2, 84.9], // Uruguay river north
+          [49.5, 78.8], // Foz do Iguaçu
+          [46.4, 71.1], // Ponta Porã
+          [41.1, 67.3], // Rio Paraguai
+          [41.6, 62.1], // Corumbá
+          [35.2, 52.2], // Bolivia border
+          [22.2, 41.7], // Rondônia border
+          [8.7, 41.4], // Acre south border
+          [0.5, 32.2], // Acre west tip
+          [2.8, 26.3], // Peru border
+        ];
+
+        /* ids start with a digit (frame-id prefix), so CSS selector strings are
+           invalid — always resolve elements via getElementById */
+        function el(id) {
+          return document.getElementById(id);
+        }
+
+        var d = "M " + PTS[0][0] + " " + PTS[0][1];
+        for (var i = 1; i < PTS.length; i++) d += " L " + PTS[i][0] + " " + PTS[i][1];
+        d += " Z";
+        var outline = document.getElementById("05-mapa-outline");
+        outline.setAttribute("d", d);
+
+        /* ---- deterministic seeded PRNG (no Math.random) ---- */
+        function mulberry32(a) {
+          return function () {
+            a |= 0;
+            a = (a + 0x6d2b79f5) | 0;
+            var t = Math.imul(a ^ (a >>> 15), 1 | a);
+            t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+          };
+        }
+        var rand = mulberry32(19081889);
+
+        function inside(x, y) {
+          var ok = false;
+          for (var a = 0, b = PTS.length - 1; a < PTS.length; b = a++) {
+            var xi = PTS[a][0],
+              yi = PTS[a][1],
+              xj = PTS[b][0],
+              yj = PTS[b][1];
+            if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) ok = !ok;
+          }
+          return ok;
+        }
+        function insideSafe(x, y) {
+          var m = 1.4;
+          return (
+            inside(x, y) &&
+            inside(x - m, y) &&
+            inside(x + m, y) &&
+            inside(x, y - m) &&
+            inside(x, y + m)
+          );
+        }
+
+        /* ---- city dots — cluster→outward cascade from the Center-West ---- */
+        var OX = 46,
+          OY = 54; // Centro-Oeste origin (~MT/GO)
+        var SVG_NS = "http://www.w3.org/2000/svg";
+        var dotsGroup = document.getElementById("05-mapa-dots");
+        var dots = [];
+        var tries = 0;
+        while (dots.length < 230 && tries < 6000) {
+          tries++;
+          var x = rand() * 100;
+          var y = rand() * 100;
+          if (!insideSafe(x, y)) continue;
+          var c = document.createElementNS(SVG_NS, "circle");
+          c.setAttribute("cx", x.toFixed(2));
+          c.setAttribute("cy", y.toFixed(2));
+          c.setAttribute("r", (0.55 + rand() * 0.45).toFixed(2));
+          c.setAttribute("class", "f05-dot");
+          c.setAttribute("opacity", "0");
+          dotsGroup.appendChild(c);
+          dots.push({
+            el: c,
+            dx: x - OX,
+            dy: y - OY,
+            dist: Math.sqrt((x - OX) * (x - OX) + (y - OY) * (y - OY)),
+            jit: rand(),
+            op: 0.65 + rand() * 0.35,
+          });
+        }
+        var maxDist = 0;
+        for (var k = 0; k < dots.length; k++) if (dots[k].dist > maxDist) maxDist = dots[k].dist;
+
+        /* ---- timeline ---- */
+        var tl = gsap.timeline({ paused: true });
+        window.__timelines = window.__timelines || {};
+        window.__timelines["05-mapa"] = tl;
+
+        /* Scene 1 (0–1.04s) — chrome in, silhouette self-draw (svg-path-draw) */
+        tl.fromTo(
+          [el("05-mapa-kicker"), el("05-mapa-num")],
+          { opacity: 0, y: -10 },
+          { opacity: 1, y: 0, duration: 0.397, ease: "power2.out" },
+          0.0794
+        );
+        tl.fromTo(
+          el("05-mapa-chrome-bar"),
+          { scaleX: 0, transformOrigin: "0% 50%" },
+          { scaleX: 1, duration: 0.4963, ease: "power2.out" },
+          0.0794
+        );
+
+        var pathLen = outline.getTotalLength() * 1.05;
+        outline.style.strokeDasharray = "" + pathLen;
+        outline.style.strokeDashoffset = "" + pathLen;
+        tl.to(
+          outline,
+          { strokeDashoffset: 0, duration: 0.9926, ease: "power2.out" },
+          0.0496
+        );
+        /* seat the shape with a faint fill once drawn */
+        tl.to(outline, { fillOpacity: 0.05, duration: 0.4467, ease: "power1.out" }, 1.0124);
+
+        tl.fromTo(
+          el("05-mapa-rotulo"),
+          { opacity: 0, y: 8 },
+          { opacity: 1, y: 0, duration: 0.397, ease: "power2.out" },
+          0.8437
+        );
+
+        /* Scene 2 (1.04–2.73s) — dots cascade outward from the Center-West,
+           counter counts up in chord (center-outward-expansion + counting-dynamic-scale) */
+        var CASCADE_AT = 1.0422;
+        var SPREAD = 1.5385;
+        var POP = 0.2978;
+        for (var n = 0; n < dots.length; n++) {
+          var dot = dots[n];
+          var at =
+            CASCADE_AT + Math.pow(dot.dist / maxDist, 0.9) * SPREAD + dot.jit * 0.1489;
+          if (at > 3.1266) at = 3.1266;
+          tl.fromTo(
+            dot.el,
+            {
+              opacity: 0,
+              scale: 0,
+              x: -dot.dx * 0.14,
+              y: -dot.dy * 0.14,
+              transformOrigin: "50% 50%",
+            },
+            {
+              opacity: dot.op,
+              scale: 1,
+              x: 0,
+              y: 0,
+              duration: POP,
+              ease: "power2.out",
+            },
+            at
+          );
+        }
+
+        var counterEl = document.getElementById("05-mapa-counter");
+        function fmt(v) {
+          var s = "" + Math.round(v);
+          return s.length > 3 ? s.slice(0, s.length - 3) + "." + s.slice(-3) : s;
+        }
+        var state = { value: 0 };
+        var COUNT_DUR = 1.6873;
+        tl.fromTo(
+          el("05-mapa-counter-pre"),
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.397, ease: "power2.out" },
+          CASCADE_AT
+        );
+        tl.fromTo(
+          el("05-mapa-counter-label"),
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.397, ease: "power2.out" },
+          CASCADE_AT + 0.1985
+        );
+        tl.to(
+          state,
+          {
+            value: 5000,
+            duration: COUNT_DUR,
+            ease: "power2.out",
+            onUpdate: function () {
+              counterEl.textContent = fmt(state.value);
+            },
+          },
+          CASCADE_AT
+        );
+        tl.fromTo(
+          counterEl,
+          { scale: 0.6, opacity: 0 },
+          { scale: 1, opacity: 1, duration: COUNT_DUR, ease: "power2.out" },
+          CASCADE_AT
+        );
+
+        /* Scene 3 (2.93s–end) — "todas." spring-pop + keyword glow, now paced
+           by the sfx beat instead of a spoken keyword (spring-pop-entrance,
+           smooth power3 settle; beat-synced glow envelope) */
+        var HEAD_AT = 2.928;
+        var headEl = el("05-mapa-headline");
+        tl.fromTo(
+          headEl,
+          { scale: 0, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.5459, ease: "power3.out" },
+          HEAD_AT
+        );
+        var glow = { t: 0 };
+        var GLOW_SPAN = DUR - HEAD_AT;
+        tl.to(
+          glow,
+          {
+            t: GLOW_SPAN,
+            duration: GLOW_SPAN,
+            ease: "none",
+            onUpdate: function () {
+              var env = Math.min(glow.t / 0.2481, 1);
+              var pulse = 1 + 0.12 * Math.sin(glow.t * 9);
+              headEl.style.textShadow =
+                "0 0 " +
+                (32 * env * pulse).toFixed(1) +
+                "px rgba(16,185,129," +
+                (0.55 * env).toFixed(3) +
+                ")";
+            },
+          },
+          HEAD_AT
+        );
+      })();
+    </script>
+  </div>
+</template>

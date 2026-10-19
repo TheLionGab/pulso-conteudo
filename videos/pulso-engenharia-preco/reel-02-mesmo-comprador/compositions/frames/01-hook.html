@@ -1,0 +1,155 @@
+<template>
+  <div id="root" data-composition-id="01-hook" data-duration="4.2" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; font-style: normal; font-display: block; }
+
+      #root {
+        position: absolute; inset: 0;
+        width: 1080px; height: 1920px;
+        overflow: hidden; container-type: size;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      .h-bg { position: absolute; inset: 0; background: #05070a; }
+
+      .h-chrome {
+        position: absolute; left: 59px; right: 59px; top: 96px;
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-weight: 500; font-size: 24px;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+      .h-chrome-label { color: #94a3b8; }
+
+      .h-kicker {
+        position: absolute; left: 59px; right: 59px; top: 208px;
+        font-weight: 500; font-size: 26px;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+      .h-head {
+        position: absolute; left: 59px; right: 59px; top: 266px;
+        font-weight: 900; font-size: 76px; line-height: 1.05;
+        letter-spacing: -0.03em; color: #ffffff;
+        will-change: transform, opacity;
+      }
+
+      .h-card {
+        position: absolute; left: 59px; right: 59px;
+        background: #0f1419;
+        border: 1px solid rgba(255,255,255,0.08);
+        padding: 40px 46px;
+        will-change: transform, opacity;
+      }
+      .h-card-a { top: 546px; height: 262px; }
+      .h-card-b { top: 838px; height: 262px; }
+
+      .h-card-buyer {
+        font-weight: 500; font-size: 27px;
+        letter-spacing: 0.1em; text-transform: uppercase;
+        color: #94a3b8;
+      }
+      .h-val {
+        margin-top: 24px;
+        font-weight: 900; font-size: 100px; line-height: 1;
+        letter-spacing: -0.035em; color: #ffffff;
+        font-variant-numeric: tabular-nums;
+      }
+      .h-unit {
+        margin-left: 14px;
+        font-weight: 500; font-size: 30px;
+        letter-spacing: 0.06em; color: #717f94;
+      }
+
+      .h-q {
+        position: absolute; left: 59px; right: 59px; top: 1156px;
+        font-weight: 900; font-size: 72px; line-height: 1.1;
+        letter-spacing: -0.03em; color: #10b981;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .h-body {
+        position: absolute; left: 59px; right: 59px; top: 1348px;
+        font-weight: 400; font-size: 36px; line-height: 1.4;
+        color: #94a3b8;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .h-body b { font-weight: 700; color: #ffffff; }
+
+      .h-src {
+        position: absolute; left: 59px; right: 59px; top: 1560px;
+        font-weight: 400; font-size: 23px; line-height: 1.5;
+        color: #5b6577;
+        opacity: 0;
+        will-change: opacity;
+      }
+    </style>
+
+    <div class="clip h-bg" data-start="0" data-duration="4.2" data-track-index="0"></div>
+
+    <div class="clip h-chrome" id="h-chrome" data-start="0" data-duration="4.2" data-track-index="1">
+      <span class="h-chrome-label">Um comprador, dois preços</span>
+      <span>01</span>
+    </div>
+
+    <div class="clip h-kicker" id="h-kicker" data-start="0" data-duration="4.2" data-track-index="2">
+      Mesma empresa · mesma cidade · mesma soja
+    </div>
+
+    <div class="clip h-head" id="h-head" data-start="0" data-duration="4.2" data-track-index="3">
+      C.Vale, em Porto<br />dos Gaúchos.
+    </div>
+
+    <div class="clip h-card h-card-a" id="h-card-a" data-start="0" data-duration="4.2" data-track-index="4">
+      <div class="h-card-buyer">C.Vale · Soja</div>
+      <div class="h-val">R$ 113,00<span class="h-unit">/sc</span></div>
+    </div>
+
+    <div class="clip h-card h-card-b" id="h-card-b" data-start="0" data-duration="4.2" data-track-index="5">
+      <div class="h-card-buyer">C.Vale · Soja</div>
+      <div class="h-val">R$ 118,00<span class="h-unit">/sc</span></div>
+    </div>
+
+    <div class="clip h-q" id="h-q" data-start="0" data-duration="4.2" data-track-index="6">
+      Qual dos dois é o seu?
+    </div>
+
+    <div class="clip h-body" id="h-body" data-start="0" data-duration="4.2" data-track-index="7">
+      Os dois estão no sistema. <b>Só um deles</b> você consegue de verdade.
+    </div>
+
+    <div class="clip h-src" id="h-src" data-start="0" data-duration="4.2" data-track-index="8">
+      anchors.py, linhas 80 e 81 — cotações calibradas de mesa física.
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      tl.fromTo("#h-chrome", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.32, ease: "power2.out" }, 0.04);
+      tl.fromTo("#h-kicker", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.32, ease: "power2.out" }, 0.14);
+      tl.fromTo("#h-head", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.44, ease: "power3.out" }, 0.22);
+
+      /* both cards land identical — the viewer should not yet see a
+         difference beyond the number. The catch comes in frame 02. */
+      tl.fromTo("#h-card-a", { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.72);
+      tl.fromTo("#h-card-b", { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 1.16);
+
+      tl.fromTo("#h-q", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.44, ease: "power3.out" }, 1.94);
+      tl.fromTo("#h-body", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 2.52);
+      tl.fromTo("#h-src", { opacity: 0 }, { opacity: 1, duration: 0.34, ease: "power2.out" }, 3.14);
+
+      window.__timelines["01-hook"] = tl;
+    })();
+  </script>
+</template>

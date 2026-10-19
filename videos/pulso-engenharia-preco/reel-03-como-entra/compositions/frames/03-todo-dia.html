@@ -1,0 +1,137 @@
+<template>
+  <div id="root" data-composition-id="03-todo-dia" data-duration="4.8" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; font-style: normal; font-display: block; }
+
+      #root {
+        position: absolute; inset: 0;
+        width: 1080px; height: 1920px;
+        overflow: hidden; container-type: size;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      .d-bg { position: absolute; inset: 0; background: #05070a; }
+
+      .d-chrome {
+        position: absolute; left: 59px; right: 59px; top: 96px;
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-weight: 500; font-size: 24px;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+      .d-chrome-label { color: #94a3b8; }
+
+      .d-head {
+        position: absolute; left: 59px; right: 59px; top: 206px;
+        font-weight: 900; font-size: 70px; line-height: 1.06;
+        letter-spacing: -0.03em; color: #ffffff;
+        will-change: transform, opacity;
+      }
+
+      /* two engineering guarantees, stated as steps */
+      .d-step {
+        position: absolute; left: 59px; right: 59px;
+        background: #0f1419;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-left: 3px solid #10b981;
+        padding: 36px 42px;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .d-s1 { top: 400px; height: 322px; }
+      .d-s2 { top: 756px; height: 366px; }
+
+      .d-step-k {
+        font-weight: 500; font-size: 24px;
+        letter-spacing: 0.12em; text-transform: uppercase;
+        color: #10b981;
+      }
+      .d-step-v {
+        margin-top: 20px;
+        font-weight: 700; font-size: 44px; line-height: 1.22;
+        letter-spacing: -0.02em; color: #ffffff;
+      }
+      .d-step-n {
+        margin-top: 20px;
+        font-weight: 400; font-size: 29px; line-height: 1.4;
+        color: #94a3b8;
+      }
+
+      .d-punch {
+        position: absolute; left: 59px; right: 59px; top: 1188px;
+        font-weight: 700; font-size: 48px; line-height: 1.24;
+        letter-spacing: -0.022em; color: #ffffff;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .d-punch em { font-style: normal; color: #10b981; }
+
+      .d-src {
+        position: absolute; left: 59px; right: 59px; top: 1372px;
+        font-weight: 400; font-size: 23px; line-height: 1.5;
+        color: #5b6577;
+        opacity: 0;
+        will-change: opacity;
+      }
+    </style>
+
+    <div class="clip d-bg" data-start="0" data-duration="4.8" data-track-index="0"></div>
+
+    <div class="clip d-chrome" id="d-chrome" data-start="0" data-duration="4.8" data-track-index="1">
+      <span class="d-chrome-label">Todo dia, do zero</span>
+      <span>03</span>
+    </div>
+
+    <div class="clip d-head" id="d-head" data-start="0" data-duration="4.8" data-track-index="2">
+      O dia de ontem é<br />apagado antes de escrever.
+    </div>
+
+    <div class="clip d-step d-s1" id="d-s1" data-start="0" data-duration="4.8" data-track-index="3">
+      <div class="d-step-k">Primeiro</div>
+      <div class="d-step-v">As observações do dia são removidas.</div>
+      <div class="d-step-n">Rodar de novo não empilha preço duplicado.</div>
+    </div>
+
+    <div class="clip d-step d-s2" id="d-s2" data-start="0" data-duration="4.8" data-track-index="4">
+      <div class="d-step-k">Depois</div>
+      <div class="d-step-v">Cada mesa entra sozinha.</div>
+      <div class="d-step-n">
+        Se uma falha, o erro é registrado com o nome do comprador e as outras
+        seguem. Uma mesa quebrada não derruba o estado inteiro.
+      </div>
+    </div>
+
+    <div class="clip d-punch" id="d-punch" data-start="0" data-duration="4.8" data-track-index="5">
+      Preço de ontem <em>não</em> se disfarça de preço de hoje.
+    </div>
+
+    <div class="clip d-src" id="d-src" data-start="0" data-duration="4.8" data-track-index="6">
+      pipeline.py — delete_today_scraper_observations na linha 31; laço com
+      try/except por cotação nas linhas 34 a 39.
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      tl.fromTo("#d-chrome", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.32, ease: "power2.out" }, 0.04);
+      tl.fromTo("#d-head", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.44, ease: "power3.out" }, 0.14);
+
+      tl.fromTo("#d-s1", { opacity: 0, x: -22 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 0.66);
+      tl.fromTo("#d-s2", { opacity: 0, x: -22 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 1.56);
+
+      tl.fromTo("#d-punch", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.44, ease: "power3.out" }, 2.72);
+      tl.fromTo("#d-src", { opacity: 0 }, { opacity: 1, duration: 0.34, ease: "power2.out" }, 3.34);
+
+      window.__timelines["03-todo-dia"] = tl;
+    })();
+  </script>
+</template>

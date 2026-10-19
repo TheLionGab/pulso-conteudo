@@ -1,0 +1,58 @@
+{
+  "generated": "2026-09-08T21:46:00-04:00",
+  "brand": {
+    "primary": "#10b981",
+    "shell": "#05070a",
+    "font": "Inter"
+  },
+  "renders": [
+    {
+      "id": "01-cotacoes-hero",
+      "file": "01-cotacoes-hero_2026-09-08_LAUNCH.mp4",
+      "duration_s": 22.0,
+      "size_bytes": 2910100,
+      "use": "Hero App Store / Reels / afiliados",
+      "audio": "HeyGen BGM + SFX + VO Guilherme-Mello"
+    },
+    {
+      "id": "02-engenharia-escada",
+      "file": "02-engenharia-escada_2026-09-08_LAUNCH.mp4",
+      "duration_s": 25.5,
+      "size_bytes": 4065502,
+      "use": "Credibilidade motor de preço",
+      "audio": "José Arnelas VO + BGM + SFX"
+    },
+    {
+      "id": "03-engenharia-cvale",
+      "file": "03-engenharia-cvale_2026-09-08_LAUNCH.mp4",
+      "duration_s": 21.7,
+      "size_bytes": 3181088,
+      "use": "Caso C.Vale",
+      "audio": "BGM + SFX"
+    },
+    {
+      "id": "04-engenharia-dados",
+      "file": "04-engenharia-dados_2026-09-08_LAUNCH.mp4",
+      "duration_s": 22.4,
+      "size_bytes": 3299103,
+      "use": "Como o dado entra",
+      "audio": "BGM + SFX"
+    },
+    {
+      "id": "05-diagnostico-praga",
+      "file": "05-diagnostico-praga_2026-09-08_LAUNCH.mp4",
+      "duration_s": 20.0,
+      "size_bytes": 1556365,
+      "use": "AgroIA diagnóstico",
+      "audio": "SFX only — VO assets ausentes no projeto"
+    },
+    {
+      "id": "06-comunidade",
+      "file": "06-comunidade_2026-09-08_LAUNCH.mp4",
+      "duration_s": 18.0,
+      "size_bytes": 1477134,
+      "use": "Aba Comunidade cold start",
+      "audio": "HeyGen bed + SFX"
+    }
+  ]
+}

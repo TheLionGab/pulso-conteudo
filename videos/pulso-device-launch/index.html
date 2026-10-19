@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Pulso do Campo — Device Launch</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05070a; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #05070a; }
+      [data-composition-src] { position: absolute; inset: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="21" data-width="1080" data-height="1920">
+      <div id="el-01" data-composition-id="01-open" data-composition-src="compositions/frames/01-open.html" data-start="0" data-duration="3.5" data-track-index="1"></div>
+      <div id="el-02" data-composition-id="02-cotacoes" data-composition-src="compositions/frames/02-cotacoes.html" data-start="3.5" data-duration="5" data-track-index="1"></div>
+      <div id="el-03" data-composition-id="03-diagnostico" data-composition-src="compositions/frames/03-diagnostico.html" data-start="8.5" data-duration="5" data-track-index="1"></div>
+      <div id="el-04" data-composition-id="04-comunidade" data-composition-src="compositions/frames/04-comunidade.html" data-start="13.5" data-duration="4.5" data-track-index="1"></div>
+      <div id="el-05" data-composition-id="05-cta" data-composition-src="compositions/frames/05-cta.html" data-start="18" data-duration="3" data-track-index="1"></div>
+
+      <!-- VO — HeyGen Starfish, sincronizado às cenas (track 10) -->
+      <audio id="vo-01" src="assets/vo/vo-01.mp3" data-start="0.5" data-duration="1.31" data-track-index="10" data-volume="1.0"></audio>
+      <audio id="vo-02" src="assets/vo/vo-02.mp3" data-start="3.7" data-duration="3.60" data-track-index="10" data-volume="1.0"></audio>
+      <audio id="vo-03" src="assets/vo/vo-03.mp3" data-start="8.8" data-duration="1.59" data-track-index="10" data-volume="1.0"></audio>
+      <audio id="vo-04" src="assets/vo/vo-04.mp3" data-start="10.55" data-duration="3.21" data-track-index="10" data-volume="1.0"></audio>
+      <audio id="vo-05" src="assets/vo/vo-05.mp3" data-start="13.85" data-duration="3.42" data-track-index="10" data-volume="1.0"></audio>
+      <audio id="vo-06" src="assets/vo/vo-06.mp3" data-start="17.85" data-duration="3.06" data-track-index="10" data-volume="1.0"></audio>
+
+      <audio id="bgm" src="assets/bgm/bed-pulso-heygen-v22.mp3" data-start="0" data-duration="21" data-track-index="19" data-volume="0.11"></audio>
+      <audio id="sfx1" src="assets/sfx/whoosh-short.mp3" data-start="0.4" data-duration="0.57" data-track-index="20" data-volume="0.3"></audio>
+      <audio id="sfx2" src="assets/sfx/impact-bass-1.mp3" data-start="1.0" data-duration="2" data-track-index="21" data-volume="0.38"></audio>
+      <audio id="sfx3" src="assets/sfx/whoosh-short.mp3" data-start="3.4" data-duration="0.57" data-track-index="22" data-volume="0.32"></audio>
+      <audio id="sfx4" src="assets/sfx/pop.mp3" data-start="3.7" data-duration="0.72" data-track-index="23" data-volume="0.34"></audio>
+      <audio id="sfx5" src="assets/sfx/whoosh-short.mp3" data-start="8.4" data-duration="0.57" data-track-index="24" data-volume="0.32"></audio>
+      <audio id="sfx6" src="assets/sfx/impact-bass-2.mp3" data-start="8.7" data-duration="1.5" data-track-index="25" data-volume="0.36"></audio>
+      <audio id="sfx7" src="assets/sfx/whoosh-short.mp3" data-start="13.4" data-duration="0.57" data-track-index="26" data-volume="0.32"></audio>
+      <audio id="sfx8" src="assets/sfx/click-soft.mp3" data-start="13.7" data-duration="0.37" data-track-index="27" data-volume="0.36"></audio>
+      <audio id="sfx9" src="assets/sfx/riser.mp3" data-start="18" data-duration="2" data-track-index="28" data-volume="0.34"></audio>
+      <audio id="sfx10" src="assets/sfx/impact-bass-1.mp3" data-start="18.2" data-duration="2" data-track-index="29" data-volume="0.4"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines.main = gsap.timeline({ paused: true });
+      (function () {
+        var tl = window.__timelines.main;
+        tl.to("#el-01", { opacity: 0, duration: 0.4, ease: "power2.inOut" }, 3.1);
+        tl.fromTo("#el-02", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, 3.1);
+        tl.to("#el-02", { opacity: 0, x: -80, duration: 0.4, ease: "power3.in" }, 8.1);
+        tl.fromTo("#el-03", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, 8.1);
+        tl.to("#el-03", { opacity: 0, x: -80, duration: 0.4, ease: "power3.in" }, 13.1);
+        tl.fromTo("#el-04", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" }, 13.1);
+        tl.to("#el-04", { opacity: 0, scale: 1.04, filter: "blur(6px)", duration: 0.35, ease: "power2.in" }, 17.65);
+        tl.fromTo("#el-05", { opacity: 0, scale: 0.88 }, { opacity: 1, scale: 1, duration: 0.4, ease: "power3.out" }, 17.65);
+        tl.to({}, { duration: 21 }, 0);
+      })();
+    </script>
+  </body>
+</html>

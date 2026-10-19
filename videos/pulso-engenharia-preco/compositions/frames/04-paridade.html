@@ -1,0 +1,251 @@
+<template>
+  <div id="root" data-composition-id="04-paridade" data-duration="5.0" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; font-style: normal; font-display: block; }
+
+      #root {
+        position: absolute; inset: 0;
+        width: 1080px; height: 1920px;
+        overflow: hidden; container-type: size;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      .f04-bg { position: absolute; inset: 0; background: #05070a; }
+
+      .f04-chrome {
+        position: absolute; left: 59px; right: 59px; top: 96px;
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-weight: 500; font-size: 24px;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+      .f04-chrome-label { color: #94a3b8; }
+
+      .f04-rungtop {
+        position: absolute; left: 59px; right: 59px; top: 208px;
+        display: flex; align-items: baseline; gap: 22px;
+        will-change: transform, opacity;
+      }
+      .f04-rung-n {
+        font-weight: 900; font-size: 46px; line-height: 1;
+        letter-spacing: -0.02em; color: #10b981;
+        font-variant-numeric: tabular-nums;
+      }
+      .f04-rung-flag {
+        font-weight: 700; font-size: 34px;
+        letter-spacing: 0.06em; color: #ffffff;
+      }
+
+      .f04-head {
+        position: absolute; left: 59px; right: 59px; top: 282px;
+        font-weight: 900; font-size: 70px; line-height: 1.06;
+        letter-spacing: -0.03em; color: #ffffff;
+        will-change: transform, opacity;
+      }
+      .f04-sub {
+        position: absolute; left: 59px; right: 59px; top: 452px;
+        font-weight: 400; font-size: 32px; line-height: 1.4;
+        color: #94a3b8;
+        will-change: transform, opacity;
+      }
+
+      /* the arithmetic panel — the engine's actual formula */
+      .f04-calc {
+        position: absolute; left: 59px; right: 59px; top: 556px;
+        height: 626px;
+        background: #0f1419;
+        border: 1px solid rgba(255,255,255,0.08);
+        padding: 42px 44px;
+        will-change: transform, opacity;
+      }
+      .f04-calc-cap {
+        font-weight: 500; font-size: 25px;
+        letter-spacing: 0.12em; text-transform: uppercase;
+        color: #717f94;
+      }
+      .f04-row {
+        display: flex; justify-content: space-between; align-items: baseline;
+        margin-top: 34px;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .f04-row-lbl {
+        font-weight: 500; font-size: 32px;
+        color: #94a3b8;
+      }
+      .f04-row-val {
+        font-weight: 700; font-size: 44px;
+        letter-spacing: -0.02em; color: #ffffff;
+        font-variant-numeric: tabular-nums;
+      }
+      .f04-row-sub .f04-row-val { color: #f59e0b; }
+
+      .f04-rule {
+        margin-top: 34px;
+        border-top: 1px solid rgba(255,255,255,0.12);
+        opacity: 0;
+        will-change: opacity;
+      }
+      .f04-total {
+        display: flex; justify-content: space-between; align-items: baseline;
+        margin-top: 30px;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .f04-total-lbl {
+        font-weight: 700; font-size: 32px;
+        letter-spacing: 0.06em; text-transform: uppercase;
+        color: #10b981;
+      }
+      .f04-total-val {
+        font-weight: 900; font-size: 84px; line-height: 1;
+        letter-spacing: -0.035em; color: #10b981;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* rung 4 — the weakest step that still returns a number */
+      .f04-rung4 {
+        position: absolute; left: 59px; right: 59px; top: 1240px;
+        height: 302px;
+        background: #0b0f14;
+        border: 1px solid rgba(255,255,255,0.06);
+        border-left: 3px solid #5b6577;
+        padding: 34px 44px;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .f04-rung4-top { display: flex; align-items: baseline; gap: 20px; }
+      .f04-rung4-n {
+        font-weight: 900; font-size: 40px; line-height: 1;
+        color: #94a3b8; font-variant-numeric: tabular-nums;
+      }
+      .f04-rung4-flag {
+        font-weight: 700; font-size: 30px;
+        letter-spacing: 0.06em; color: #94a3b8;
+      }
+      .f04-rung4-note {
+        margin-top: 24px;
+        font-weight: 400; font-size: 30px; line-height: 1.4;
+        color: #717f94;
+      }
+
+      .f04-tail {
+        position: absolute; left: 59px; right: 59px; top: 1600px;
+        font-weight: 500; font-size: 26px; line-height: 1.5;
+        letter-spacing: 0.06em; color: #5b6577;
+        opacity: 0;
+        will-change: opacity;
+      }
+    </style>
+
+    <div class="clip f04-bg" data-start="0" data-duration="5.0" data-track-index="0"></div>
+
+    <div class="clip f04-chrome" id="f04-chrome" data-start="0" data-duration="5.0" data-track-index="1">
+      <span class="f04-chrome-label">A escada de resolução</span>
+      <span>04</span>
+    </div>
+
+    <div class="clip f04-rungtop" id="f04-rungtop" data-start="0" data-duration="5.0" data-track-index="2">
+      <span class="f04-rung-n">03</span>
+      <span class="f04-rung-flag">PARIDADE_DERIVADA</span>
+    </div>
+
+    <div class="clip f04-head" id="f04-head" data-start="0" data-duration="5.0" data-track-index="3">
+      Sem mesa na praça?<br />Deriva do polo.
+    </div>
+
+    <div class="clip f04-sub" id="f04-sub" data-start="0" data-duration="5.0" data-track-index="4">
+      Frete e retenção saem antes de o preço chegar na tela.
+    </div>
+
+    <div class="clip f04-calc" id="f04-calc" data-start="0" data-duration="5.0" data-track-index="5">
+      <div class="f04-calc-cap">Tabaporã · Soja · sc</div>
+
+      <div class="f04-row" id="f04-row-1">
+        <span class="f04-row-lbl">Polo Porto dos Gaúchos</span>
+        <span class="f04-row-val">R$ 113,00</span>
+      </div>
+
+      <div class="f04-row f04-row-sub" id="f04-row-2">
+        <span class="f04-row-lbl">Frete até o polo</span>
+        <span class="f04-row-val">− R$ 4,00</span>
+      </div>
+
+      <div class="f04-row f04-row-sub" id="f04-row-3">
+        <span class="f04-row-lbl">Retenção</span>
+        <span class="f04-row-val">− R$ 2,00</span>
+      </div>
+
+      <div class="f04-rule" id="f04-rule"></div>
+
+      <div class="f04-total" id="f04-total">
+        <span class="f04-total-lbl">Preço em Tabaporã</span>
+        <span class="f04-total-val">R$ <span id="f04-num">0,00</span></span>
+      </div>
+    </div>
+
+    <div class="clip f04-rung4" id="f04-rung4" data-start="0" data-duration="5.0" data-track-index="6">
+      <div class="f04-rung4-top">
+        <span class="f04-rung4-n">04</span>
+        <span class="f04-rung4-flag">REFERENCIA_POLO</span>
+      </div>
+      <div class="f04-rung4-note">
+        Nem polo compatível existe. Sobra a faixa da bacia, e o número sai
+        marcado como o mais fraco da escada.
+      </div>
+    </div>
+
+    <div class="clip f04-tail" id="f04-tail" data-start="0" data-duration="5.0" data-track-index="7">
+      Cada preço carrega o degrau que o produziu.
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      tl.fromTo("#f04-chrome", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.32, ease: "power2.out" }, 0.04);
+      tl.fromTo("#f04-rungtop", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.32, ease: "power2.out" }, 0.12);
+      tl.fromTo("#f04-head", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.44, ease: "power3.out" }, 0.2);
+      tl.fromTo("#f04-sub", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.34, ease: "power3.out" }, 0.52);
+      tl.fromTo("#f04-calc", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.78);
+
+      /* the subtraction is read line by line — that IS the explanation */
+      tl.fromTo("#f04-row-1", { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out" }, 1.16);
+      tl.fromTo("#f04-row-2", { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out" }, 1.6);
+      tl.fromTo("#f04-row-3", { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out" }, 2.02);
+      tl.fromTo("#f04-rule", { opacity: 0 }, { opacity: 1, duration: 0.22, ease: "power2.out" }, 2.36);
+      tl.fromTo("#f04-total", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.34, ease: "power3.out" }, 2.5);
+
+      /* the result counts down from the polo price to the derived one —
+         the viewer literally watches the freight come off */
+      var state = { v: 113.0 };
+      var el = null;
+      tl.to(
+        state,
+        {
+          v: 107.0,
+          duration: 0.56,
+          ease: "power2.out",
+          onUpdate: function () {
+            if (!el) el = document.getElementById("f04-num");
+            el.textContent = state.v.toFixed(2).replace(".", ",");
+          },
+        },
+        2.56
+      );
+
+      tl.fromTo("#f04-rung4", { opacity: 0, x: -22 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 3.42);
+      tl.fromTo("#f04-tail", { opacity: 0 }, { opacity: 1, duration: 0.34, ease: "power2.out" }, 3.98);
+
+      window.__timelines["04-paridade"] = tl;
+    })();
+  </script>
+</template>

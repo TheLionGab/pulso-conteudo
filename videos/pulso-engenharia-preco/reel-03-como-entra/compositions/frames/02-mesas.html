@@ -1,0 +1,166 @@
+<template>
+  <div id="root" data-composition-id="02-mesas" data-duration="4.8" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; font-style: normal; font-display: block; }
+
+      #root {
+        position: absolute; inset: 0;
+        width: 1080px; height: 1920px;
+        overflow: hidden; container-type: size;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      .s-bg { position: absolute; inset: 0; background: #05070a; }
+
+      .s-chrome {
+        position: absolute; left: 59px; right: 59px; top: 96px;
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-weight: 500; font-size: 24px;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+      .s-chrome-label { color: #94a3b8; }
+
+      .s-head {
+        position: absolute; left: 59px; right: 59px; top: 206px;
+        font-weight: 900; font-size: 70px; line-height: 1.06;
+        letter-spacing: -0.03em; color: #ffffff;
+        will-change: transform, opacity;
+      }
+
+      /* four measured counters */
+      .s-stat {
+        position: absolute; left: 59px;
+        width: 462px;
+        background: #0f1419;
+        border: 1px solid rgba(255,255,255,0.08);
+        padding: 32px 36px;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .s-s1 { top: 400px; }
+      .s-s2 { top: 400px; left: 559px; }
+      .s-s3 { top: 634px; }
+      .s-s4 { top: 634px; left: 559px; }
+
+      .s-n {
+        font-weight: 900; font-size: 92px; line-height: 1;
+        letter-spacing: -0.035em; color: #10b981;
+        font-variant-numeric: tabular-nums;
+      }
+      .s-k {
+        margin-top: 16px;
+        font-weight: 500; font-size: 25px;
+        letter-spacing: 0.1em; text-transform: uppercase;
+        color: #94a3b8;
+      }
+
+      .s-mid {
+        position: absolute; left: 59px; right: 59px; top: 900px;
+        font-weight: 700; font-size: 48px; line-height: 1.24;
+        letter-spacing: -0.022em; color: #ffffff;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+
+      .s-body {
+        position: absolute; left: 59px; right: 59px; top: 1060px;
+        font-weight: 400; font-size: 34px; line-height: 1.42;
+        color: #94a3b8;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .s-body b { font-weight: 700; color: #ffffff; }
+
+      .s-src {
+        position: absolute; left: 59px; right: 59px; top: 1310px;
+        font-weight: 400; font-size: 23px; line-height: 1.5;
+        color: #5b6577;
+        opacity: 0;
+        will-change: opacity;
+      }
+    </style>
+
+    <div class="clip s-bg" data-start="0" data-duration="4.8" data-track-index="0"></div>
+
+    <div class="clip s-chrome" id="s-chrome" data-start="0" data-duration="4.8" data-track-index="1">
+      <span class="s-chrome-label">A base de mesas</span>
+      <span>02</span>
+    </div>
+
+    <div class="clip s-head" id="s-head" data-start="0" data-duration="4.8" data-track-index="2">
+      Vem de mesa física,<br />com nome e canal.
+    </div>
+
+    <div class="clip s-stat s-s1" id="s-s1" data-start="0" data-duration="4.8" data-track-index="3">
+      <div class="s-n" id="s-n1">0</div>
+      <div class="s-k">Cotações calibradas</div>
+    </div>
+    <div class="clip s-stat s-s2" id="s-s2" data-start="0" data-duration="4.8" data-track-index="4">
+      <div class="s-n" id="s-n2">0</div>
+      <div class="s-k">Compradores</div>
+    </div>
+    <div class="clip s-stat s-s3" id="s-s3" data-start="0" data-duration="4.8" data-track-index="5">
+      <div class="s-n" id="s-n3">0</div>
+      <div class="s-k">Municípios com mesa</div>
+    </div>
+    <div class="clip s-stat s-s4" id="s-s4" data-start="0" data-duration="4.8" data-track-index="6">
+      <div class="s-n" id="s-n4">0</div>
+      <div class="s-k">Canais de compra</div>
+    </div>
+
+    <div class="clip s-mid" id="s-mid" data-start="0" data-duration="4.8" data-track-index="7">
+      Cada cotação guarda o hash do que entrou.
+    </div>
+
+    <div class="clip s-body" id="s-body" data-start="0" data-duration="4.8" data-track-index="8">
+      Comprador, cidade, cultura, canal, prazo e preço viajam <b>juntos</b>.
+      Nenhum número existe solto no banco.
+    </div>
+
+    <div class="clip s-src" id="s-src" data-start="0" data-duration="4.8" data-track-index="9">
+      anchors.py — CALIBRATED_QUOTES, linha 108, e o campo raw_hash, linha 45.
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      function countUp(id, to, at) {
+        var st = { v: 0 };
+        var el = null;
+        tl.to(st, {
+          v: to, duration: 0.5, ease: "power2.out",
+          onUpdate: function () {
+            if (!el) el = document.getElementById(id);
+            el.textContent = String(Math.round(st.v));
+          },
+        }, at);
+      }
+
+      tl.fromTo("#s-chrome", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.32, ease: "power2.out" }, 0.04);
+      tl.fromTo("#s-head", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.44, ease: "power3.out" }, 0.14);
+
+      /* the four counters arrive as a block, then run together */
+      tl.fromTo(["#s-s1", "#s-s2", "#s-s3", "#s-s4"], { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.34, ease: "power3.out", stagger: 0.1 }, 0.62);
+      countUp("s-n1", 38, 0.78);
+      countUp("s-n2", 33, 0.88);
+      countUp("s-n3", 19, 0.98);
+      countUp("s-n4", 4, 1.08);
+
+      tl.fromTo("#s-mid", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.42, ease: "power3.out" }, 2.06);
+      tl.fromTo("#s-body", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 2.62);
+      tl.fromTo("#s-src", { opacity: 0 }, { opacity: 1, duration: 0.34, ease: "power2.out" }, 3.34);
+
+      window.__timelines["02-mesas"] = tl;
+    })();
+  </script>
+</template>

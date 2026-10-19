@@ -1,0 +1,19 @@
+# Saídas de render: refeitas a partir das composições (`hyperframes render`).
+# Insumos referenciados (assets/vo, assets/device, assets/broll, fonts, bgm, sfx)
+# continuam rastreados: sem eles o projeto não renderiza num clone limpo.
+videos/**/renders/
+videos/**/snapshots/
+videos/**/out/
+videos/**/qc/
+INSTITUCIONAL/vertical/
+INSTITUCIONAL/qc/
+INSTITUCIONAL/app-store/
+LAUNCH-PACK/renders/
+LAUNCH-PACK/qc/
+LAUNCH-PACK/qc-perfect/
+node_modules/
+.DS_Store
+__pycache__/
+.env
+.env.*
+!.env.example

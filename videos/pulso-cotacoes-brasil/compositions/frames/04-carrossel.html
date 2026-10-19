@@ -1,0 +1,399 @@
+<template id="carrossel04-template" data-width="1080" data-height="1920">
+<script src="assets/vendor/gsap.min.js"></script>
+
+<style>
+  /* fontes locais (staged) — idênticas a 03-comprador.html / 07-cta.html */
+  @font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_400Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: block; }
+  @font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_500Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: block; }
+  @font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_700Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: block; }
+  @font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_900Black.ttf') format('truetype'); font-weight: 900; font-style: normal; font-display: block; }
+  
+  #root {
+    position: relative;
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    container-type: size;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+
+  /* ---------- full-bleed ground (clip layer, never #root) ---------- */
+  .f04-bg {
+    position: absolute;
+    inset: 0;
+    background: #05070a;
+  }
+
+  .f04-stage {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* ---------- everything that fades together at the end ---------- */
+  .f04-swipe-group {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* ---------- chrome header — matches 05-mapa/06-contraste's "No. XX" pattern,
+     the one beat in this film missing it ---------- */
+  .f04-chrome {
+    position: absolute;
+    left: 59px;
+    right: 59px;
+    top: 96px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: "Inter", monospace;
+    font-weight: 500;
+    font-size: 24px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .f04-chrome-kicker {
+    color: #10b981;
+  }
+  .f04-chrome-num {
+    color: #717f94;
+  }
+  .f04-chrome-bar {
+    position: absolute;
+    left: 59px;
+    right: 59px;
+    top: 138px;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* ---------- card stack — 4 cards, absolutely stacked in the same spot ---------- */
+  .f04-card-stage {
+    position: absolute;
+    left: 50%;
+    top: 36cqh;
+    width: 84cqw;
+    margin-left: -42cqw;
+  }
+
+  /* card visuals copied 1:1 from 03-comprador.html (.f03-card / .f03-card-main) */
+  .f04-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #0f1419;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 2.2cqw;
+    padding: 3.6cqw 4cqw;
+  }
+  .f04-card-kicker {
+    font-family: "Inter", monospace;
+    font-weight: 500;
+    font-size: 1.45cqw;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #10b981;
+  }
+  .f04-card-title {
+    margin-top: 0.9cqw;
+    font-weight: 900;
+    font-size: 5cqw;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    text-transform: lowercase;
+    color: #ffffff;
+  }
+  .f04-price-row {
+    margin-top: 2.4cqw;
+    display: flex;
+    align-items: baseline;
+    gap: 1cqw;
+  }
+  .f04-price-cur {
+    font-weight: 700;
+    font-size: 2.8cqw;
+    color: #10b981;
+  }
+  .f04-counter-wrap {
+    display: inline-flex;
+    align-items: baseline;
+    width: 30cqw; /* fixed — no layout shift as digit count changes across cards */
+  }
+  .f04-counter {
+    display: inline-block;
+    font-variant-numeric: tabular-nums;
+    font-weight: 900;
+    font-size: 10cqw;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: #10b981;
+  }
+  .f04-price-suffix {
+    font-weight: 500;
+    font-size: 2.6cqw;
+    color: #94a3b8;
+  }
+  .f04-meta-row {
+    margin-top: 1.8cqw;
+    font-family: "Inter", monospace;
+    font-weight: 500;
+    font-size: 1.45cqw;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #94a3b8;
+  }
+  .f04-badge {
+    margin-top: 2.6cqw;
+    display: inline-flex;
+    align-items: center;
+    gap: 1cqw;
+    background: #10b981;
+    color: #05070a;
+    padding: 1.1cqw 1.8cqw;
+    font-family: "Inter", monospace;
+    font-weight: 500;
+    font-size: 1.4cqw;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .f04-badge svg {
+    width: 1.8cqw;
+    height: 1.8cqw;
+    display: block;
+  }
+
+  /* ---------- oversized cursor (house style — drag/swipe variant) ---------- */
+  .f04-cursor {
+    position: absolute;
+    top: 50cqh;
+    left: 78cqw;
+    width: 7cqw;
+    height: 7cqw;
+    z-index: 20;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+    pointer-events: none;
+    will-change: transform;
+    transform-origin: 21% 14%;
+  }
+  .f04-cursor svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<div id="root" data-composition-id="04-carrossel" data-start="0" data-duration="4.5" data-width="1080" data-height="1920">
+  <!-- ground -->
+  <div class="clip f04-bg" data-start="0" data-duration="4.5" data-track-index="0"></div>
+
+  <!-- content -->
+  <div class="clip f04-stage" data-start="0" data-duration="4.5" data-track-index="1">
+    <div class="f04-chrome" id="f04-chrome">
+      <span class="f04-chrome-kicker" id="f04-chrome-kicker">/ cobertura rápida</span>
+      <span class="f04-chrome-num" id="f04-chrome-num">No. 04</span>
+    </div>
+    <div class="f04-chrome-bar" id="f04-chrome-bar"></div>
+
+    <div class="f04-swipe-group" id="f04-swipe-group">
+      <div class="f04-card-stage" id="f04-card-stage">
+        <!-- card 1 — Sorriso, MT milho (visible from t=0) -->
+        <div class="f04-card" id="f04-card-1" data-layout-allow-overlap="true" data-layout-allow-overflow="true" data-layout-allow-occlusion="true">
+          <div class="f04-card-kicker">Oferta de compra</div>
+          <div class="f04-card-title">milho</div>
+          <div class="f04-price-row">
+            <span class="f04-price-cur">R$</span>
+            <span class="f04-counter-wrap"><span class="f04-counter">43,00</span></span>
+            <span class="f04-price-suffix">/sc</span>
+          </div>
+          <div class="f04-meta-row">Sorriso, MT</div>
+          <div class="f04-badge">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M2.5 8.5 L6.2 12.2 L13.5 4.5" stroke="#05070a" stroke-width="2.2" stroke-linecap="square" />
+            </svg>
+            <span>Comprador verificado</span>
+          </div>
+        </div>
+
+        <!-- card 2 — Rondonópolis, MT soja -->
+        <div class="f04-card" id="f04-card-2" data-layout-allow-overlap="true" data-layout-allow-overflow="true" data-layout-allow-occlusion="true">
+          <div class="f04-card-kicker">Oferta de compra</div>
+          <div class="f04-card-title">soja</div>
+          <div class="f04-price-row">
+            <span class="f04-price-cur">R$</span>
+            <span class="f04-counter-wrap"><span class="f04-counter">140,00</span></span>
+            <span class="f04-price-suffix">/sc</span>
+          </div>
+          <div class="f04-meta-row">Rondonópolis, MT</div>
+          <div class="f04-badge">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M2.5 8.5 L6.2 12.2 L13.5 4.5" stroke="#05070a" stroke-width="2.2" stroke-linecap="square" />
+            </svg>
+            <span>Comprador verificado</span>
+          </div>
+        </div>
+
+        <!-- card 3 — Campo Verde, MT soja -->
+        <div class="f04-card" id="f04-card-3" data-layout-allow-overlap="true" data-layout-allow-overflow="true" data-layout-allow-occlusion="true">
+          <div class="f04-card-kicker">Oferta de compra</div>
+          <div class="f04-card-title">soja</div>
+          <div class="f04-price-row">
+            <span class="f04-price-cur">R$</span>
+            <span class="f04-counter-wrap"><span class="f04-counter">133,50</span></span>
+            <span class="f04-price-suffix">/sc</span>
+          </div>
+          <div class="f04-meta-row">Campo Verde, MT</div>
+          <div class="f04-badge">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M2.5 8.5 L6.2 12.2 L13.5 4.5" stroke="#05070a" stroke-width="2.2" stroke-linecap="square" />
+            </svg>
+            <span>Comprador verificado</span>
+          </div>
+        </div>
+
+        <!-- card 4 — Porto dos Gaúchos, MT soja (final card) -->
+        <div class="f04-card" id="f04-card-4" data-layout-allow-overlap="true" data-layout-allow-overflow="true" data-layout-allow-occlusion="true">
+          <div class="f04-card-kicker">Oferta de compra</div>
+          <div class="f04-card-title">soja</div>
+          <div class="f04-price-row">
+            <span class="f04-price-cur">R$</span>
+            <span class="f04-counter-wrap"><span class="f04-counter">113,00</span></span>
+            <span class="f04-price-suffix">/sc</span>
+          </div>
+          <div class="f04-meta-row">Porto dos Gaúchos, MT</div>
+          <div class="f04-badge">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M2.5 8.5 L6.2 12.2 L13.5 4.5" stroke="#05070a" stroke-width="2.2" stroke-linecap="square" />
+            </svg>
+            <span>Comprador verificado</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- oversized cursor — drags each card off to the left, then resets for the next grab -->
+      <div class="f04-cursor" id="f04-cursor">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M4 3 L4 19.5 L8.5 15.8 L11.5 22 L14.8 20.5 L11.8 14.3 L18.5 14.3 Z"
+            fill="#ffffff"
+            stroke="#05070a"
+            stroke-width="1.3"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    window.__timelines = window.__timelines || {};
+    var tl = gsap.timeline({ paused: true });
+    window.__timelines["04-carrossel"] = tl;
+
+    /* -----------------------------------------------------------------
+       Frame 04 — "Carrossel: cidade após cidade"
+       4.0s total. No narration, no new copy — the repeated swipe gesture
+       across 4 real price cards is the whole argument (national coverage
+       proven by rhythm, not by a claim).
+
+       Timing model — 4 identical ~0.775s cycles back to back (0.3–3.4s):
+         settle (0.465s, card fully readable) -> drag (0.31s, card exits
+         left + next card slides in from the right, arriving exactly as
+         the old one leaves). The cursor "grips" the card for the first
+         60% of the drag (moving WITH it, synced), then releases and
+         glides back to the ready position while the card finishes
+         flying off-screen alone with momentum — a real swipe-and-release,
+         not a floating cursor. Card 4 has no exit: it settles and holds
+         until the whole group fades on a clean dark hold for the cut
+         into the next frame (Brazil map).
+       ----------------------------------------------------------------- */
+
+    var CYCLE = 0.775; // total per city
+    var SETTLE = 0.465; // readable hold before the next drag starts
+    var DRAG = CYCLE - SETTLE; // 0.31s — full exit/enter travel time
+    var GRIP = DRAG * 0.6; // 0.186s — cursor moves WITH the card, then releases
+    var CARD_TRAVEL = 1200; // px — clears the 1080-wide canvas either direction
+    var CURSOR_GRIP_DIST = 190; // px — the cursor's own short "finger" travel
+
+    var c1Start = 0.3;
+    var c2Start = c1Start + CYCLE; // 1.075
+    var c3Start = c2Start + CYCLE; // 1.85
+    var c4Start = c3Start + CYCLE; // 2.625
+    var groupFadeStart = c4Start + CYCLE; // 3.4
+
+    var cursor = "#f04-cursor";
+
+    /* Cards 2–4 have no tween touching them until their own entrance
+       fires (0.765s / 1.54s / 2.315s respectively) — a GSAP tween never
+       renders its "from" state before the timeline's playhead actually
+       enters its [start, start+duration] window, so without this they
+       would sit at their untouched default (x:0), stacked directly on
+       top of card 1 and each other from t=0. Set the off-screen resting
+       position explicitly up front so every card is correctly hidden
+       until its own entrance animates it in. */
+    gsap.set(["#f04-card-2", "#f04-card-3", "#f04-card-4"], { x: CARD_TRAVEL });
+
+    /* one out/in swap: outgoing card exits left (translate + slight
+       rotation, fading only in its last 40%), incoming card slides in
+       from the right on the same clock; the cursor grips + releases. */
+    function swap(outSel, inSel, dragStart, rotDeg) {
+      var fadeStart = dragStart + GRIP; // last 40% of the drag = the fade window
+      var fadeDur = DRAG - GRIP;
+
+      // outgoing card: translate + rotate across the full drag window
+      tl.fromTo(
+        outSel,
+        { x: 0, rotation: 0 },
+        { x: -CARD_TRAVEL, rotation: rotDeg, duration: DRAG, ease: "power3.out" },
+        dragStart
+      );
+      // outgoing card: opacity fade only over the last 40% of that travel
+      tl.fromTo(outSel, { opacity: 1 }, { opacity: 0, duration: fadeDur, ease: "power2.out" }, fadeStart);
+
+      // incoming card: slides in from the right, arriving exactly as the old one leaves
+      tl.fromTo(inSel, { x: CARD_TRAVEL }, { x: 0, duration: DRAG, ease: "power3.out" }, dragStart);
+
+      // cursor: grips the card (moves WITH it) for the first 60% of the drag...
+      tl.fromTo(cursor, { x: 0 }, { x: -CURSOR_GRIP_DIST, duration: GRIP, ease: "power2.out" }, dragStart);
+      // ...a quick compress/expand sells the grab, pivoting on the tip...
+      tl.fromTo(cursor, { scale: 1 }, { scale: 0.88, duration: 0.06, ease: "power2.in" }, dragStart);
+      tl.fromTo(cursor, { scale: 0.88 }, { scale: 1, duration: 0.12, ease: "power2.out" }, dragStart + 0.06);
+      // ...then releases and glides back to the ready position for the next grab.
+      tl.fromTo(cursor, { x: -CURSOR_GRIP_DIST }, { x: 0, duration: 0.35, ease: "power3.out" }, fadeStart);
+    }
+
+    /* ---------- Scene 1 (0.0–0.3s): chrome in, card 1 + cursor already in place ---------- */
+    tl.fromTo(
+      ["#f04-chrome-kicker", "#f04-chrome-num"],
+      { opacity: 0, y: -10 },
+      { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" },
+      0.05
+    );
+    tl.fromTo(
+      "#f04-chrome-bar",
+      { scaleX: 0, transformOrigin: "0% 50%" },
+      { scaleX: 1, duration: 0.45, ease: "power2.out" },
+      0.05
+    );
+    // Otherwise nothing to animate here by design — card 1 and the cursor sit
+    // at rest (their CSS/first-tween "from" state) until the first drag fires at 0.765s.
+
+    /* ---------- Scene 2 (0.3–3.4s): 4 back-to-back swipe cycles ---------- */
+    swap("#f04-card-1", "#f04-card-2", c1Start + SETTLE, -3); // 0.765–1.075
+    swap("#f04-card-2", "#f04-card-3", c2Start + SETTLE, -2.5); // 1.54–1.85
+    swap("#f04-card-3", "#f04-card-4", c3Start + SETTLE, -3.5); // 2.315–2.625
+    // card 4 has no exit — it just arrives and holds through the fade.
+
+    /* ---------- Scene 3 (3.4–4.0s): clean fade to bare dark ground ---------- */
+    tl.fromTo(
+      "#f04-swipe-group",
+      { opacity: 1 },
+      { opacity: 0, duration: 0.3, ease: "power2.out" },
+      groupFadeStart
+    );
+    // 3.7–4.0s: bare #05070a ground holds — clean cut point into the next frame.
+  })();
+</script>
+</template>

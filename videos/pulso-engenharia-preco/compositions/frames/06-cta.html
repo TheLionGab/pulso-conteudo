@@ -1,0 +1,158 @@
+<template>
+  <div id="root" data-composition-id="06-cta" data-duration="4.5" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; font-style: normal; font-display: block; }
+
+      #root {
+        position: absolute; inset: 0;
+        width: 1080px; height: 1920px;
+        overflow: hidden; container-type: size;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      .f06-bg { position: absolute; inset: 0; background: #05070a; }
+
+      /* ladder recap — five rungs collapse into one stack, then the mark */
+      .f06-recap {
+        position: absolute; left: 59px; right: 59px; top: 470px;
+      }
+      .f06-step {
+        display: flex; align-items: baseline; gap: 20px;
+        padding: 18px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .f06-step-n {
+        font-weight: 700; font-size: 26px;
+        color: #10b981; font-variant-numeric: tabular-nums;
+        min-width: 46px;
+      }
+      .f06-step-f {
+        font-weight: 500; font-size: 28px;
+        letter-spacing: 0.04em; color: #94a3b8;
+      }
+      .f06-step-weak .f06-step-n { color: #5b6577; }
+      .f06-step-weak .f06-step-f { color: #5b6577; }
+
+      /* lockup */
+      .f06-lockup {
+        position: absolute;
+        left: 0; right: 0; top: 940px;
+        display: flex; justify-content: center; align-items: center;
+        gap: 26px;
+        will-change: transform, opacity;
+      }
+      .f06-mark {
+        width: 96px; height: 96px;
+        overflow: visible;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .f06-mark .pdc-p {
+        fill: none;
+        stroke: url(#pdcg-cta);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .f06-word {
+        font-weight: 900; font-size: 82px; line-height: 1;
+        letter-spacing: -0.03em; color: #ffffff;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+
+      .f06-sub {
+        position: absolute; left: 59px; right: 59px; top: 1090px;
+        text-align: center;
+        font-weight: 400; font-size: 40px; line-height: 1.34;
+        color: #94a3b8;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+
+      .f06-chip {
+        position: absolute;
+        left: 50%; top: 1240px;
+        transform: translateX(-50%);
+        padding: 20px 40px;
+        border: 1px solid rgba(16,185,129,0.42);
+        background: rgba(16,185,129,0.08);
+        font-weight: 500; font-size: 28px;
+        letter-spacing: 0.1em; text-transform: uppercase;
+        color: #10b981;
+        opacity: 0;
+        white-space: nowrap;
+        will-change: transform, opacity;
+      }
+    </style>
+
+    <div class="clip f06-bg" data-start="0" data-duration="4.5" data-track-index="0"></div>
+
+    <div class="clip f06-recap" id="f06-recap" data-start="0" data-duration="4.5" data-track-index="1">
+      <div class="f06-step" id="f06-s1"><span class="f06-step-n">01</span><span class="f06-step-f">MEDIANA_PULSO</span></div>
+      <div class="f06-step" id="f06-s2"><span class="f06-step-n">02</span><span class="f06-step-f">VERIFICADO</span></div>
+      <div class="f06-step" id="f06-s3"><span class="f06-step-n">03</span><span class="f06-step-f">PARIDADE_DERIVADA</span></div>
+      <div class="f06-step f06-step-weak" id="f06-s4"><span class="f06-step-n">04</span><span class="f06-step-f">REFERENCIA_POLO</span></div>
+      <div class="f06-step f06-step-weak" id="f06-s5"><span class="f06-step-n">05</span><span class="f06-step-f">SEM_REFERENCIA_LOCAL</span></div>
+    </div>
+
+    <div class="clip f06-lockup" id="f06-lockup" data-start="0" data-duration="4.5" data-track-index="2">
+      <svg class="f06-mark" id="f06-mark" viewBox="0 0 1024 1024" aria-hidden="true">
+        <defs>
+          <linearGradient id="pdcg-cta" x1="220" y1="310" x2="804" y2="830" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#6EE7B7"></stop>
+            <stop offset="0.48" stop-color="#10B981"></stop>
+            <stop offset="1" stop-color="#047857"></stop>
+          </linearGradient>
+        </defs>
+        <path class="pdc-p" d="M220 462H350L405 405L467 536L548 310L618 462H804" stroke-width="58" stroke-dasharray="1000" stroke-dashoffset="1000"></path>
+        <path class="pdc-p" d="M512 584V832" stroke-width="58" stroke-dasharray="300" stroke-dashoffset="300"></path>
+        <path class="pdc-p" d="M452 584C438 680 406 760 360 830" stroke-width="48" opacity="0.88" stroke-dasharray="300" stroke-dashoffset="300"></path>
+        <path class="pdc-p" d="M572 584C586 680 618 760 664 830" stroke-width="48" opacity="0.88" stroke-dasharray="300" stroke-dashoffset="300"></path>
+        <path class="pdc-p" d="M398 594C352 678 306 754 246 814" stroke-width="38" opacity="0.48" stroke-dasharray="300" stroke-dashoffset="300"></path>
+        <path class="pdc-p" d="M626 594C672 678 718 754 778 814" stroke-width="38" opacity="0.48" stroke-dasharray="300" stroke-dashoffset="300"></path>
+      </svg>
+      <span class="f06-word" id="f06-word">Pulso do Campo</span>
+    </div>
+
+    <div class="clip f06-sub" id="f06-sub" data-start="0" data-duration="4.5" data-track-index="3">
+      Chega de adivinhar.
+    </div>
+
+    <div class="clip f06-chip" id="f06-chip" data-start="0" data-duration="4.5" data-track-index="4">
+      Já na App Store
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      /* the five rungs recap fast — the viewer has just seen each one */
+      tl.fromTo(
+        ["#f06-s1", "#f06-s2", "#f06-s3", "#f06-s4", "#f06-s5"],
+        { opacity: 0, x: -18 },
+        { opacity: 1, x: 0, duration: 0.26, ease: "power3.out", stagger: 0.09 },
+        0.06
+      );
+
+      /* the stack fades back so the brand owns the stage */
+      tl.to("#f06-recap", { opacity: 0.34, duration: 0.4, ease: "power2.inOut" }, 1.18);
+
+      /* the mark self-draws — same signature that opens every Pulso piece */
+      tl.to("#f06-mark", { opacity: 1, duration: 0.2, ease: "power2.out" }, 1.3);
+      tl.to("#f06-mark .pdc-p", { attr: { "stroke-dashoffset": 0 }, duration: 0.5, ease: "power2.out", stagger: 0.05 }, 1.34);
+      tl.fromTo("#f06-word", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 1.62);
+
+      tl.fromTo("#f06-sub", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.38, ease: "power3.out" }, 2.16);
+      tl.fromTo("#f06-chip", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.36, ease: "power3.out" }, 2.6);
+
+      window.__timelines["06-cta"] = tl;
+    })();
+  </script>
+</template>

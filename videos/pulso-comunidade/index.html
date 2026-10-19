@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Pulso do Campo — Comunidade</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05070a; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #05070a; }
+      [data-composition-src] { position: absolute; inset: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="18" data-width="1080" data-height="1920">
+      <div id="el-01" data-composition-id="01-hook" data-composition-src="compositions/frames/01-hook.html" data-start="0" data-duration="4" data-track-index="1"></div>
+      <div id="el-02" data-composition-id="02-feed" data-composition-src="compositions/frames/02-feed.html" data-start="4" data-duration="10" data-track-index="1"></div>
+      <div id="el-03" data-composition-id="03-cta" data-composition-src="compositions/frames/03-cta.html" data-start="14" data-duration="4" data-track-index="1"></div>
+
+      <audio id="bgm" src="assets/bgm/bed-pulso-heygen-v22.mp3" data-start="0" data-duration="18" data-track-index="19" data-volume="0.16"></audio>
+      <audio id="sfx1" src="assets/sfx/whoosh-short.mp3" data-start="0.5" data-duration="0.57" data-track-index="20" data-volume="0.28"></audio>
+      <audio id="sfx2" src="assets/sfx/pop.mp3" data-start="4.2" data-duration="0.72" data-track-index="21" data-volume="0.32"></audio>
+      <audio id="sfx3" src="assets/sfx/click-soft.mp3" data-start="8.8" data-duration="0.37" data-track-index="22" data-volume="0.34"></audio>
+      <audio id="sfx4" src="assets/sfx/riser.mp3" data-start="14" data-duration="1.8" data-track-index="23" data-volume="0.3"></audio>
+      <audio id="sfx5" src="assets/sfx/impact-bass-1.mp3" data-start="14.2" data-duration="2" data-track-index="24" data-volume="0.34"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines.main = gsap.timeline({ paused: true });
+      (function () {
+        var tl = window.__timelines.main;
+        tl.to("#el-01", { opacity: 0, duration: 0.45, ease: "power2.inOut" }, 3.55);
+        tl.fromTo("#el-02", { opacity: 0 }, { opacity: 1, duration: 0.45, ease: "power2.inOut" }, 3.55);
+        tl.to("#el-02", { opacity: 0, duration: 0.4, ease: "power2.inOut" }, 13.6);
+        tl.fromTo("#el-03", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.4, ease: "power3.out" }, 13.6);
+        tl.to({}, { duration: 18 }, 0);
+      })();
+    </script>
+  </body>
+</html>

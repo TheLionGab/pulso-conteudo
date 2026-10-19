@@ -1,0 +1,161 @@
+<template>
+  <div id="root" data-composition-id="02-letra-miuda" data-duration="5.2" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; font-style: normal; font-display: block; }
+
+      #root {
+        position: absolute; inset: 0;
+        width: 1080px; height: 1920px;
+        overflow: hidden; container-type: size;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      .m-bg { position: absolute; inset: 0; background: #05070a; }
+
+      .m-chrome {
+        position: absolute; left: 59px; right: 59px; top: 96px;
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-weight: 500; font-size: 24px;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+      .m-chrome-label { color: #94a3b8; }
+
+      .m-head {
+        position: absolute; left: 59px; right: 59px; top: 204px;
+        font-weight: 900; font-size: 68px; line-height: 1.06;
+        letter-spacing: -0.03em; color: #ffffff;
+        will-change: transform, opacity;
+      }
+
+      .m-card {
+        position: absolute; left: 59px; right: 59px;
+        background: #0f1419;
+        border: 1px solid rgba(255,255,255,0.08);
+        padding: 36px 44px;
+        will-change: transform, opacity;
+      }
+      .m-card-a { top: 400px; height: 424px; border-left: 3px solid #10b981; }
+      .m-card-b { top: 866px; height: 424px; border-left: 3px solid #f59e0b; }
+
+      .m-top {
+        display: flex; justify-content: space-between; align-items: baseline;
+      }
+      .m-price {
+        font-weight: 900; font-size: 74px; line-height: 1;
+        letter-spacing: -0.035em; color: #ffffff;
+        font-variant-numeric: tabular-nums;
+      }
+      .m-card-a .m-price { color: #10b981; }
+      .m-card-b .m-price { color: #f59e0b; }
+      .m-chan {
+        font-weight: 700; font-size: 25px;
+        letter-spacing: 0.06em; color: #94a3b8;
+        text-align: right; max-width: 420px;
+      }
+
+      .m-specs { margin-top: 30px; }
+      .m-spec {
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding: 14px 0;
+        border-top: 1px solid rgba(255,255,255,0.07);
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .m-spec-k {
+        font-weight: 400; font-size: 27px; color: #717f94;
+      }
+      .m-spec-v {
+        font-weight: 700; font-size: 30px; color: #ffffff;
+        text-align: right;
+      }
+      .m-card-b .m-spec-hot .m-spec-v { color: #f59e0b; }
+
+      .m-punch {
+        position: absolute; left: 59px; right: 59px; top: 1362px;
+        font-weight: 700; font-size: 46px; line-height: 1.26;
+        letter-spacing: -0.022em; color: #ffffff;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .m-punch em { font-style: normal; color: #f59e0b; }
+
+      .m-src {
+        position: absolute; left: 59px; right: 59px; top: 1540px;
+        font-weight: 400; font-size: 23px; line-height: 1.5;
+        color: #5b6577;
+        opacity: 0;
+        will-change: opacity;
+      }
+    </style>
+
+    <div class="clip m-bg" data-start="0" data-duration="5.2" data-track-index="0"></div>
+
+    <div class="clip m-chrome" id="m-chrome" data-start="0" data-duration="5.2" data-track-index="1">
+      <span class="m-chrome-label">A letra miúda</span>
+      <span>02</span>
+    </div>
+
+    <div class="clip m-head" id="m-head" data-start="0" data-duration="5.2" data-track-index="2">
+      A diferença não está<br />no preço. Está na regra.
+    </div>
+
+    <div class="clip m-card m-card-a" id="m-card-a" data-start="0" data-duration="5.2" data-track-index="3">
+      <div class="m-top">
+        <span class="m-price">R$ 113,00</span>
+        <span class="m-chan">COOPERATIVA_BALCAO</span>
+      </div>
+      <div class="m-specs">
+        <div class="m-spec" id="m-a1"><span class="m-spec-k">Operação</span><span class="m-spec-v">Moega Cooperativa</span></div>
+        <div class="m-spec" id="m-a2"><span class="m-spec-k">Pagamento</span><span class="m-spec-v">À vista D+1</span></div>
+      </div>
+    </div>
+
+    <div class="clip m-card m-card-b" id="m-card-b" data-start="0" data-duration="5.2" data-track-index="4">
+      <div class="m-top">
+        <span class="m-price">R$ 118,00</span>
+        <span class="m-chan">TRADING_EXPORTACAO</span>
+      </div>
+      <div class="m-specs">
+        <div class="m-spec" id="m-b1"><span class="m-spec-k">Operação</span><span class="m-spec-v">Spot Comercial FOB</span></div>
+        <div class="m-spec m-spec-hot" id="m-b2"><span class="m-spec-k">Condição</span><span class="m-spec-v">Lote 5.000 sc</span></div>
+      </div>
+    </div>
+
+    <div class="clip m-punch" id="m-punch" data-start="0" data-duration="5.2" data-track-index="5">
+      Os <em>R$ 5,00</em> a mais custam um lote de 5.000 sacas.
+    </div>
+
+    <div class="clip m-src" id="m-src" data-start="0" data-duration="5.2" data-track-index="6">
+      Campos terms, channel e operation em anchors.py, linhas 80 e 81.
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      tl.fromTo("#m-chrome", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.32, ease: "power2.out" }, 0.04);
+      tl.fromTo("#m-head", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.44, ease: "power3.out" }, 0.14);
+
+      tl.fromTo("#m-card-a", { opacity: 0, x: -22 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 0.6);
+      /* specs unfold line by line — the terms are the argument, not the price */
+      tl.fromTo(["#m-a1", "#m-a2"], { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.26, ease: "power3.out", stagger: 0.16 }, 0.94);
+
+      tl.fromTo("#m-card-b", { opacity: 0, x: -22 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 2.0);
+      tl.fromTo(["#m-b1", "#m-b2"], { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.26, ease: "power3.out", stagger: 0.16 }, 2.34);
+
+      tl.fromTo("#m-punch", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.42, ease: "power3.out" }, 3.42);
+      tl.fromTo("#m-src", { opacity: 0 }, { opacity: 1, duration: 0.34, ease: "power2.out" }, 4.0);
+
+      window.__timelines["02-letra-miuda"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,32 @@
+<template>
+  <div id="root" data-composition-id="03-cta" data-duration="4.0" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; }
+      #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: "Inter", system-ui, sans-serif; background: #05070a; }
+      .lock { position: absolute; left: 0; right: 0; top: 780px; display: flex; justify-content: center; align-items: center; gap: 22px; }
+      .word { font-weight: 900; font-size: 78px; color: #fff; opacity: 0; }
+      .mark { width: 88px; height: 88px; opacity: 0; }
+      .mark .p { fill: none; stroke: url(#g); stroke-width: 58; stroke-linecap: round; stroke-linejoin: round; }
+      .sub { position: absolute; left: 59px; right: 59px; top: 930px; text-align: center; font-weight: 500; font-size: 36px; color: #94a3b8; opacity: 0; }
+      .chip { position: absolute; left: 50%; top: 1060px; transform: translateX(-50%); padding: 18px 36px; border: 1px solid rgba(16,185,129,0.42); background: rgba(16,185,129,0.08); color: #10b981; font-weight: 500; font-size: 26px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0; white-space: nowrap; }
+    </style>
+    <div class="clip lock" data-start="0" data-duration="4" data-track-index="0">
+      <svg class="mark" id="m" viewBox="0 0 1024 1024"><defs><linearGradient id="g" x1="220" y1="310" x2="804" y2="830" gradientUnits="userSpaceOnUse"><stop stop-color="#6EE7B7"/><stop offset="0.48" stop-color="#10B981"/><stop offset="1" stop-color="#047857"/></linearGradient></defs><path class="p" d="M220 462H350L405 405L467 536L548 310L618 462H804"/><path class="p" d="M512 584V832"/></svg>
+      <span class="word" id="w">Pulso do Campo</span>
+    </div>
+    <div class="clip sub" id="sub" data-start="0" data-duration="4" data-track-index="1">Entre na conversa da sua praça.</div>
+    <div class="clip chip" id="chip" data-start="0" data-duration="4" data-track-index="2">Baixe na App Store</div>
+    <script>
+      (function () {
+        var tl = gsap.timeline({ paused: true });
+        tl.fromTo("#m", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.4)" }, 0.15);
+        tl.fromTo("#w", { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 0.35);
+        tl.fromTo("#sub", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.38, ease: "power3.out" }, 0.85);
+        tl.fromTo("#chip", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.36, ease: "power3.out" }, 1.25);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["03-cta"] = tl;
+      })();
+    </script>
+  </div>
+</template>

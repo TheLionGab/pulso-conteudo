@@ -1,0 +1,155 @@
+<template>
+  <div id="root" data-composition-id="04-regra" data-duration="4.8" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; font-style: normal; font-display: block; }
+
+      #root {
+        position: absolute; inset: 0;
+        width: 1080px; height: 1920px;
+        overflow: hidden; container-type: size;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      .r-bg { position: absolute; inset: 0; background: #05070a; }
+
+      .r-chrome {
+        position: absolute; left: 59px; right: 59px; top: 96px;
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-weight: 500; font-size: 24px;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+      .r-chrome-label { color: #94a3b8; }
+
+      .r-head {
+        position: absolute; left: 59px; right: 59px; top: 206px;
+        font-weight: 900; font-size: 70px; line-height: 1.06;
+        letter-spacing: -0.03em; color: #ffffff;
+        will-change: transform, opacity;
+      }
+
+      /* the two rules, stated as the engine states them */
+      .r-rule {
+        position: absolute; left: 59px; right: 59px;
+        background: #0f1419;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-left: 3px solid #10b981;
+        padding: 34px 42px;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .r-rule-1 { top: 400px; height: 226px; }
+      .r-rule-2 { top: 660px; height: 226px; }
+
+      .r-rule-k {
+        font-weight: 500; font-size: 24px;
+        letter-spacing: 0.12em; text-transform: uppercase;
+        color: #10b981;
+      }
+      .r-rule-v {
+        margin-top: 20px;
+        font-weight: 700; font-size: 42px; line-height: 1.2;
+        letter-spacing: -0.02em; color: #ffffff;
+      }
+
+      /* the outcome — what the producer actually sees */
+      .r-out {
+        position: absolute; left: 59px; right: 59px; top: 946px;
+        height: 300px;
+        background: #0b1f18;
+        border: 1px solid rgba(16,185,129,0.34);
+        padding: 40px 44px;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .r-out-k {
+        font-weight: 500; font-size: 25px;
+        letter-spacing: 0.12em; text-transform: uppercase;
+        color: #10b981;
+      }
+      .r-out-v {
+        margin-top: 22px;
+        font-weight: 900; font-size: 106px; line-height: 1;
+        letter-spacing: -0.035em; color: #10b981;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .r-thesis {
+        position: absolute; left: 59px; right: 59px; top: 1310px;
+        font-weight: 700; font-size: 48px; line-height: 1.24;
+        letter-spacing: -0.022em; color: #ffffff;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+
+      .r-src {
+        position: absolute; left: 59px; right: 59px; top: 1512px;
+        font-weight: 400; font-size: 23px; line-height: 1.5;
+        color: #5b6577;
+        opacity: 0;
+        will-change: opacity;
+      }
+    </style>
+
+    <div class="clip r-bg" data-start="0" data-duration="4.8" data-track-index="0"></div>
+
+    <div class="clip r-chrome" id="r-chrome" data-start="0" data-duration="4.8" data-track-index="1">
+      <span class="r-chrome-label">A regra do motor</span>
+      <span>04</span>
+    </div>
+
+    <div class="clip r-head" id="r-head" data-start="0" data-duration="4.8" data-track-index="2">
+      Duas linhas de código<br />decidem o que você vê.
+    </div>
+
+    <div class="clip r-rule r-rule-1" id="r-rule-1" data-start="0" data-duration="4.8" data-track-index="3">
+      <div class="r-rule-k">Primeiro</div>
+      <div class="r-rule-v">Balcão de cooperativa vem antes de trading.</div>
+    </div>
+
+    <div class="clip r-rule r-rule-2" id="r-rule-2" data-start="0" data-duration="4.8" data-track-index="4">
+      <div class="r-rule-k">Depois</div>
+      <div class="r-rule-v">Entre as que sobraram, vale a mais baixa.</div>
+    </div>
+
+    <div class="clip r-out" id="r-out" data-start="0" data-duration="4.8" data-track-index="5">
+      <div class="r-out-k">O que aparece no seu app</div>
+      <div class="r-out-v">R$ 113,00</div>
+    </div>
+
+    <div class="clip r-thesis" id="r-thesis" data-start="0" data-duration="4.8" data-track-index="6">
+      O preço que você fecha, não o que a vitrine anuncia.
+    </div>
+
+    <div class="clip r-src" id="r-src" data-start="0" data-duration="4.8" data-track-index="7">
+      resolver.py, linhas 72 a 74 e 123 — ordenação por canal e min(prices).
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      tl.fromTo("#r-chrome", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.32, ease: "power2.out" }, 0.04);
+      tl.fromTo("#r-head", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.44, ease: "power3.out" }, 0.14);
+
+      tl.fromTo("#r-rule-1", { opacity: 0, x: -22 }, { opacity: 1, x: 0, duration: 0.38, ease: "power3.out" }, 0.62);
+      tl.fromTo("#r-rule-2", { opacity: 0, x: -22 }, { opacity: 1, x: 0, duration: 0.38, ease: "power3.out" }, 1.26);
+
+      /* the outcome lands hard — it is the answer to frame 01's question */
+      tl.fromTo("#r-out", { opacity: 0, scaleY: 0.88, transformOrigin: "50% 0%" }, { opacity: 1, scaleY: 1, duration: 0.42, ease: "power3.out" }, 2.02);
+
+      tl.fromTo("#r-thesis", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.42, ease: "power3.out" }, 2.74);
+      tl.fromTo("#r-src", { opacity: 0 }, { opacity: 1, duration: 0.34, ease: "power2.out" }, 3.36);
+
+      window.__timelines["04-regra"] = tl;
+    })();
+  </script>
+</template>

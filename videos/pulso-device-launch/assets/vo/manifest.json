@@ -1,0 +1,35 @@
+[
+  {
+    "provider": "heygen-starfish"
+  },
+  {
+    "file": "assets/vo/vo-01.mp3",
+    "text": "Pulso do Campo. O preço real, no seu bolso.",
+    "duration_s": 4.832653
+  },
+  {
+    "file": "assets/vo/vo-02.mp3",
+    "text": "Cotações da sua praça. Não é média nacional.",
+    "duration_s": 3.604898
+  },
+  {
+    "file": "assets/vo/vo-05.mp3",
+    "text": "O campo falando. De verdade.",
+    "duration_s": 3.422041
+  },
+  {
+    "file": "assets/vo/vo-03.mp3",
+    "text": "(copy vo-01.mp3)",
+    "duration_s": 1.593469
+  },
+  {
+    "file": "assets/vo/vo-04.mp3",
+    "text": "(copy vo-02.mp3)",
+    "duration_s": 3.213061
+  },
+  {
+    "file": "assets/vo/vo-06.mp3",
+    "text": "(copy vo-04.mp3)",
+    "duration_s": 3.056327
+  }
+]

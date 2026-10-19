@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Pulso do Campo — Stories de feedback</title>
+    <!--
+      Arte de Stories (1080x1920) para a campanha de feedback.
+
+      Determinismo: NENHUMA animação roda sozinha. Todo keyframe fica
+      `animation-play-state: paused` com `animation-delay: calc(-1 * var(--t))`,
+      então o quadro renderizado é função pura de `?t=<ms>`. É isso que permite
+      render.mjs capturar 144 quadros idênticos a cada execução (e reproduzir o
+      MP4 byte-a-byte).
+
+      Parâmetros de URL:
+        ?frame=1|2|3   qual peça da sequência
+        &t=<ms>        instante da animação (0 = estado inicial, 2600 = repouso)
+        &guide=1       desenha a zona reservada ao sticker do Instagram
+    -->
+    <style>
+      @font-face {
+        font-family: 'Inter';
+        src: url('inter-latin-var.woff2') format('woff2-variations');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: block;
+      }
+
+      /* Tokens espelhados de apps/meu-talhao/theme/{foundation,semantic}.ts.
+         Não inventar cor aqui: a arte tem que ser a mesma paleta do app. */
+      :root {
+        --bg: #05070a;
+        --bg-forest: #080f0d;
+        --brand-300: #86efac;
+        --brand-400: #4ade80;
+        --brand-500: #10b981;
+        --brand-700: #047857;
+        --text: #ffffff;
+        --text-secondary: #94a3b8;
+        --text-muted: #717f94;
+        --hairline: rgba(255, 255, 255, 0.08);
+
+        /* Safe area do Instagram Stories: a UI do app (avatar/barra de progresso
+           no topo, campo de resposta embaixo) come as bordas. 1080x1920 com
+           250px reservados em cima e 320 embaixo é o retângulo confiável. */
+        --safe-top: 250px;
+        --safe-bottom: 320px;
+        --margin: 96px;
+
+        --t: 2600ms;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: var(--bg);
+      }
+
+      body {
+        font-family: 'Inter', system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: geometricPrecision;
+      }
+
+      .stage {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        isolation: isolate;
+      }
+
+      /* ---------- fundo ---------- */
+
+      /* Réplica exata de components/ui/ScreenBackground.tsx: mesmos stops, mesmas
+         locations. É o fundo que o usuário vê ao abrir o app — a peça precisa ser
+         a MESMA superfície, não uma interpretação dela. */
+      .bg {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, #080f0d 0%, #070b0b 30%, #060809 60%, #05070a 100%);
+      }
+
+      /* Glow do app: 600dp de altura, start {0.3,0} → end {0.7,1}. A 3x (1080px
+         de largura = 360dp), 600dp viram 1800px e o vetor (0.4w, 1h) dá 166.5deg. */
+      .glow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1800px;
+        background: linear-gradient(
+          166.5deg,
+          rgba(16, 185, 129, 0.05) 0%,
+          rgba(16, 185, 129, 0.015) 40%,
+          transparent 100%
+        );
+      }
+
+      /* Respiro do brilho: 4s, o mesmo tempo do pulso da linha. */
+      .bloom {
+        position: absolute;
+        left: 50%;
+        top: -180px;
+        width: 1400px;
+        height: 1100px;
+        transform: translateX(-50%);
+        background: radial-gradient(
+          closest-side,
+          rgba(16, 185, 129, 0.09),
+          rgba(16, 185, 129, 0.03) 55%,
+          transparent 78%
+        );
+        filter: blur(60px);
+        animation: breathe 4000ms ease-in-out infinite;
+      }
+
+      @keyframes breathe {
+        0%,
+        100% {
+          opacity: 0.5;
+          transform: translateX(-50%) scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: translateX(-50%) scale(1.05);
+        }
+      }
+
+      /* Grão: quebra o banding do gradiente quando o Instagram recomprime. */
+      .grain {
+        position: absolute;
+        inset: 0;
+        opacity: 0.035;
+        mix-blend-mode: overlay;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/></filter><rect width="180" height="180" filter="url(%23n)"/></svg>');
+      }
+
+      .vignette {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 62%, rgba(0, 0, 0, 0.35) 100%);
+      }
+
+      /* ---------- conteúdo ---------- */
+
+      .content {
+        position: absolute;
+        inset: var(--safe-top) var(--margin) var(--safe-bottom);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        animation: rise 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      .brand svg {
+        width: 86px;
+        height: 86px;
+        display: block;
+      }
+
+      .brand-name {
+        font-size: 30px;
+        font-weight: 800;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: var(--text);
+      }
+
+      .eyebrow {
+        margin-top: 84px;
+        display: inline-flex;
+        align-items: center;
+        align-self: flex-start;
+        gap: 16px;
+        padding: 16px 30px;
+        /* surfaceTints.successSoft / successBorder + borderRadius.full */
+        border: 1px solid rgba(16, 185, 129, 0.22);
+        border-radius: 9999px;
+        background: rgba(16, 185, 129, 0.1);
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--brand-300);
+        animation: rise 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      .eyebrow .dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--brand-400);
+        box-shadow: 0 0 18px rgba(74, 222, 128, 0.9);
+      }
+
+      h1 {
+        margin-top: 44px;
+        font-size: 88px;
+        font-weight: 900;
+        line-height: 1.05;
+        letter-spacing: -0.035em;
+        color: var(--text);
+      }
+
+      h1 .em {
+        background: linear-gradient(100deg, #a7f3d0 0%, var(--brand-300) 38%, var(--brand-500) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      /* Cada linha do título sobe sozinha, 90ms de defasagem. */
+      h1 .line {
+        display: block;
+        animation: rise 760ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      .sub {
+        margin-top: 36px;
+        font-size: 38px;
+        font-weight: 400;
+        line-height: 1.42;
+        color: var(--text-secondary);
+        animation: rise 760ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      .sub strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      /* Zona do sticker: espaço vazio reservado. `guide=1` desenha a moldura
+         para quem posta saber onde soltar a caixinha/enquete; a arte final
+         (guide=0) sai limpa. */
+      .sticker-zone {
+        margin-top: auto;
+        height: 360px;
+        /* borderRadius['2xl'] do app, escalado 3x como o resto da peça */
+        border-radius: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0 40px;
+        font-size: 30px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: transparent;
+      }
+
+      body.guide .sticker-zone {
+        /* shell.surface + shell.border: o mesmo card do app, só que tracejado
+           para deixar claro que é guia de montagem, não arte final. */
+        border: 3px dashed rgba(255, 255, 255, 0.16);
+        background: #0f1419;
+        color: var(--brand-300);
+      }
+
+      .footer {
+        margin-top: 40px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-size: 28px;
+        font-weight: 500;
+        color: var(--text-muted);
+        animation: rise 760ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      .footer .rule {
+        flex: 1;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.06); /* shell.divider */
+      }
+
+      /* ---------- linha de pulso (assinatura da marca) ---------- */
+
+      .pulseline {
+        margin-top: 40px;
+        height: 104px;
+        overflow: hidden;
+      }
+
+      .pulseline svg {
+        width: 888px;
+        height: 104px;
+        display: block;
+      }
+
+      .pulseline .trace {
+        fill: none;
+        stroke: url(#pulseGrad);
+        stroke-width: 7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        animation: draw 1600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        filter: drop-shadow(0 0 22px rgba(16, 185, 129, 0.55));
+      }
+
+      /* Varredura contínua sobre o traçado já escrito — é o que mantém o vídeo
+         vivo depois de 1,6s, quando todo o resto já entrou. Sem isto sobravam
+         4s de quadro parado. */
+      .pulseline .sweep {
+        fill: none;
+        stroke: #d1fae5;
+        stroke-width: 9;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 70 930;
+        stroke-dashoffset: 1000;
+        opacity: 0.9;
+        animation:
+          sweep 2600ms linear infinite,
+          sweepIn 600ms ease-out both;
+        filter: drop-shadow(0 0 26px rgba(167, 243, 208, 0.85));
+      }
+
+      @keyframes draw {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      @keyframes sweep {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      @keyframes sweepIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 0.9;
+        }
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(38px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Congela tudo no instante --t. Sem isto o quadro capturado depende de
+         quando o screenshot chegou — que é exatamente o bug que este arquivo
+         existe para não ter.
+
+         `animation-delay` é declarado UMA vez só, aqui. Se alguma regra acima
+         voltar a declarar delay próprio, a especificidade de :nth-child passa a
+         ganhar deste bloco e o congelamento silenciosamente para de valer. */
+      .bloom,
+      .brand,
+      .eyebrow,
+      h1 .line,
+      .sub,
+      .footer,
+      .pulseline .trace,
+      .pulseline .sweep {
+        animation-play-state: paused;
+        animation-delay: calc(var(--anim-delay, 0ms) - var(--t));
+      }
+
+      .eyebrow {
+        --anim-delay: 160ms;
+      }
+      h1 .line:nth-child(1) {
+        --anim-delay: 300ms;
+      }
+      h1 .line:nth-child(2) {
+        --anim-delay: 390ms;
+      }
+      h1 .line:nth-child(3) {
+        --anim-delay: 480ms;
+      }
+      h1 .line:nth-child(4) {
+        --anim-delay: 570ms;
+      }
+      .sub {
+        --anim-delay: 700ms;
+      }
+      .pulseline .trace {
+        --anim-delay: 620ms;
+      }
+      .pulseline .sweep {
+        --anim-delay: 1500ms;
+      }
+      .footer {
+        --anim-delay: 900ms;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <div class="bg"></div>
+      <div class="glow"></div>
+      <div class="bloom"></div>
+      <div class="vignette"></div>
+      <div class="grain"></div>
+
+      <template id="pulseline-tpl">
+        <svg viewBox="0 0 1080 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="pulseGrad" x1="0" y1="0" x2="1080" y2="0" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#10B981" stop-opacity="0" />
+              <stop offset="0.18" stop-color="#10B981" stop-opacity="0.65" />
+              <stop offset="0.5" stop-color="#6EE7B7" />
+              <stop offset="0.82" stop-color="#10B981" stop-opacity="0.65" />
+              <stop offset="1" stop-color="#047857" stop-opacity="0" />
+            </linearGradient>
+          </defs>
+          <path
+            class="trace"
+            pathLength="1000"
+            d="M0 118 H250 L292 82 L340 158 L398 30 L452 118 H640 L676 96 L712 132 L752 118 H1080"
+          />
+          <path
+            class="sweep"
+            pathLength="1000"
+            d="M0 118 H250 L292 82 L340 158 L398 30 L452 118 H640 L676 96 L712 132 L752 118 H1080"
+          />
+        </svg>
+      </template>
+
+      <div class="content">
+        <div class="brand">
+          <!-- Marca de apps/meu-talhao/assets/brand/pulso-do-campo.svg -->
+          <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" fill="none">
+            <defs>
+              <linearGradient id="mark" x1="220" y1="310" x2="804" y2="830" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#6EE7B7" />
+                <stop offset="0.48" stop-color="#10B981" />
+                <stop offset="1" stop-color="#047857" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M220 462H350L405 405L467 536L548 310L618 462H804"
+              stroke="url(#mark)"
+              stroke-width="58"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path d="M512 584V832" stroke="url(#mark)" stroke-width="58" stroke-linecap="round" />
+            <path
+              d="M452 584C438 680 406 760 360 830"
+              stroke="url(#mark)"
+              stroke-width="48"
+              stroke-linecap="round"
+              opacity="0.88"
+            />
+            <path
+              d="M572 584C586 680 618 760 664 830"
+              stroke="url(#mark)"
+              stroke-width="48"
+              stroke-linecap="round"
+              opacity="0.88"
+            />
+            <path
+              d="M398 594C352 678 306 754 246 814"
+              stroke="url(#mark)"
+              stroke-width="38"
+              stroke-linecap="round"
+              opacity="0.48"
+            />
+            <path
+              d="M626 594C672 678 718 754 778 814"
+              stroke="url(#mark)"
+              stroke-width="38"
+              stroke-linecap="round"
+              opacity="0.48"
+            />
+          </svg>
+          <span class="brand-name">Pulso do Campo</span>
+        </div>
+
+        <div class="eyebrow"><span class="dot"></span><span id="eyebrow-text"></span></div>
+        <h1 id="headline"></h1>
+        <p class="sub" id="sub"></p>
+
+        <div class="pulseline" id="pulseline"></div>
+
+        <div class="sticker-zone" id="sticker-zone"></div>
+
+        <div class="footer">
+          <span id="footer-text"></span>
+          <span class="rule"></span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Copy das 3 peças. Fonte única: alterar aqui muda arte, vídeo e o que
+      // está documentado no README — não duplicar texto em outro lugar.
+      const FRAMES = {
+        1: {
+          eyebrow: 'Sua opinião',
+          headline: ['O que você', 'está achando', '<span class="em">do Pulso do Campo?</span>'],
+          sub: 'Sem filtro. <strong>O que você responder aqui define o que a gente faz primeiro.</strong>',
+          sticker: 'Caixinha de perguntas aqui',
+          footer: 'Responde aí embaixo — a gente lê tudo',
+        },
+        2: {
+          eyebrow: 'Pergunta rápida',
+          headline: ['O Radar de hoje', 'te ajudou a decidir', '<span class="em">alguma coisa?</span>'],
+          sub: 'Duas opções, dois segundos. <strong>Não tem resposta certa.</strong>',
+          sticker: 'Enquete: Ajudou · Ainda não',
+          footer: 'Clima, mercado e operação no mesmo lugar',
+        },
+        3: {
+          eyebrow: 'Última',
+          headline: ['Quanto você', 'indicaria o Pulso', '<span class="em">pra outro produtor?</span>'],
+          sub: '<strong>Nota baixa com motivo vale mais que nota alta calada.</strong>',
+          sticker: 'Controle deslizante 🔥',
+          footer: 'Obrigado — isso vira prioridade na próxima versão',
+        },
+      };
+
+      const params = new URLSearchParams(location.search);
+      const frame = FRAMES[params.get('frame') || '1'];
+      if (!frame) throw new Error('frame inválido: use 1, 2 ou 3');
+
+      document.getElementById('eyebrow-text').textContent = frame.eyebrow;
+      document.getElementById('headline').innerHTML = frame.headline
+        .map((l) => `<span class="line">${l}</span>`)
+        .join('');
+      document.getElementById('sub').innerHTML = frame.sub;
+      document.getElementById('sticker-zone').textContent = frame.sticker;
+      document.getElementById('footer-text').textContent = frame.footer;
+
+      document
+        .getElementById('pulseline')
+        .append(document.getElementById('pulseline-tpl').content.cloneNode(true));
+
+      if (params.get('guide') === '1') document.body.classList.add('guide');
+      document.documentElement.style.setProperty('--t', `${params.get('t') ?? 2600}ms`);
+
+      // Sinaliza ao render.mjs que fonte e layout estabilizaram. Screenshot
+      // antes disto captura fallback de fonte (métrica errada, quebra de linha
+      // diferente) — foi por isso que o flag existe.
+      document.fonts.ready.then(() => {
+        document.documentElement.dataset.ready = '1';
+      });
+    </script>
+  </body>
+</html>

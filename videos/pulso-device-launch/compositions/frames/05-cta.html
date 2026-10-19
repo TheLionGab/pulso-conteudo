@@ -1,0 +1,33 @@
+<template>
+  <div id="root" data-composition-id="05-cta" data-duration="3.0" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; }
+      #root { position:absolute; inset:0; width:1080px; height:1920px; overflow:hidden; font-family:"Inter",system-ui,sans-serif; background:#05070a; }
+      .glow { position:absolute; left:50%; top:50%; width:1000px; height:1000px; margin:-500px 0 0 -500px; background:radial-gradient(circle,rgba(16,185,129,.25) 0%,transparent 65%); opacity:0; }
+      .lock { position:absolute; left:0; right:0; top:720px; display:flex; justify-content:center; align-items:center; gap:24px; }
+      .word { font-weight:900; font-size:84px; color:#fff; opacity:0; letter-spacing:-.03em; }
+      .mark { width:92px; height:92px; opacity:0; }
+      .mark .p { fill:none; stroke:url(#gc); stroke-width:58; stroke-linecap:round; }
+      .chip { position:absolute; left:50%; top:920px; transform:translateX(-50%); padding:22px 44px; border:2px solid #10b981; background:rgba(16,185,129,.1); color:#10b981; font-weight:500; font-size:28px; letter-spacing:.14em; text-transform:uppercase; opacity:0; white-space:nowrap; }
+      .sub { position:absolute; left:59px; right:59px; top:1040px; text-align:center; font-size:36px; color:#94a3b8; opacity:0; }
+    </style>
+    <div class="clip glow" id="glow" data-start="0" data-duration="3" data-track-index="0"></div>
+    <div class="clip lock" data-start="0" data-duration="3" data-track-index="1">
+      <svg class="mark" id="m" viewBox="0 0 1024 1024"><defs><linearGradient id="gc" x1="220" y1="310" x2="804" y2="830" gradientUnits="userSpaceOnUse"><stop stop-color="#6EE7B7"/><stop offset=".48" stop-color="#10B981"/><stop offset="1" stop-color="#047857"/></linearGradient></defs><path class="p" d="M220 462H350L405 405L467 536L548 310L618 462H804"/><path class="p" d="M512 584V832"/></svg>
+      <span class="word" id="w">Pulso do Campo</span>
+    </div>
+    <div class="clip chip" id="chip" data-start="0" data-duration="3" data-track-index="2">Baixe na App Store</div>
+    <div class="clip sub" id="sub" data-start="0" data-duration="3" data-track-index="3">Grátis. Sem cadastro. Agora.</div>
+    <script>
+      (function(){var tl=gsap.timeline({paused:true});
+        tl.fromTo("#glow",{opacity:0,scale:.7},{opacity:1,scale:1.15,duration:.5,ease:"power2.out"},0);
+        tl.fromTo("#m",{opacity:0,scale:.75},{opacity:1,scale:1,duration:.45,ease:"back.out(1.7)"},.12);
+        tl.fromTo("#w",{opacity:0,x:24},{opacity:1,x:0,duration:.42,ease:"power3.out"},.32);
+        tl.fromTo("#chip",{opacity:0,scale:.7},{opacity:1,scale:1,duration:.45,ease:"back.out(2)"},.75);
+        tl.fromTo("#sub",{opacity:0,y:12},{opacity:1,y:0,duration:.35,ease:"power3.out"},1.1);
+        tl.to("#glow",{opacity:.7,scale:1.25,duration:1.6,ease:"sine.inOut"},1.2);
+        window.__timelines=window.__timelines||{};window.__timelines["05-cta"]=tl;})();
+    </script>
+  </div>
+</template>

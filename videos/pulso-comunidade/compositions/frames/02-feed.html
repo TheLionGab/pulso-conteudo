@@ -1,0 +1,49 @@
+<template>
+  <div id="root" data-composition-id="02-feed" data-duration="10.0" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; }
+      #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: "Inter", system-ui, sans-serif; background: #05070a; }
+      .hdr { position: absolute; left: 48px; right: 48px; top: 140px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 22px; }
+      .hdr h1 { font-weight: 700; font-size: 34px; color: #fff; }
+      .hdr span { font-size: 26px; color: #10b981; font-weight: 700; }
+      .feed { position: absolute; left: 48px; right: 48px; top: 240px; bottom: 120px; }
+      .card { position: absolute; left: 0; right: 0; background: #0f1419; border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 36px; opacity: 0; }
+      .card1 { top: 0; }
+      .card2 { top: 520px; }
+      .tag { display: inline-block; font-size: 22px; font-weight: 700; color: #10b981; margin-bottom: 16px; }
+      .author { font-size: 26px; color: #94a3b8; margin-bottom: 18px; }
+      .body { font-size: 30px; line-height: 1.42; color: #e2e8f0; }
+      .meta { margin-top: 22px; font-size: 24px; color: #717f94; }
+      .badge { display: inline-block; margin-left: 12px; padding: 6px 14px; border-radius: 999px; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.35); color: #10b981; font-size: 20px; font-weight: 700; }
+    </style>
+    <div class="clip hdr" data-start="0" data-duration="10" data-track-index="0">
+      <h1>Comunidade</h1><span>AO VIVO</span>
+    </div>
+    <div class="feed">
+      <div class="clip card card1" id="c1" data-start="0" data-duration="10" data-track-index="1">
+        <div class="tag">#Preços</div>
+        <div class="author">Produtor Anônimo · Sorriso</div>
+        <div class="body">Amanhã tem mesa. Corretor mandou áudio de 4 minutos. O print do preço já envelheceu.<br/><br/>Alguém mais sente que o balcão virou WhatsApp com CNPJ?</div>
+        <div class="meta">501 curtidas · 6 respostas</div>
+      </div>
+      <div class="clip card card2" id="c2" data-start="0" data-duration="10" data-track-index="2">
+        <div class="tag">#Clima <span class="badge">Pulso Recomenda</span></div>
+        <div class="author">Produtor Anônimo · Alta Floresta</div>
+        <div class="body">Choveu 38 mm em 40 min. Vizinho jurou que o pivô ligou sozinho às 3h.<br/><br/>Problema: ele não tem pivô. Só guarda-sol de feira.</div>
+        <div class="meta">618 curtidas · 5 respostas</div>
+      </div>
+    </div>
+    <script>
+      (function () {
+        var tl = gsap.timeline({ paused: true });
+        tl.fromTo("#c1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.3);
+        tl.to("#c1", { y: -80, opacity: 0.35, duration: 0.6, ease: "power2.inOut" }, 4.2);
+        tl.fromTo("#c2", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 4.5);
+        tl.to("#c2", { y: -120, duration: 0.7, ease: "power2.inOut" }, 8.5);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["02-feed"] = tl;
+      })();
+    </script>
+  </div>
+</template>

@@ -1,0 +1,29 @@
+{
+  "provider": "elevenlabs",
+  "cues": [
+    {
+      "name": "whoosh-short",
+      "file": "assets/sfx/elevenlabs/whoosh-short.mp3",
+      "duration_s": 0.6,
+      "prompt": "short smooth UI whoosh transition, airy, modern app"
+    },
+    {
+      "name": "click-soft",
+      "file": "assets/sfx/elevenlabs/click-soft.mp3",
+      "duration_s": 0.48,
+      "prompt": "soft premium mobile UI tap click, subtle, not harsh"
+    },
+    {
+      "name": "impact-bass-2",
+      "file": "assets/sfx/elevenlabs/impact-bass-2.mp3",
+      "duration_s": 1.2,
+      "prompt": "deep soft bass impact for price reveal, controlled, not cinematic"
+    },
+    {
+      "name": "riser",
+      "file": "assets/sfx/elevenlabs/riser.mp3",
+      "duration_s": 1.48,
+      "prompt": "short subtle riser for app store CTA lockup, 1.5 seconds"
+    }
+  ]
+}

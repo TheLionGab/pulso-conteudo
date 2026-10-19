@@ -1,0 +1,697 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Inter";
+      font-weight: 400;
+      font-style: normal;
+      src: url("assets/fonts/Inter_400Regular.ttf") format("truetype");
+    }
+    @font-face {
+      font-family: "Inter";
+      font-weight: 500;
+      font-style: normal;
+      src: url("assets/fonts/Inter_500Medium.ttf") format("truetype");
+    }
+    @font-face {
+      font-family: "Inter";
+      font-weight: 700;
+      font-style: normal;
+      src: url("assets/fonts/Inter_700Bold.ttf") format("truetype");
+    }
+    @font-face {
+      font-family: "Inter";
+      font-weight: 900;
+      font-style: normal;
+      src: url("assets/fonts/Inter_900Black.ttf") format("truetype");
+    }
+
+    #root {
+      width: 1080px;
+      height: 1920px;
+      position: relative;
+      overflow: hidden;
+      container-type: size;
+      font-family: "Inter", sans-serif;
+    }
+
+    /* ---------- full-bleed ground (clip layer, never #root) ---------- */
+    .f03-bg {
+      position: absolute;
+      inset: 0;
+      background: #05070a;
+    }
+
+    .f03-stage {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* ---------- top chrome ---------- */
+    .f03-chrome {
+      position: absolute;
+      top: 4.2cqh;
+      left: 5.5cqw;
+      right: 5.5cqw;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .f03-kicker-block .f03-rule {
+      width: 3.3cqw;
+      height: 2px;
+      background: #10b981;
+      margin-bottom: 1.1cqw;
+    }
+    .f03-kicker {
+      font-family: "Inter", monospace;
+      font-weight: 500;
+      font-size: 1.6cqw;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #10b981;
+    }
+    .f03-num {
+      font-family: "Inter", monospace;
+      font-weight: 500;
+      font-size: 1.6cqw;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #717f94;
+    }
+
+    /* ---------- emphasis line (keyword glow) ---------- */
+    .f03-emphasis {
+      position: absolute;
+      top: 9.8cqh;
+      left: 5.5cqw;
+      display: flex;
+      align-items: baseline;
+      gap: 1.4cqw;
+      font-weight: 700;
+      font-size: 5cqw;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      text-transform: lowercase;
+    }
+    .f03-emphasis .f03-slash {
+      font-family: "Inter", monospace;
+      font-weight: 500;
+      font-size: 3.4cqw;
+      color: #10b981;
+    }
+    .f03-word {
+      display: inline-block;
+      transform-origin: 50% 50%;
+      color: #717f94;
+      text-shadow: 0 0 0 rgba(16, 185, 129, 0);
+    }
+
+    /* ---------- device (the hero — the only rounded surfaces) ---------- */
+    .f03-device {
+      position: absolute;
+      top: 16.5cqh;
+      left: 50%;
+      margin-left: -27.5cqw;
+      width: 55cqw;
+      height: 60cqh;
+      background: #05070a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4.8cqw;
+      padding: 1.1cqw;
+    }
+    .f03-screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: #0f1419;
+      border-radius: 3.9cqw;
+      overflow: hidden;
+    }
+    .f03-notch {
+      position: absolute;
+      top: 1.2cqw;
+      left: 50%;
+      margin-left: -5.5cqw;
+      width: 11cqw;
+      height: 2.4cqw;
+      background: #05070a;
+      border-radius: 1.2cqw;
+      z-index: 5;
+    }
+    .f03-screen-stack {
+      position: absolute;
+      inset: 0;
+      padding: 6cqw 4cqw 0 4cqw;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* app header */
+    .f03-app-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1.2cqw;
+      padding-bottom: 2.2cqw;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .f03-app-title {
+      font-weight: 700;
+      font-size: 3.2cqw;
+      color: #ffffff;
+    }
+    .f03-app-loc {
+      font-weight: 500;
+      font-size: 2.4cqw;
+      color: #94a3b8;
+    }
+    .f03-app-time {
+      margin-left: auto;
+      font-family: "Inter", monospace;
+      font-weight: 500;
+      font-size: 1.4cqw;
+      letter-spacing: 0.14em;
+      color: #717f94;
+    }
+
+    /* cards (inner cards — rounded allowed) */
+    .f03-card {
+      position: relative;
+      background: #0f1419;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 2.2cqw;
+      padding: 3.6cqw 4cqw;
+    }
+    .f03-card-main {
+      margin-top: 2.6cqw;
+    }
+    .f03-card-kicker {
+      font-family: "Inter", monospace;
+      font-weight: 500;
+      font-size: 1.45cqw;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #10b981;
+    }
+    .f03-card-title {
+      margin-top: 0.9cqw;
+      font-weight: 900;
+      font-size: 5cqw;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      text-transform: lowercase;
+      color: #ffffff;
+    }
+
+    .f03-price-row {
+      margin-top: 2.4cqw;
+      display: flex;
+      align-items: baseline;
+      gap: 1cqw;
+    }
+    .f03-price-cur {
+      font-weight: 700;
+      font-size: 2.8cqw;
+      color: #10b981;
+    }
+    .f03-counter-wrap {
+      display: inline-flex;
+      align-items: baseline;
+      width: 36cqw; /* fixed — no layout shift as digit count changes; wider than
+        Barlow's original 30cqw because Inter 900 renders these tabular digits wider */
+    }
+    .f03-counter {
+      display: inline-block;
+      font-variant-numeric: tabular-nums;
+      font-weight: 900;
+      font-size: 10cqw;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: #10b981;
+      transform-origin: left center;
+    }
+    .f03-price-suffix {
+      font-weight: 500;
+      font-size: 2.6cqw;
+      color: #94a3b8;
+    }
+    .f03-meta-row {
+      margin-top: 1.8cqw;
+      font-family: "Inter", monospace;
+      font-weight: 500;
+      font-size: 1.45cqw;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #94a3b8;
+    }
+
+    .f03-badge {
+      margin-top: 2.6cqw;
+      display: inline-flex;
+      align-items: center;
+      gap: 1cqw;
+      background: #10b981;
+      color: #05070a;
+      padding: 1.1cqw 1.8cqw;
+      font-family: "Inter", monospace;
+      font-weight: 500;
+      font-size: 1.4cqw;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      transform-origin: left center;
+    }
+    .f03-badge svg {
+      width: 1.8cqw;
+      height: 1.8cqw;
+      display: block;
+    }
+
+    .f03-divider {
+      margin-top: 2.8cqw;
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      transform-origin: left center;
+    }
+    .f03-source-row {
+      margin-top: 2.2cqw;
+      display: flex;
+      align-items: center;
+      gap: 1.2cqw;
+      font-family: "Inter", monospace;
+      font-weight: 500;
+      font-size: 1.4cqw;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #94a3b8;
+    }
+    .f03-source-dot {
+      width: 1cqw;
+      height: 1cqw;
+      background: #10b981;
+      flex: none;
+    }
+    .f03-source-row .f03-hint {
+      color: #717f94;
+    }
+
+    /* skeleton overlay inside card 1 */
+    .f03-skeleton {
+      position: absolute;
+      inset: 3.6cqw 4cqw;
+      display: flex;
+      flex-direction: column;
+      gap: 2.2cqw;
+    }
+    .f03-skel-bar {
+      height: 2.2cqw;
+      background: #141a20;
+    }
+    .f03-skel-bar.f03-skel-big {
+      height: 7.5cqw;
+      background: #141a20;
+    }
+
+    /* list section below */
+    .f03-list-label {
+      margin-top: 2.8cqw;
+      font-family: "Inter", monospace;
+      font-weight: 500;
+      font-size: 1.4cqw;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #717f94;
+    }
+    .f03-card-2 {
+      margin-top: 1.6cqw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .f03-c2-name {
+      font-weight: 700;
+      font-size: 3.4cqw;
+      letter-spacing: -0.02em;
+      text-transform: lowercase;
+      color: #ffffff;
+    }
+    .f03-c2-kicker {
+      font-family: "Inter", monospace;
+      font-weight: 500;
+      font-size: 1.3cqw;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #717f94;
+      margin-bottom: 0.7cqw;
+    }
+    .f03-c2-price {
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      font-size: 3.2cqw;
+      letter-spacing: -0.02em;
+      color: #10b981;
+    }
+    .f03-card-3 {
+      margin-top: 2.4cqw;
+      display: flex;
+      flex-direction: column;
+      gap: 2cqw;
+    }
+  </style>
+
+  <div id="root" data-composition-id="03-comprador" data-duration="6.5" data-width="1080" data-height="1920">
+    <!-- ground -->
+    <div
+      class="clip f03-bg"
+      data-start="0"
+      data-duration="6.5"
+      data-track-index="0"
+    ></div>
+
+    <!-- content -->
+    <div
+      class="clip f03-stage"
+      data-start="0"
+      data-duration="6.5"
+      data-track-index="1"
+    >
+      <!-- top chrome -->
+      <div class="f03-chrome" id="f03-chrome">
+        <div class="f03-kicker-block">
+          <div class="f03-rule"></div>
+          <div class="f03-kicker">/ Comprador real</div>
+        </div>
+        <div class="f03-num">Nº 03</div>
+      </div>
+
+      <!-- keyword-glow emphasis line -->
+      <div class="f03-emphasis" id="f03-emphasis">
+        <span class="f03-slash">/</span>
+        <span class="f03-word" data-word="direto">direto</span>
+        <span class="f03-word" data-word="na">na</span>
+        <span class="f03-word" data-word="fonte">fonte</span>
+      </div>
+
+      <!-- device hero -->
+      <div class="f03-device" id="f03-device">
+        <div class="f03-screen">
+          <div class="f03-notch"></div>
+          <div class="f03-screen-stack" data-layout-allow-overflow>
+            <!-- app header -->
+            <div class="f03-app-header">
+              <span class="f03-app-title">Cotações</span>
+              <span class="f03-app-loc">· Campo Verde, MT</span>
+              <span class="f03-app-time">06:40</span>
+            </div>
+
+            <!-- main quote card -->
+            <div class="f03-card f03-card-main">
+              <div id="f03-c1-content">
+                <div class="f03-card-kicker" id="f03-c1-kicker">
+                  Oferta de compra
+                </div>
+                <div class="f03-card-title" id="f03-c1-title">soja</div>
+                <div class="f03-price-row">
+                  <span class="f03-price-cur" id="f03-price-cur">R$</span>
+                  <span class="f03-counter-wrap">
+                    <span class="f03-counter" id="f03-counter">0,00</span>
+                  </span>
+                  <span class="f03-price-suffix" id="f03-price-suffix"
+                    >/sc</span
+                  >
+                </div>
+                <div class="f03-meta-row" id="f03-meta">
+                  Campo Verde, MT · Cooperfibra
+                </div>
+                <div class="f03-badge" id="f03-badge">
+                  <svg viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M2.5 8.5 L6.2 12.2 L13.5 4.5"
+                      stroke="#05070a"
+                      stroke-width="2.2"
+                      stroke-linecap="square"
+                    />
+                  </svg>
+                  <span>À vista D+1</span>
+                </div>
+                <div class="f03-divider" id="f03-src-divider"></div>
+                <div class="f03-source-row" id="f03-source">
+                  <span class="f03-source-dot"></span>
+                  <span
+                    >Cooperfibra
+                    <span class="f03-hint">· hoje 06:40</span></span
+                  >
+                </div>
+              </div>
+
+              <!-- skeleton loading state -->
+              <div class="f03-skeleton" id="f03-skeleton">
+                <div class="f03-skel-bar" style="width: 34%"></div>
+                <div class="f03-skel-bar f03-skel-big" style="width: 62%"></div>
+                <div class="f03-skel-bar" style="width: 48%"></div>
+                <div class="f03-skel-bar" style="width: 28%"></div>
+              </div>
+            </div>
+
+            <!-- list continuation -->
+            <div class="f03-list-label" id="f03-list-label">
+              Outras culturas
+            </div>
+            <div class="f03-card f03-card-2" id="f03-card2">
+              <div>
+                <div class="f03-c2-kicker">Oferta de compra</div>
+                <div class="f03-c2-name">milho</div>
+              </div>
+              <div class="f03-c2-price">R$ 43,00/sc</div>
+            </div>
+            <div class="f03-card f03-card-3" id="f03-card3">
+              <div class="f03-skel-bar" style="width: 30%"></div>
+              <div class="f03-skel-bar f03-skel-big" style="width: 55%"></div>
+              <div class="f03-skel-bar" style="width: 42%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      window.__timelines["03-comprador"] = tl;
+
+      // Retimed for the no-VO cut: silent, SFX/visual-rhythm paced.
+      // All start times and durations below are the original voiceover-paced
+      // cut proportionally compressed by 6.5/6.805 (~0.9552) so the same
+      // relative choreography now lands inside a snappier 6.5s runtime, with
+      // no trailing hold — the last beat now rides straight to the frame's end.
+      var DUR = 6.5;
+
+      /* ---------- Scene 1 (0.0–1.19s): device rises + settles, skeleton ---------- */
+      tl.fromTo(
+        "#f03-device",
+        { y: 380, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.1462, ease: "power3.out" },
+        0.0478
+      );
+      tl.fromTo(
+        "#f03-chrome",
+        { y: -16, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5731, ease: "power2.out" },
+        0.3343
+      );
+      // skeleton bars register as "loading" while the device settles — SFX: soft tick per bar
+      gsap.utils.toArray("#f03-skeleton .f03-skel-bar").forEach(function (el, i) {
+        tl.fromTo(
+          el,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.3343, ease: "power2.out" },
+          0.8119 + i * 0.1146
+        );
+      });
+
+      /* ---------- Scene 2 (1.55–3.78s): card fills like data loading ---------- */
+      // skeleton hands off to real content (within-scene swap) — SFX: data-load chirp
+      tl.to("#f03-skeleton", { opacity: 0, duration: 0.2866, ease: "power2.out" }, 1.5474);
+
+      tl.fromTo(
+        "#f03-c1-kicker",
+        { y: 14, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.4298, ease: "power3.out" },
+        1.6716
+      );
+      tl.fromTo(
+        "#f03-c1-title",
+        { y: 18, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.4776, ease: "power3.out" },
+        1.8148
+      );
+      tl.fromTo(
+        "#f03-price-cur",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.3343, ease: "power2.out" },
+        1.9868
+      );
+
+      // value-scaled count-up (counting-dynamic-scale) — SFX: ticker roll settling into a hit on landing
+      var COUNT_AT = 2.0632;
+      var COUNT_DUR = 1.2895;
+      var counterEl = null;
+      var state = { value: 0 };
+      tl.fromTo(
+        "#f03-counter",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.191, ease: "power2.out" },
+        COUNT_AT
+      );
+      tl.to(
+        state,
+        {
+          value: 133.5,
+          duration: COUNT_DUR,
+          ease: "power3.out",
+          onUpdate: function () {
+            if (!counterEl) counterEl = document.getElementById("f03-counter");
+            counterEl.textContent = (Math.round(state.value * 100) / 100)
+              .toFixed(2)
+              .replace(".", ",");
+          },
+        },
+        COUNT_AT
+      );
+      tl.fromTo(
+        "#f03-counter",
+        { scale: 0.55 },
+        { scale: 1, duration: COUNT_DUR, ease: "power3.out" },
+        COUNT_AT
+      );
+      // suffix gets its own beat right after the count lands
+      tl.fromTo(
+        "#f03-price-suffix",
+        { y: 14, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.3821, ease: "back.out(1.4)" },
+        COUNT_AT + COUNT_DUR + 0.0478
+      );
+
+      tl.fromTo(
+        "#f03-meta",
+        { y: 12, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.4298, ease: "power3.out" },
+        3.1521
+      );
+
+      // badge pop — SFX: confirm/verify stamp (spring-pop-entrance, smooth settle)
+      tl.fromTo(
+        "#f03-badge",
+        { scale: 0, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5253, ease: "power3.out" },
+        4.0595
+      );
+
+      /* ---------- Scene 3 (4.68s–6.5s): provenance + list suggestion ---------- */
+      tl.fromTo(
+        "#f03-src-divider",
+        { scaleX: 0 },
+        { scaleX: 1, duration: 0.3821, ease: "power2.out" },
+        4.7281
+      );
+      tl.fromTo(
+        "#f03-source",
+        { y: 14, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.4776, ease: "power3.out" },
+        4.795
+      );
+
+      tl.fromTo(
+        "#f03-emphasis",
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.4776, ease: "power3.out" },
+        4.6804
+      );
+
+      tl.fromTo(
+        "#f03-list-label",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.3821, ease: "power2.out" },
+        5.1102
+      );
+      tl.fromTo(
+        "#f03-card2",
+        { y: 90, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6686, ease: "power3.out" },
+        5.2057
+      );
+      tl.fromTo(
+        "#f03-card3",
+        { y: 60, opacity: 0 },
+        { y: 0, opacity: 0.55, duration: 0.5731, ease: "power3.out" },
+        5.4445
+      );
+
+      /* ---------- keyword pulse driver (word-by-word text emphasis, karaoke style) ---------- */
+      // No voiceover to sync to anymore: this now rides a plain visual/SFX beat
+      // grid instead of ASR word timing — same technique (sequential glow across
+      // "direto / na / fonte"), just paced to the cut's own rhythm.
+      var TIMINGS = {
+        direto: { start: 5.435, end: 5.8744 },
+        na: { start: 5.8839, end: 5.9985 },
+        fonte: { start: 6.0463, end: 6.4475 },
+      };
+      var ATTACK = 0.1146;
+      var RELEASE = 0.2866;
+      var REST_LEVEL = 0.12;
+      var MAX_BLUR = 30;
+      var MAX_SCALE_BOOST = 0.14;
+      var REST_RGB = { r: 80, g: 77, b: 72 };
+      var ACTIVE_RGB = { r: 16, g: 185, b: 129 };
+
+      function envelope(time, start, end) {
+        if (time < start) return 0;
+        if (time < end) return Math.min((time - start) / ATTACK, 1);
+        var releaseEnd = end + RELEASE;
+        if (time < releaseEnd)
+          return 1 - ((time - end) / RELEASE) * (1 - REST_LEVEL);
+        return REST_LEVEL;
+      }
+      function lerp(a, b, t) {
+        return Math.round(a + (b - a) * t);
+      }
+
+      var wordEls = null;
+      var driver = { t: 0 };
+      tl.to(
+        driver,
+        {
+          t: DUR,
+          duration: DUR,
+          ease: "none",
+          onUpdate: function () {
+            if (!wordEls)
+              wordEls = document.querySelectorAll("#f03-emphasis .f03-word");
+            wordEls.forEach(function (el) {
+              var timing = TIMINGS[el.dataset.word];
+              if (!timing) return;
+              var env = envelope(driver.t, timing.start, timing.end);
+              el.style.color =
+                "rgb(" +
+                lerp(REST_RGB.r, ACTIVE_RGB.r, env) +
+                "," +
+                lerp(REST_RGB.g, ACTIVE_RGB.g, env) +
+                "," +
+                lerp(REST_RGB.b, ACTIVE_RGB.b, env) +
+                ")";
+              el.style.textShadow =
+                "0 0 " +
+                MAX_BLUR * env +
+                "px rgba(16,185,129," +
+                (0.75 * env).toFixed(3) +
+                ")";
+              el.style.transform = "scale(" + (1 + MAX_SCALE_BOOST * env) + ")";
+            });
+          },
+        },
+        0
+      );
+    })();
+  </script>
+</template>

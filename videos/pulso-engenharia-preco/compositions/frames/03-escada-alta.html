@@ -1,0 +1,152 @@
+<template>
+  <div id="root" data-composition-id="03-escada-alta" data-duration="5.0" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; font-style: normal; font-display: block; }
+
+      #root {
+        position: absolute; inset: 0;
+        width: 1080px; height: 1920px;
+        overflow: hidden; container-type: size;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      .f03-bg { position: absolute; inset: 0; background: #05070a; }
+
+      .f03-chrome {
+        position: absolute; left: 59px; right: 59px; top: 96px;
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-weight: 500; font-size: 24px;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+      .f03-chrome-label { color: #94a3b8; }
+
+      .f03-head {
+        position: absolute; left: 59px; right: 59px; top: 208px;
+        font-weight: 900; font-size: 66px; line-height: 1.06;
+        letter-spacing: -0.03em; color: #ffffff;
+        will-change: transform, opacity;
+      }
+      .f03-sub {
+        position: absolute; left: 59px; right: 59px; top: 380px;
+        font-weight: 400; font-size: 32px; line-height: 1.4;
+        color: #94a3b8;
+        will-change: transform, opacity;
+      }
+
+      /* rung — one step of the resolution ladder */
+      .f03-rung {
+        position: absolute; left: 59px; right: 59px;
+        background: #0f1419;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-left: 3px solid #10b981;
+        padding: 40px 44px 44px;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .f03-rung-1 { top: 500px; height: 500px; }
+      .f03-rung-2 { top: 1044px; height: 500px; }
+
+      .f03-rung-top {
+        display: flex; align-items: baseline; gap: 22px;
+      }
+      .f03-rung-n {
+        font-weight: 900; font-size: 46px; line-height: 1;
+        letter-spacing: -0.02em; color: #10b981;
+        font-variant-numeric: tabular-nums;
+      }
+      .f03-rung-flag {
+        font-weight: 700; font-size: 34px;
+        letter-spacing: 0.06em; color: #ffffff;
+      }
+
+      .f03-rung-rule {
+        margin-top: 30px;
+        font-weight: 700; font-size: 44px; line-height: 1.24;
+        letter-spacing: -0.02em; color: #ffffff;
+      }
+      .f03-rung-note {
+        margin-top: 24px;
+        font-weight: 400; font-size: 30px; line-height: 1.42;
+        color: #94a3b8;
+      }
+      .f03-rung-note b { font-weight: 700; color: #10b981; }
+
+      .f03-tail {
+        position: absolute; left: 59px; right: 59px; top: 1616px;
+        font-weight: 500; font-size: 26px; line-height: 1.5;
+        letter-spacing: 0.06em; color: #5b6577;
+        opacity: 0;
+        will-change: opacity;
+      }
+    </style>
+
+    <div class="clip f03-bg" data-start="0" data-duration="5.0" data-track-index="0"></div>
+
+    <div class="clip f03-chrome" id="f03-chrome" data-start="0" data-duration="5.0" data-track-index="1">
+      <span class="f03-chrome-label">A escada de resolução</span>
+      <span>03</span>
+    </div>
+
+    <div class="clip f03-head" id="f03-head" data-start="0" data-duration="5.0" data-track-index="2">
+      Cinco degraus.<br />O mais forte primeiro.
+    </div>
+
+    <div class="clip f03-sub" id="f03-sub" data-start="0" data-duration="5.0" data-track-index="3">
+      Só desce quando o degrau de cima não tem prova.
+    </div>
+
+    <div class="clip f03-rung f03-rung-1" id="f03-rung-1" data-start="0" data-duration="5.0" data-track-index="4">
+      <div class="f03-rung-top">
+        <span class="f03-rung-n">01</span>
+        <span class="f03-rung-flag">MEDIANA_PULSO</span>
+      </div>
+      <div class="f03-rung-rule">Três ou mais mesas independentes na praça.</div>
+      <div class="f03-rung-note">
+        O preço publicado é a <b>mediana</b> delas. Uma mesa fora da curva não
+        move o número, e nenhuma mesa sozinha decide o dia.
+      </div>
+    </div>
+
+    <div class="clip f03-rung f03-rung-2" id="f03-rung-2" data-start="0" data-duration="5.0" data-track-index="5">
+      <div class="f03-rung-top">
+        <span class="f03-rung-n">02</span>
+        <span class="f03-rung-flag">VERIFICADO</span>
+      </div>
+      <div class="f03-rung-rule">Uma ou duas mesas. Vale a mais baixa.</div>
+      <div class="f03-rung-note">
+        Balcão de cooperativa passa na frente de trading spot. Quando há as
+        duas, o produtor vê <b>R$ 113,00</b>, não R$ 118,00.
+      </div>
+    </div>
+
+    <div class="clip f03-tail" id="f03-tail" data-start="0" data-duration="5.0" data-track-index="6">
+      Errar para menos é decepção. Errar para mais é prejuízo.
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      tl.fromTo("#f03-chrome", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.32, ease: "power2.out" }, 0.04);
+      tl.fromTo("#f03-head", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.44, ease: "power3.out" }, 0.14);
+      tl.fromTo("#f03-sub", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.36, ease: "power3.out" }, 0.48);
+
+      /* rungs land top-down: the ladder is read in priority order */
+      tl.fromTo("#f03-rung-1", { opacity: 0, x: -26 }, { opacity: 1, x: 0, duration: 0.44, ease: "power3.out" }, 1.02);
+      tl.fromTo("#f03-rung-2", { opacity: 0, x: -26 }, { opacity: 1, x: 0, duration: 0.44, ease: "power3.out" }, 2.28);
+
+      tl.fromTo("#f03-tail", { opacity: 0 }, { opacity: 1, duration: 0.36, ease: "power2.out" }, 3.62);
+
+      window.__timelines["03-escada-alta"] = tl;
+    })();
+  </script>
+</template>

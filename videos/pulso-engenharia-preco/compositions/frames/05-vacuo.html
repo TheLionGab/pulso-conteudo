@@ -1,0 +1,166 @@
+<template>
+  <div id="root" data-composition-id="05-vacuo" data-duration="4.9" data-width="1080" data-height="1920">
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_900Black.ttf") format("truetype"); font-weight: 900; font-style: normal; font-display: block; }
+
+      #root {
+        position: absolute; inset: 0;
+        width: 1080px; height: 1920px;
+        overflow: hidden; container-type: size;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      .f05-bg { position: absolute; inset: 0; background: #05070a; }
+
+      .f05-chrome {
+        position: absolute; left: 59px; right: 59px; top: 96px;
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-weight: 500; font-size: 24px;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: #717f94;
+        will-change: transform, opacity;
+      }
+      .f05-chrome-label { color: #94a3b8; }
+
+      .f05-rungtop {
+        position: absolute; left: 59px; right: 59px; top: 214px;
+        display: flex; align-items: baseline; gap: 22px;
+        will-change: transform, opacity;
+      }
+      .f05-rung-n {
+        font-weight: 900; font-size: 46px; line-height: 1;
+        letter-spacing: -0.02em; color: #94a3b8;
+        font-variant-numeric: tabular-nums;
+      }
+      .f05-rung-flag {
+        font-weight: 700; font-size: 34px;
+        letter-spacing: 0.06em; color: #ffffff;
+      }
+
+      .f05-head {
+        position: absolute; left: 59px; right: 59px; top: 292px;
+        font-weight: 900; font-size: 78px; line-height: 1.05;
+        letter-spacing: -0.03em; color: #ffffff;
+        will-change: transform, opacity;
+      }
+
+      /* the empty card — the frame's whole argument is the absence */
+      .f05-card {
+        position: absolute; left: 59px; right: 59px; top: 566px;
+        height: 470px;
+        background: #0b0f14;
+        border: 1px dashed rgba(148,163,184,0.28);
+        padding: 46px 48px;
+        display: flex; flex-direction: column; justify-content: center;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .f05-card-praca {
+        font-weight: 500; font-size: 27px;
+        letter-spacing: 0.12em; text-transform: uppercase;
+        color: #717f94;
+      }
+      .f05-card-dash {
+        margin-top: 26px;
+        font-weight: 900; font-size: 128px; line-height: 1;
+        letter-spacing: -0.03em; color: #6b7688;
+      }
+      .f05-card-flag {
+        margin-top: 30px;
+        font-weight: 700; font-size: 30px;
+        letter-spacing: 0.06em; color: #94a3b8;
+      }
+      .f05-card-note {
+        margin-top: 16px;
+        font-weight: 400; font-size: 29px; line-height: 1.4;
+        color: #717f94;
+      }
+
+      .f05-thesis {
+        position: absolute; left: 59px; right: 59px; top: 1112px;
+        font-weight: 900; font-size: 66px; line-height: 1.12;
+        letter-spacing: -0.028em; color: #ffffff;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .f05-thesis em { font-style: normal; color: #10b981; }
+
+      .f05-body {
+        position: absolute; left: 59px; right: 59px; top: 1382px;
+        font-weight: 400; font-size: 34px; line-height: 1.42;
+        color: #94a3b8;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+
+      .f05-tail {
+        position: absolute; left: 59px; right: 59px; top: 1584px;
+        font-weight: 500; font-size: 26px; line-height: 1.5;
+        letter-spacing: 0.06em; color: #5b6577;
+        opacity: 0;
+        will-change: opacity;
+      }
+    </style>
+
+    <div class="clip f05-bg" data-start="0" data-duration="4.9" data-track-index="0"></div>
+
+    <div class="clip f05-chrome" id="f05-chrome" data-start="0" data-duration="4.9" data-track-index="1">
+      <span class="f05-chrome-label">O quinto degrau</span>
+      <span>05</span>
+    </div>
+
+    <div class="clip f05-rungtop" id="f05-rungtop" data-start="0" data-duration="4.9" data-track-index="2">
+      <span class="f05-rung-n">05</span>
+      <span class="f05-rung-flag">SEM_REFERENCIA_LOCAL</span>
+    </div>
+
+    <div class="clip f05-head" id="f05-head" data-start="0" data-duration="4.9" data-track-index="3">
+      O degrau mais<br />importante de todos.
+    </div>
+
+    <div class="clip f05-card" id="f05-card" data-start="0" data-duration="4.9" data-track-index="4">
+      <div class="f05-card-praca">Praça sem mesa e sem polo compatível</div>
+      <div class="f05-card-dash">—</div>
+      <div class="f05-card-flag">Vácuo de liquidez</div>
+      <div class="f05-card-note">Nenhum preço é publicado para esta praça hoje.</div>
+    </div>
+
+    <div class="clip f05-thesis" id="f05-thesis" data-start="0" data-duration="4.9" data-track-index="5">
+      O motor prefere dizer <em>não sei</em> a inventar um número.
+    </div>
+
+    <div class="clip f05-body" id="f05-body" data-start="0" data-duration="4.9" data-track-index="6">
+      Preencher esse buraco com a média do estado seria fácil. Também seria a
+      forma mais rápida de o produtor fechar negócio no preço errado.
+    </div>
+
+    <div class="clip f05-tail" id="f05-tail" data-start="0" data-duration="4.9" data-track-index="7">
+      Vazio auditável vale mais que número bonito.
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      tl.fromTo("#f05-chrome", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.32, ease: "power2.out" }, 0.04);
+      tl.fromTo("#f05-rungtop", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.32, ease: "power2.out" }, 0.14);
+      tl.fromTo("#f05-head", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.46, ease: "power3.out" }, 0.22);
+
+      /* the empty card holds alone for a beat — the pause is the point */
+      tl.fromTo("#f05-card", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.44, ease: "power3.out" }, 0.72);
+
+      tl.fromTo("#f05-thesis", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.46, ease: "power3.out" }, 1.86);
+      tl.fromTo("#f05-body", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 2.62);
+      tl.fromTo("#f05-tail", { opacity: 0 }, { opacity: 1, duration: 0.36, ease: "power2.out" }, 3.4);
+
+      window.__timelines["05-vacuo"] = tl;
+    })();
+  </script>
+</template>

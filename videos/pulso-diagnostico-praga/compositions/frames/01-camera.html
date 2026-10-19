@@ -1,0 +1,471 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face {
+          font-family: "Inter";
+          font-weight: 500;
+          font-style: normal;
+          src: url("assets/fonts/Inter_500Medium.ttf") format("truetype");
+          font-display: block;
+        }
+        @font-face {
+          font-family: "Inter";
+          font-weight: 700;
+          font-style: normal;
+          src: url("assets/fonts/Inter_700Bold.ttf") format("truetype");
+          font-display: block;
+        }
+        @font-face {
+          font-family: "Inter";
+          font-weight: 900;
+          font-style: normal;
+          src: url("assets/fonts/Inter_900Black.ttf") format("truetype");
+          font-display: block;
+        }
+
+        #root {
+          width: 1080px;
+          height: 1920px;
+          position: relative;
+          overflow: hidden;
+          container-type: size;
+          font-family: "Inter", system-ui, sans-serif;
+        }
+
+        .f01-bg {
+          position: absolute;
+          inset: 0;
+          background: #05070a;
+        }
+        .f01-stage {
+          position: absolute;
+          inset: 0;
+        }
+
+        /* ---------- chrome ---------- */
+        .f01-chrome {
+          position: absolute;
+          top: 4.2cqh;
+          left: 5.5cqw;
+          right: 5.5cqw;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          opacity: 0;
+        }
+        .f01-kicker-block .f01-rule {
+          width: 3.3cqw;
+          height: 2px;
+          background: #10b981;
+          margin-bottom: 1.1cqw;
+        }
+        .f01-kicker {
+          font-family: "Inter", monospace;
+          font-weight: 500;
+          font-size: 1.6cqw;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #10b981;
+        }
+        .f01-num {
+          font-family: "Inter", monospace;
+          font-weight: 500;
+          font-size: 1.6cqw;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #717f94;
+        }
+
+        /* ---------- device (hero) ---------- */
+        .f01-device {
+          position: absolute;
+          top: 16.5cqh;
+          left: 50%;
+          margin-left: -27.5cqw;
+          width: 55cqw;
+          height: 60cqh;
+          background: #05070a;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 4.8cqw;
+          padding: 1.1cqw;
+          opacity: 0;
+        }
+        .f01-screen {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          background: #0f1419;
+          border-radius: 3.9cqw;
+          overflow: hidden;
+        }
+        .f01-notch {
+          position: absolute;
+          top: 1.2cqw;
+          left: 50%;
+          margin-left: -5.5cqw;
+          width: 11cqw;
+          height: 2.4cqw;
+          background: #05070a;
+          border-radius: 1.2cqw;
+          z-index: 6;
+        }
+        .f01-screen-stack {
+          position: absolute;
+          inset: 0;
+          padding: 6cqw 4cqw 3.6cqw 4cqw;
+          display: flex;
+          flex-direction: column;
+        }
+
+        /* app header */
+        .f01-app-header {
+          display: flex;
+          align-items: baseline;
+          gap: 1.2cqw;
+          padding-bottom: 2.2cqw;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .f01-app-title {
+          font-weight: 700;
+          font-size: 3.2cqw;
+          color: #ffffff;
+        }
+        .f01-app-loc {
+          font-weight: 500;
+          font-size: 2.4cqw;
+          color: #94a3b8;
+        }
+        .f01-app-label {
+          margin-left: auto;
+          font-family: "Inter", monospace;
+          font-weight: 500;
+          font-size: 1.4cqw;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #10b981;
+        }
+
+        /* viewfinder */
+        .f01-viewfinder {
+          position: relative;
+          flex: 1;
+          margin-top: 3.2cqw;
+          border-radius: 2.2cqw;
+          background: #0b1116;
+          overflow: hidden;
+        }
+        .f01-grid-line {
+          position: absolute;
+          background: rgba(255, 255, 255, 0.6);
+          opacity: 0;
+        }
+        .f01-grid-v {
+          top: 0;
+          bottom: 0;
+          width: 1px;
+        }
+        .f01-grid-h {
+          left: 0;
+          right: 0;
+          height: 1px;
+        }
+
+        .f01-bracket {
+          position: absolute;
+          width: 5.2cqw;
+          height: 5.2cqw;
+          border: 2.5px solid #10b981;
+          opacity: 0;
+        }
+        .f01-bracket-tl {
+          top: 2.4cqw;
+          left: 2.4cqw;
+          border-right: none;
+          border-bottom: none;
+          border-top-left-radius: 1.4cqw;
+        }
+        .f01-bracket-tr {
+          top: 2.4cqw;
+          right: 2.4cqw;
+          border-left: none;
+          border-bottom: none;
+          border-top-right-radius: 1.4cqw;
+        }
+        .f01-bracket-bl {
+          bottom: 2.4cqw;
+          left: 2.4cqw;
+          border-right: none;
+          border-top: none;
+          border-bottom-left-radius: 1.4cqw;
+        }
+        .f01-bracket-br {
+          bottom: 2.4cqw;
+          right: 2.4cqw;
+          border-left: none;
+          border-top: none;
+          border-bottom-right-radius: 1.4cqw;
+        }
+
+        .f01-leaf-wrap {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 30cqw;
+          height: 39cqw;
+          margin-left: -15cqw;
+          margin-top: -20.5cqw;
+        }
+        .f01-leaf-svg {
+          width: 100%;
+          height: 100%;
+          overflow: visible;
+        }
+        .f01-leaf-fill {
+          fill: rgba(16, 185, 129, 0.16);
+          stroke: none;
+          opacity: 0;
+        }
+        .f01-leaf-outline {
+          fill: none;
+          stroke: #10b981;
+          stroke-width: 3.5;
+          stroke-linejoin: round;
+        }
+        .f01-leaf-vein {
+          fill: none;
+          stroke: #10b981;
+          stroke-width: 2.4;
+          stroke-linecap: round;
+          opacity: 0.65;
+        }
+
+        .f01-hint {
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 3cqw;
+          text-align: center;
+          font-family: "Inter", monospace;
+          font-weight: 500;
+          font-size: 1.4cqw;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: #94a3b8;
+          opacity: 0;
+        }
+
+        .f01-flash {
+          position: absolute;
+          inset: 0;
+          background: #ffffff;
+          opacity: 0;
+          z-index: 8;
+        }
+
+        /* shutter row */
+        .f01-shutter-row {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding-top: 3cqw;
+        }
+        .f01-shutter {
+          width: 8.4cqw;
+          height: 8.4cqw;
+          border-radius: 50%;
+          border: 3px solid #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+        }
+        .f01-shutter-core {
+          width: 6.4cqw;
+          height: 6.4cqw;
+          border-radius: 50%;
+          background: #ffffff;
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="01-camera"
+        data-duration="4.0"
+        data-width="1080"
+        data-height="1920"
+      >
+        <div class="clip f01-bg" data-start="0" data-duration="4.0" data-track-index="0"></div>
+
+        <div class="clip f01-stage" data-start="0" data-duration="4.0" data-track-index="1">
+          <div class="f01-chrome" id="f01-chrome">
+            <div class="f01-kicker-block">
+              <div class="f01-rule"></div>
+              <div class="f01-kicker">/ Diagnóstico por foto</div>
+            </div>
+            <div class="f01-num">Nº 01</div>
+          </div>
+
+          <div class="f01-device" id="f01-device">
+            <div class="f01-screen">
+              <div class="f01-notch"></div>
+              <div class="f01-screen-stack">
+                <div class="f01-app-header">
+                  <span class="f01-app-title">Diagnóstico</span>
+                  <span class="f01-app-loc">· foto da folha</span>
+                  <span class="f01-app-label">Câmera</span>
+                </div>
+
+                <div class="f01-viewfinder" id="f01-viewfinder">
+                  <div class="f01-grid-line f01-grid-v" id="f01-grid-v1" style="left: 33.33%"></div>
+                  <div class="f01-grid-line f01-grid-v" id="f01-grid-v2" style="left: 66.66%"></div>
+                  <div class="f01-grid-line f01-grid-h" id="f01-grid-h1" style="top: 33.33%"></div>
+                  <div class="f01-grid-line f01-grid-h" id="f01-grid-h2" style="top: 66.66%"></div>
+
+                  <div class="f01-bracket f01-bracket-tl" id="f01-bracket-tl"></div>
+                  <div class="f01-bracket f01-bracket-tr" id="f01-bracket-tr"></div>
+                  <div class="f01-bracket f01-bracket-bl" id="f01-bracket-bl"></div>
+                  <div class="f01-bracket f01-bracket-br" id="f01-bracket-br"></div>
+
+                  <div class="f01-leaf-wrap" id="f01-leaf-wrap">
+                    <svg class="f01-leaf-svg" viewBox="0 0 200 260" aria-hidden="true">
+                      <path
+                        id="f01-leaf-fill"
+                        class="f01-leaf-fill"
+                        d="M100 8 C145 34 178 92 168 152 C160 205 128 244 100 252 C72 244 40 205 32 152 C22 92 55 34 100 8 Z"
+                      ></path>
+                      <path
+                        id="f01-leaf-outline"
+                        class="f01-leaf-outline"
+                        d="M100 8 C145 34 178 92 168 152 C160 205 128 244 100 252 C72 244 40 205 32 152 C22 92 55 34 100 8 Z"
+                      ></path>
+                      <path id="f01-vein-0" class="f01-leaf-vein" d="M100 34 L100 234"></path>
+                      <path id="f01-vein-1" class="f01-leaf-vein" d="M100 76 L58 106"></path>
+                      <path id="f01-vein-2" class="f01-leaf-vein" d="M100 76 L142 106"></path>
+                      <path id="f01-vein-3" class="f01-leaf-vein" d="M100 118 L54 152"></path>
+                      <path id="f01-vein-4" class="f01-leaf-vein" d="M100 118 L146 152"></path>
+                      <path id="f01-vein-5" class="f01-leaf-vein" d="M100 160 L60 192"></path>
+                      <path id="f01-vein-6" class="f01-leaf-vein" d="M100 160 L140 192"></path>
+                      <path id="f01-vein-7" class="f01-leaf-vein" d="M100 200 L76 222"></path>
+                      <path id="f01-vein-8" class="f01-leaf-vein" d="M100 200 L124 222"></path>
+                    </svg>
+                  </div>
+
+                  <div class="f01-hint" id="f01-hint">Aponte para a folha afetada</div>
+                  <div class="f01-flash" id="f01-flash"></div>
+                </div>
+
+                <div class="f01-shutter-row">
+                  <div class="f01-shutter" id="f01-shutter">
+                    <div class="f01-shutter-core"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="assets/vendor/gsap.min.js"></script>
+      <script>
+        (function () {
+          window.__timelines = window.__timelines || {};
+          var tl = gsap.timeline({ paused: true });
+          window.__timelines["01-camera"] = tl;
+
+          // ---- self-draw the leaf outline + veins via real path length ----
+          var drawPaths = [
+            "#f01-leaf-outline",
+            "#f01-vein-0",
+            "#f01-vein-1",
+            "#f01-vein-2",
+            "#f01-vein-3",
+            "#f01-vein-4",
+            "#f01-vein-5",
+            "#f01-vein-6",
+            "#f01-vein-7",
+            "#f01-vein-8",
+          ];
+          var drawLens = drawPaths.map(function (sel) {
+            var el = document.querySelector(sel);
+            if (!el) return 0;
+            var len = el.getTotalLength();
+            el.style.strokeDasharray = len;
+            el.style.strokeDashoffset = len;
+            return len;
+          });
+
+          /* ---------- Scene: device rises, viewfinder frames the leaf ---------- */
+          tl.fromTo("#f01-device", { y: 340, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "power3.out" }, 0.0);
+          tl.fromTo("#f01-chrome", { y: -16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power2.out" }, 0.1);
+
+          tl.fromTo(
+            [".f01-bracket"],
+            { scale: 1.3, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 0.4, ease: "power2.out", stagger: 0.05 },
+            0.25
+          );
+          tl.fromTo(
+            ["#f01-grid-v1", "#f01-grid-v2", "#f01-grid-h1", "#f01-grid-h2"],
+            { opacity: 0 },
+            { opacity: 0.12, duration: 0.4, ease: "power2.out" },
+            0.35
+          );
+
+          tl.fromTo(
+            [
+              "#f01-leaf-outline",
+              "#f01-vein-0",
+              "#f01-vein-1",
+              "#f01-vein-2",
+              "#f01-vein-3",
+              "#f01-vein-4",
+              "#f01-vein-5",
+              "#f01-vein-6",
+              "#f01-vein-7",
+              "#f01-vein-8",
+            ],
+            { strokeDashoffset: function (i) { return drawLens[i]; } },
+            { strokeDashoffset: 0, duration: 0.7, ease: "power2.out", stagger: 0.05 },
+            0.45
+          );
+          tl.fromTo("#f01-leaf-fill", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 0.55);
+
+          tl.fromTo("#f01-hint", { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, 0.9);
+          tl.fromTo(
+            "#f01-shutter",
+            { scale: 0.7, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.6)" },
+            1.0
+          );
+
+          /* ---------- idle breathing while aiming ---------- */
+          tl.fromTo(
+            "#f01-leaf-wrap",
+            { scale: 1 },
+            { scale: 1.03, duration: 0.75, ease: "sine.inOut", yoyo: true, repeat: 1 },
+            1.1
+          );
+
+          /* ---------- shutter press + capture flash ---------- */
+          tl.to("#f01-shutter", { scale: 0.85, duration: 0.09, ease: "power2.in" }, 2.55);
+          tl.to("#f01-shutter", { scale: 1, duration: 0.14, ease: "power2.out" }, 2.64);
+          tl.fromTo(
+            [".f01-bracket"],
+            { scale: 1 },
+            { scale: 1.08, duration: 0.15, ease: "power2.out", yoyo: true, repeat: 1 },
+            2.6
+          );
+          tl.fromTo("#f01-flash", { opacity: 0 }, { opacity: 0.92, duration: 0.1, ease: "power1.in" }, 2.62);
+          tl.to("#f01-flash", { opacity: 0, duration: 0.42, ease: "power2.out" }, 2.72);
+
+          // hold the captured frame until the cut at 4.0s
+        })();
+      </script>
+    </template>
+  </body>
+</html>

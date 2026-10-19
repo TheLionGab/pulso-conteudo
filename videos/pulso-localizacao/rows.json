@@ -1,0 +1,7 @@
+{
+  "rows": [
+    { "name": "sorriso-mt", "cidade": "Sorriso", "estado": "MT", "preco": 129.5 },
+    { "name": "rio-verde-go", "cidade": "Rio Verde", "estado": "GO", "preco": 131.2 },
+    { "name": "cascavel-pr", "cidade": "Cascavel", "estado": "PR", "preco": 128.7 }
+  ]
+}

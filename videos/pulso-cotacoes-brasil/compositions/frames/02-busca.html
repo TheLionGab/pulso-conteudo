@@ -1,0 +1,383 @@
+<template id="busca02-template" data-width="1080" data-height="1920">
+<script src="assets/vendor/gsap.min.js"></script>
+
+<style>
+/* fontes locais (staged) */
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_400Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_500Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_700Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_900Black.ttf') format('truetype'); font-weight: 900; font-style: normal; font-display: block; }
+
+  #root {
+    position: relative;
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    container-type: size;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+
+  /* full-bleed ground — dark register (clip layer, never on #root) */
+  .busca02-bg {
+    position: absolute;
+    inset: 0;
+    background: #05070a;
+  }
+
+  .busca02-content {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* ---------- continuity header (already in place — no entrance) ---------- */
+  .busca02-header {
+    position: absolute;
+    top: 132px;
+    left: 48px;
+    right: 48px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .busca02-header-title {
+    font-weight: 700;
+    font-size: 34px;
+    color: #ffffff;
+  }
+
+  /* ---------- search field ---------- */
+  .busca02-field {
+    position: absolute;
+    top: 236px;
+    left: 48px;
+    right: 48px;
+    height: 96px;
+    background: #141a20;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    will-change: transform, opacity;
+  }
+
+  .busca02-icon {
+    position: absolute;
+    left: 28px;
+    top: 50%;
+    margin-top: -12px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .busca02-placeholder {
+    position: absolute;
+    left: 68px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 500;
+    font-size: 32px;
+    color: #94a3b8;
+    white-space: nowrap;
+  }
+
+  .busca02-typed-wrap {
+    position: absolute;
+    left: 68px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 40px;
+  }
+  .busca02-word {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  .busca02-word-text {
+    font-weight: 500;
+    font-size: 34px;
+    line-height: 40px;
+    color: #ffffff;
+    white-space: nowrap;
+  }
+
+  .busca02-caret-idle,
+  .busca02-caret-inline {
+    width: 2px;
+    height: 40px;
+    background: #10b981;
+    opacity: 0;
+  }
+  .busca02-caret-idle {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  /* ---------- suggestions ---------- */
+  .busca02-sugg-stage {
+    position: absolute;
+    top: 360px;
+    left: 48px;
+    right: 48px;
+  }
+  .busca02-sugg-group {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .busca02-sugg-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 28px;
+    border-left: 3px solid transparent;
+    background: transparent;
+    border-radius: 16px;
+    opacity: 0;
+    transform-origin: 50% 50%;
+    will-change: transform, opacity, background-color;
+  }
+  .busca02-sugg-row.busca02-hl {
+    background: rgba(16, 185, 129, 0.12);
+    border-left-color: #10b981;
+  }
+  .busca02-sugg-city {
+    font-weight: 600;
+    font-size: 30px;
+    color: #ffffff;
+  }
+  .busca02-sugg-state-wrap {
+    display: flex;
+    align-items: center;
+  }
+  .busca02-sugg-state {
+    font-family: "Inter", ui-monospace, monospace;
+    font-weight: 500;
+    font-size: 19px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #94a3b8;
+  }
+  .busca02-hl .busca02-sugg-state {
+    color: #10b981;
+  }
+  .busca02-sugg-check {
+    width: 22px;
+    height: 22px;
+    margin-left: 12px;
+    opacity: 0;
+  }
+</style>
+
+<div id="root" data-composition-id="02-busca" data-duration="5.5" data-width="1080" data-height="1920">
+  <div class="clip busca02-bg" data-start="0" data-duration="5.5" data-track-index="0"></div>
+
+  <div class="clip busca02-content" data-start="0" data-duration="5.5" data-track-index="1">
+    <!-- continuity header — already in place from frame 1, no entrance animation -->
+    <div class="busca02-header">
+      <span class="busca02-header-title">Cotações</span>
+    </div>
+
+    <!-- search field -->
+    <div class="busca02-field" id="busca02-field">
+      <svg class="busca02-icon" id="busca02-icon" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <circle cx="9" cy="9" r="6.5" stroke="#94a3b8" stroke-width="1.6" />
+        <line x1="13.8" y1="13.8" x2="19" y2="19" stroke="#94a3b8" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+
+      <span class="busca02-placeholder" id="busca02-placeholder">Buscar cidade&hellip;</span>
+
+      <div class="busca02-typed-wrap">
+        <span class="busca02-caret-idle" id="busca02-caret-idle"></span>
+
+        <div class="busca02-word" id="busca02-w-sorriso">
+          <span class="busca02-word-text">Campo</span>
+          <span class="busca02-caret-inline" id="busca02-caret-sorriso"></span>
+        </div>
+        <div class="busca02-word" id="busca02-w-rioverde">
+          <span class="busca02-word-text">Campo Verde</span>
+          <span class="busca02-caret-inline" id="busca02-caret-rioverde"></span>
+        </div>
+        <div class="busca02-word" id="busca02-w-cascavel">
+          <span class="busca02-word-text">Campo Verde</span>
+          <span class="busca02-caret-inline" id="busca02-caret-cascavel"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- suggestions -->
+    <div class="busca02-sugg-stage">
+      <div class="busca02-sugg-group" id="busca02-sg-sorriso">
+        <div class="busca02-sugg-row" id="busca02-sr-sorriso1">
+          <span class="busca02-sugg-city">Campo Grande</span>
+          <span class="busca02-sugg-state-wrap"><span class="busca02-sugg-state">MS</span></span>
+        </div>
+        <div class="busca02-sugg-row" id="busca02-sr-sorriso2">
+          <span class="busca02-sugg-city">Campo Florido</span>
+          <span class="busca02-sugg-state-wrap"><span class="busca02-sugg-state">MG</span></span>
+        </div>
+      </div>
+
+      <div class="busca02-sugg-group" id="busca02-sg-rioverde">
+        <div class="busca02-sugg-row" id="busca02-sr-rv1">
+          <span class="busca02-sugg-city">Campo Verde</span>
+          <span class="busca02-sugg-state-wrap"><span class="busca02-sugg-state">MT</span></span>
+        </div>
+        <div class="busca02-sugg-row" id="busca02-sr-rv2">
+          <span class="busca02-sugg-city">Campo Verde</span>
+          <span class="busca02-sugg-state-wrap"><span class="busca02-sugg-state">GO</span></span>
+        </div>
+      </div>
+
+      <div class="busca02-sugg-group" id="busca02-sg-cascavel">
+        <div class="busca02-sugg-row busca02-hl" id="busca02-sr-casc1">
+          <span class="busca02-sugg-city">Campo Verde</span>
+          <span class="busca02-sugg-state-wrap">
+            <span class="busca02-sugg-state">MT</span>
+            <svg class="busca02-sugg-check" id="busca02-casc-check" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M2.5 8.5 L6.2 12.2 L13.5 4.5" stroke="#10b981" stroke-width="2.2" stroke-linecap="square" />
+            </svg>
+          </span>
+        </div>
+        <div class="busca02-sugg-row" id="busca02-sr-casc2">
+          <span class="busca02-sugg-city">Campo Novo do Parecis</span>
+          <span class="busca02-sugg-state-wrap"><span class="busca02-sugg-state">MT</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    window.__timelines = window.__timelines || {};
+    var tl = gsap.timeline({ paused: true });
+
+    /* whole-word reveal — rise + fade in, no per-character grid */
+    function wordIn(selector, startTime) {
+      tl.fromTo(
+        selector,
+        { y: 14, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.28, ease: "power3.out" },
+        startTime
+      );
+    }
+
+    function wordOut(selector, startTime) {
+      tl.to(selector, { y: -10, opacity: 0, duration: 0.22, ease: "power2.in" }, startTime);
+    }
+
+    function caretBlink(selector, startTime, blinks) {
+      tl.fromTo(selector, { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "power2.out" }, startTime);
+      tl.to(
+        selector,
+        { opacity: 0.15, duration: 0.22, repeat: blinks, yoyo: true, ease: "power1.inOut" },
+        startTime + 0.12
+      );
+    }
+
+    function suggIn(sels, startTime, stagger, dur) {
+      sels.forEach(function (sel, i) {
+        tl.fromTo(
+          sel,
+          { y: 18, opacity: 0 },
+          { y: 0, opacity: 1, duration: dur, ease: "power3.out" },
+          startTime + i * stagger
+        );
+      });
+    }
+
+    function suggOut(sels, startTime, stagger, dur) {
+      sels.forEach(function (sel, i) {
+        tl.to(sel, { y: -12, opacity: 0, duration: dur, ease: "power2.in" }, startTime + i * stagger);
+      });
+    }
+
+    /* ---------------------------------------------------------------
+       Scene 1 (0.0–1.0s) — field settles in, icon + placeholder fade,
+       caret ignites and blinks while idle.
+       --------------------------------------------------------------- */
+    tl.fromTo(
+      "#busca02-field",
+      { y: 18, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.35, ease: "power3.out" },
+      0.03
+    );
+    tl.fromTo("#busca02-icon", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.12);
+    tl.fromTo(
+      "#busca02-placeholder",
+      { y: 8, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" },
+      0.15
+    );
+    caretBlink("#busca02-caret-idle", 0.15, 2);
+
+    tl.to("#busca02-placeholder", { opacity: 0, duration: 0.15, ease: "power2.out" }, 0.97);
+    tl.to("#busca02-caret-idle", { opacity: 0, duration: 0.1, ease: "power2.out" }, 0.97);
+
+    /* ---------------------------------------------------------------
+       Scene 2 (1.0–3.4s) — Sorriso → Rio Verde → Cascavel, each word
+       rises in whole (no per-character grid), suggestion rows fading
+       in/out under each held word, then rises out before the next.
+       --------------------------------------------------------------- */
+    wordIn("#busca02-w-sorriso", 1.0);
+    caretBlink("#busca02-caret-sorriso", 1.0, 1);
+    suggIn(["#busca02-sr-sorriso1", "#busca02-sr-sorriso2"], 1.35, 0.12, 0.22);
+    suggOut(["#busca02-sr-sorriso1", "#busca02-sr-sorriso2"], 1.65, 0.06, 0.16);
+    wordOut("#busca02-w-sorriso", 1.8);
+
+    wordIn("#busca02-w-rioverde", 2.05);
+    caretBlink("#busca02-caret-rioverde", 2.05, 1);
+    suggIn(["#busca02-sr-rv1", "#busca02-sr-rv2"], 2.45, 0.12, 0.22);
+    suggOut(["#busca02-sr-rv1", "#busca02-sr-rv2"], 2.75, 0.06, 0.16);
+    wordOut("#busca02-w-rioverde", 2.95);
+
+    wordIn("#busca02-w-cascavel", 3.2);
+    caretBlink("#busca02-caret-cascavel", 3.2, 2);
+
+    /* ---------------------------------------------------------------
+       Scene 3 (3.4–5.0s) — Cascavel stays; caret hands off to the
+       highlighted suggestion, which gets a tap-confirmed pulse, then
+       holds for the crossfade into frame 3's price card.
+       --------------------------------------------------------------- */
+    tl.to("#busca02-caret-cascavel", { opacity: 0, duration: 0.2, ease: "power2.out" }, 3.75);
+
+    suggIn(["#busca02-sr-casc1", "#busca02-sr-casc2"], 3.78, 0.15, 0.28);
+
+    tl.fromTo("#busca02-sr-casc1", { scale: 1 }, { scale: 1.03, duration: 0.15, ease: "power2.out" }, 4.3);
+    tl.to("#busca02-sr-casc1", { scale: 1, duration: 0.15, ease: "power2.inOut" }, 4.45);
+    tl.fromTo(
+      "#busca02-sr-casc1",
+      { backgroundColor: "rgba(16,185,129,0.12)" },
+      { backgroundColor: "rgba(16,185,129,0.26)", duration: 0.15, ease: "power2.out" },
+      4.3
+    );
+    tl.to(
+      "#busca02-sr-casc1",
+      { backgroundColor: "rgba(16,185,129,0.12)", duration: 0.15, ease: "power2.inOut" },
+      4.45
+    );
+    tl.fromTo(
+      "#busca02-casc-check",
+      { scale: 0, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.8)" },
+      4.3
+    );
+
+    window.__timelines["02-busca"] = tl;
+  })();
+</script>
+</template>

@@ -1,0 +1,297 @@
+<!-- hyperframes-registry-item: logo-outro (customizado — dois selos lado a lado, Pulso do Campo / lançamento Android) -->
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Logo Outro — Pulso do Campo (App Store + Google Play)</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        /* fontes locais (staged) — mesma família dos vídeos irmãos */
+        @font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_500Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: block; }
+        @font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_800ExtraBold.ttf') format('truetype'); font-weight: 800; font-style: normal; font-display: block; }
+
+        #root {
+          position: relative;
+          width: 1080px;
+          height: 1920px;
+          overflow: hidden;
+          background: #05070a;
+          font-family: "Inter", system-ui, sans-serif;
+        }
+
+        .lo-scene {
+          position: absolute;
+          inset: 0;
+        }
+
+        /* ---------- cluster: icon + wordmark + kicker + badges ---------- */
+        .lo-cluster {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 560px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+
+        .lo-icon-wrap {
+          position: relative;
+          width: 176px;
+          height: 176px;
+        }
+        .lo-icon {
+          position: absolute;
+          inset: 0;
+          border-radius: 39px; /* icon exception, same 22% corner radius used across the sibling videos */
+          background: #0f1419;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .lo-icon-glow {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 120px;
+          height: 120px;
+          margin: -60px 0 0 -60px;
+          border-radius: 50%;
+          background: #10b981;
+          filter: blur(22px);
+          opacity: 0;
+        }
+        .lo-mark {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 100px;
+          height: 100px;
+          margin: -50px 0 0 -50px;
+          overflow: visible;
+          transform-origin: 50% 50%;
+        }
+        .lo-mark .pdc-p {
+          fill: none;
+          stroke: url(#pdcg-lo);
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        }
+
+        .lo-wordmark {
+          margin-top: 34px;
+          color: #ffffff;
+          font-weight: 800;
+          font-size: 82px;
+          line-height: 1;
+          letter-spacing: -0.03em;
+          white-space: nowrap;
+        }
+
+        .lo-kicker {
+          margin-top: 44px;
+          font-family: "Inter", ui-monospace, monospace;
+          font-weight: 500;
+          font-size: 28px;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: #10b981;
+          white-space: nowrap;
+        }
+
+        /* ---------- the two seals ---------- */
+        .lo-badges-wrap {
+          position: relative;
+          margin-top: 90px;
+        }
+        .lo-badges-glow {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 820px;
+          height: 460px;
+          margin: -230px 0 0 -410px;
+          background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.4) 0%, rgba(16, 185, 129, 0) 70%);
+          border-radius: 50%;
+          opacity: 0;
+          pointer-events: none;
+          z-index: 0;
+        }
+        .lo-badges {
+          position: relative;
+          z-index: 1;
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+          gap: 76px;
+        }
+        .lo-badge {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 16px;
+          opacity: 0;
+        }
+        .lo-badge-mark {
+          height: 172px;
+          width: auto;
+          display: block;
+        }
+        .lo-badge-label {
+          font-family: "Inter", ui-monospace, monospace;
+          font-weight: 500;
+          font-size: 24px;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: #94a3b8;
+          white-space: nowrap;
+        }
+      </style>
+
+      <div id="root" data-composition-id="logo-outro" data-width="1080" data-height="1920" data-duration="12">
+        <div class="lo-scene clip" id="lo-scene" data-start="0" data-duration="12" data-track-index="0">
+          <div class="lo-cluster" id="lo-cluster">
+            <div class="lo-icon-wrap" id="lo-icon-wrap">
+              <div class="lo-icon" id="lo-icon"></div>
+              <div class="lo-icon-glow" id="lo-icon-glow"></div>
+              <svg class="lo-mark" id="lo-mark" viewBox="0 0 1024 1024" aria-hidden="true">
+                <defs>
+                  <linearGradient id="pdcg-lo" x1="220" y1="310" x2="804" y2="830" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#6EE7B7"></stop>
+                    <stop offset="0.48" stop-color="#10B981"></stop>
+                    <stop offset="1" stop-color="#047857"></stop>
+                  </linearGradient>
+                </defs>
+                <path class="pdc-p" d="M220 462H350L405 405L467 536L548 310L618 462H804" stroke-width="58" stroke-dasharray="1000" stroke-dashoffset="1000"></path>
+                <path class="pdc-p" d="M512 584V832" stroke-width="58" stroke-dasharray="300" stroke-dashoffset="300"></path>
+                <path class="pdc-p" d="M452 584C438 680 406 760 360 830" stroke-width="48" opacity="0.88" stroke-dasharray="300" stroke-dashoffset="300"></path>
+                <path class="pdc-p" d="M572 584C586 680 618 760 664 830" stroke-width="48" opacity="0.88" stroke-dasharray="300" stroke-dashoffset="300"></path>
+                <path class="pdc-p" d="M398 594C352 678 306 754 246 814" stroke-width="38" opacity="0.48" stroke-dasharray="300" stroke-dashoffset="300"></path>
+                <path class="pdc-p" d="M626 594C672 678 718 754 778 814" stroke-width="38" opacity="0.48" stroke-dasharray="300" stroke-dashoffset="300"></path>
+              </svg>
+            </div>
+
+            <div class="lo-wordmark" id="lo-wordmark">Pulso do Campo</div>
+
+            <div class="lo-kicker" id="lo-kicker">Já disponível em</div>
+
+            <div class="lo-badges-wrap" id="lo-badges-wrap">
+              <div class="lo-badges-glow" id="lo-badges-glow" data-layout-allow-overflow="true"></div>
+              <div class="lo-badges" id="lo-badges">
+                <div class="lo-badge" id="lo-badge-appstore">
+                  <img class="lo-badge-mark" src=".media/images/logo_003.svg" alt="App Store" />
+                  <span class="lo-badge-label">App Store</span>
+                </div>
+                <div class="lo-badge" id="lo-badge-googleplay">
+                  <img class="lo-badge-mark" src=".media/images/logo_002.svg" alt="Google Play" />
+                  <span class="lo-badge-label">Google Play</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          window.__timelines = window.__timelines || {};
+          var tl = gsap.timeline({ paused: true });
+
+          /* ---------------------------------------------------------------
+             Beat 1 (t=0.0) — app icon + nome "Pulso do Campo" entram,
+             escala + fade. O mark se autodesenha (mesma assinatura usada
+             em toda a série).
+             --------------------------------------------------------------- */
+          tl.fromTo(
+            "#lo-icon-wrap",
+            { scale: 0.6, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 0.4, ease: "power3.out" },
+            0.05
+          );
+          tl.to(
+            "#lo-mark .pdc-p",
+            { attr: { "stroke-dashoffset": 0 }, duration: 0.5, ease: "power2.out", stagger: 0.05 },
+            0.18
+          );
+          tl.fromTo(
+            "#lo-icon-glow",
+            { opacity: 0, scale: 0.75 },
+            { opacity: 0.55, scale: 1.1, duration: 0.32, ease: "sine.out" },
+            0.32
+          );
+          tl.fromTo(
+            "#lo-wordmark",
+            { y: 26, opacity: 0, filter: "blur(8px)" },
+            { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "power3.out" },
+            0.22
+          );
+
+          /* ---------------------------------------------------------------
+             Beat 2 (t=1.0) — kicker "Já disponível em" sobe.
+             --------------------------------------------------------------- */
+          tl.fromTo(
+            "#lo-kicker",
+            { y: 18, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" },
+            1.0
+          );
+
+          /* ---------------------------------------------------------------
+             Beat 3 (t=1.6) — selo App Store entra pela esquerda, hit de
+             escala (o overshoot do back.out É o hit).
+             --------------------------------------------------------------- */
+          tl.fromTo(
+            "#lo-badge-appstore",
+            { x: -150, opacity: 0, scale: 0.7 },
+            { x: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.9)" },
+            1.6
+          );
+
+          /* ---------------------------------------------------------------
+             Beat 4 (t=2.1) — selo Google Play entra pela direita, hit de
+             escala.
+             --------------------------------------------------------------- */
+          tl.fromTo(
+            "#lo-badge-googleplay",
+            { x: 150, opacity: 0, scale: 0.7 },
+            { x: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.9)" },
+            2.1
+          );
+
+          /* ---------------------------------------------------------------
+             Beat 5 (t=2.8) — glow verde único floresce atrás dos dois
+             selos; a dupla "assenta" com um pulso de escala sutil,
+             marcando que agora são apresentados como par.
+             --------------------------------------------------------------- */
+          tl.fromTo(
+            "#lo-badges-glow",
+            { opacity: 0, scale: 0.6 },
+            { opacity: 1, scale: 1, duration: 0.55, ease: "power2.out" },
+            2.8
+          );
+          tl.fromTo(
+            "#lo-badges",
+            { scale: 0.97 },
+            { scale: 1, duration: 0.4, ease: "power2.out" },
+            2.8
+          );
+
+          /* ---------------------------------------------------------------
+             Beat 6 (t=3.4 → 12.0) — hold final. O glow respira em ciclos
+             finitos e explícitos (repeat:3/yoyo, nunca -1) para o quadro
+             não congelar por 8.6s.
+             --------------------------------------------------------------- */
+          tl.to(
+            "#lo-badges-glow",
+            { opacity: 0.78, duration: 1.7, ease: "sine.inOut", repeat: 3, yoyo: true },
+            3.8
+          );
+
+          tl.seek(0);
+          window.__timelines["logo-outro"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
