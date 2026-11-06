@@ -6,6 +6,11 @@ ficar só com código. Decisão do dono, já registrada lá em 21/09/2026: "sem 
 
 ## O que tem aqui
 
+Este checkout usa `sparse-checkout`: só `tools/`, este README e `.gitignore`
+foram materializados inicialmente. As pastas abaixo descrevem o repositório,
+não garantem presença local. Confira `git sparse-checkout list` antes de renderizar;
+materialize apenas a pasta necessária, preservando alterações locais.
+
 | Pasta | O que é | Como roda |
 |---|---|---|
 | `videos/` | 7 projetos HyperFrames (composições HTML → MP4) | `cd videos/<projeto> && npm install && npm run check && npm run render` |
@@ -32,3 +37,12 @@ lá, por exemplo `git log -- videos marketing INSTITUCIONAL LAUNCH-PACK`:
 
 - Código, telas e lojas do app: `Pulso-Do-Campo`.
 - Pipeline do Pulso News (`scripts/pulso-news/` no app) e os episódios em `~/Studio/pulso-videos/`.
+
+## Distribuição do Pulso News
+
+A skill Codex `.agents/skills/pulso-publicar/` reúne o procedimento assistido de
+publicação no Instagram e catálogo do app. O helper `scripts/workflow.py` dessa
+skill executa somente preflight e plano de retomada, sem rede ou escrita no episódio.
+Não é um publicador autônomo nem uma agenda; os canais são operados pelo agente
+com a autorização vigente e os gates do pipeline. Recibos existentes impedem
+republicar por engano. Leia o `SKILL.md` antes de usar.
