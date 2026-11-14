@@ -46,3 +46,44 @@ skill executa somente preflight e plano de retomada, sem rede ou escrita no epis
 Não é um publicador autônomo nem uma agenda; os canais são operados pelo agente
 com a autorização vigente e os gates do pipeline. Recibos existentes impedem
 republicar por engano. Leia o `SKILL.md` antes de usar.
+
+### Pacote aprovado → catálogo do app
+
+`tools/pulso_news_app.py` integra o pacote do Studio ao catálogo existente, sem
+criar outro gerador, agenda, chave ou SDK. `prepare` é offline; `publish` usa a
+sessão já autenticada do Supabase CLI no projeto fixo do Pulso. Não altera código
+do app, schema, RLS nem dispara push manual. O app já lê o catálogo remoto: não
+precisa de novo binário para cada episódio.
+
+```sh
+python3 tools/pulso_news_app.py prepare /caminho/episodio \
+  --snapshot qa/backup-app-completo.json --replace-id ID_ANTERIOR
+python3 -m unittest discover -s tools -p 'test_pulso_news_app.py'
+```
+
+O snapshot completo é obtido por SELECT no projeto confirmado. O pacote exige
+manifesto, capa, metadados, crítico no hash do vídeo e `out/pronto-app.json` com
+G-PESQUISA/G0/G1/G2/G3/G4/G3-mix/visual/editorial e hashes das provas. Plano e SQL
+ficam no episódio, fora deste repo. O SQL exige parecer independente no próprio
+hash em `qa/revisao-sql.json` (`aprovado: true`, `sql_sha256`). Antes de publicar,
+confira autorizações e ownership vigentes; arquivo de parecer não concede acesso.
+
+```sh
+python3 tools/pulso_news_app.py publish /caminho/episodio
+```
+
+O G6 canônico continua obrigatório. Exceção só com autorização **específica** do
+dono no chat e recibo vinculado ao ID/hash desta edição, não reutilizável, passado
+por `--g6-authorization qa/autorizacao-g6-app.json`. Falha não vira dispensa
+automática. Não replique credenciais para fazer o G6 funcionar.
+
+Dia ocupado não é substituído implicitamente. Troca autorizada preserva a edição
+anterior como rascunho, sem apagar mídia; compara e trava o snapshot completo na
+mesma transação do INSERT. A publicação grava backup, journal antes de enviar,
+confere bytes/hashes públicos e leitura como `anon`, então combina os recibos dos
+canais atomicamente. Falha deixa `uncertain`: reconciliar, nunca reenviar às cegas.
+Não usar `retirar` para esta troca: esse comando apaga mídia.
+
+Os dois produtores atuais (diário do app e Studio) continuam separados. Antes de
+gastar voz no Studio, consulte o catálogo do dia para decidir qual edição distribuir.
+Uma rotina instalada não prova que a edição futura passou nos gates ou foi publicada.
