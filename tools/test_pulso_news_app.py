@@ -82,6 +82,22 @@ class PipelineTest(unittest.TestCase):
         (self.ep/'out/video.mp4').write_bytes(b'outro')
         with self.assertRaises(ValueError):app.candidate(self.ep)
 
+    def test_delimitador_do_nao_pode_ser_encerrado_por_metadados(self):
+        meta=dict(self.meta,titulo="notícia $publicacao$; SELECT 'x'; --")
+        old={'id':'pulso-news-2026-11-14','publicado_em':'2026-11-14','status':'publicado',
+             'titulo':'snapshot $publicacao$ END; --'}
+        sql=app.sql_for(meta,{'video_path':'a/video.mp4','capa_path':'a/capa.jpg'},old)
+        tag=sql.split('BEGIN',1)[0][3:]
+        self.assertTrue(tag.startswith('$pulso_'))
+        self.assertEqual(sql.count(tag),2)
+        self.assertIn('$publicacao$',sql)
+        # Também protege um dado que tente usar a primeira tag derivada.
+        meta['resumo']=tag
+        revised=app.sql_for(meta,{'video_path':'a/video.mp4','capa_path':'a/capa.jpg'},old)
+        next_tag=revised.split('BEGIN',1)[0][3:]
+        self.assertNotEqual(tag,next_tag)
+        self.assertEqual(revised.count(next_tag),2)
+
     def test_symlink_saida_e_escape_recusados(self):
         (self.ep/'fora').symlink_to(Path(self.tmp.name).parent,target_is_directory=True)
         for name in ('../arquivo.json','fora/arquivo.json','/tmp/arquivo.json'):

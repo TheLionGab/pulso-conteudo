@@ -96,7 +96,13 @@ def sql_for(meta, paths, previous):
                        "IF NOT FOUND THEN RAISE EXCEPTION 'Edição anterior mudou; reconciliar'; END IF;",
                        f"UPDATE public.pulso_news_episodios SET status='rascunho',atualizado_em=now() WHERE id={q(previous['id'])};"]
     statements += [f"INSERT INTO public.pulso_news_episodios ({','.join(columns)}) VALUES ({','.join(values)});"]
-    return ('DO $publicacao$ BEGIN\n' + '\n'.join(statements) + '\nEND $publicacao$;\n'
+    body = 'BEGIN\n' + '\n'.join(statements) + '\nEND '
+    # O lexer do DO procura a tag antes de interpretar E'...': escapar aspas
+    # não basta. A tag precisa estar ausente do corpo inteiro, inclusive dados.
+    tag = '$pulso_' + hashlib.sha256(body.encode()).hexdigest()[:16] + '$'
+    while tag in body:
+        tag = tag[:-1] + '_x$'
+    return ('DO ' + tag + body + tag + ';\n'
             f"SELECT id,status,video_path,capa_path,aprovado_em FROM public.pulso_news_episodios WHERE id={q(meta['id'])};\n")
 
 
