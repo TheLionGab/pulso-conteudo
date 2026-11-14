@@ -67,6 +67,13 @@ class PipelineTest(unittest.TestCase):
     def test_gate_reprovado_incompleto_ou_prova_alterada_bloqueia(self):
         self.ready['gates']['G0']['resultado']='reprovado';self.write('out/pronto-app.json',self.ready)
         with self.assertRaises(ValueError):app.candidate(self.ep)
+
+    def test_snapshot_tem_timestamps_normalizados_pelo_tipo_postgres(self):
+        old={'id':'pulso-news-2026-11-14','publicado_em':'2026-11-14','status':'publicado',
+             'aprovado_em':'2026-11-14 14:23:18.552+00'}
+        _,sql=app.prepare(self.ep,[old],old['id'])
+        self.assertIn('to_jsonb(e)=to_jsonb(jsonb_populate_record(NULL::public.pulso_news_episodios,',sql)
+        self.assertIn('2026-11-14 14:23:18.552+00',sql)
         self.ready['gates']['G0']['resultado']='aprovado';self.write('out/pronto-app.json',self.ready)
         (self.ep/'qa/prova.json').write_text('prova alterada')
         with self.assertRaises(ValueError):app.candidate(self.ep)

@@ -91,7 +91,8 @@ def sql_for(meta, paths, previous):
     if previous:
         # Compare o snapshot inteiro: alteração concorrente de metadados também bloqueia.
         statements += [f"PERFORM 1 FROM public.pulso_news_episodios e WHERE id={q(previous['id'])} "
-                       f"AND to_jsonb(e)={q(json.dumps(previous, ensure_ascii=False))}::jsonb FOR UPDATE;",
+                       f"AND to_jsonb(e)=to_jsonb(jsonb_populate_record(NULL::public.pulso_news_episodios,"
+                       f"{q(json.dumps(previous, ensure_ascii=False))}::jsonb)) FOR UPDATE;",
                        "IF NOT FOUND THEN RAISE EXCEPTION 'Edição anterior mudou; reconciliar'; END IF;",
                        f"UPDATE public.pulso_news_episodios SET status='rascunho',atualizado_em=now() WHERE id={q(previous['id'])};"]
     statements += [f"INSERT INTO public.pulso_news_episodios ({','.join(columns)}) VALUES ({','.join(values)});"]
