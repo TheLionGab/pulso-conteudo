@@ -203,7 +203,7 @@ def publish(ep, plan, publisher, g6_authorization=None):
         for kind, field in (('video', 'video_path'), ('capa', 'capa_path')):
             media = wf.inside(ep, manifest[kind]['arquivo'])
             result = subprocess.run(['supabase','storage','cp',str(media), 'ss:///pulso-news/'+plan[field],
-                                     '--project-ref',PROJECT,'--linked'], capture_output=True, timeout=300)
+                                     '--project-ref',PROJECT,'--linked','--experimental'], capture_output=True, timeout=300)
             if result.returncode:
                 raise RuntimeError('Upload não confirmado; reconciliar')
         public_media(ep, manifest, plan)

@@ -183,6 +183,9 @@ class PipelineTest(unittest.TestCase):
             run.return_value.returncode=0
             result=app.publish(self.ep,plan,Path('/publisher.mjs'),'qa/autorizacao.json')
         self.assertEqual(result['status'],'publicado')
+        uploads=[c.args[0] for c in run.call_args_list if c.args[0][:3]==['supabase','storage','cp']]
+        self.assertEqual(len(uploads),2)
+        self.assertTrue(all('--experimental' in command for command in uploads))
         self.assertEqual(media.call_count,2)
         self.assertEqual(app.load(self.ep,'out/publicado.json')['conta'],'pulsodocampo')
         self.assertEqual(app.load(self.ep,'out/publicacao/estado.json')['app']['phase'],'verified')
