@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 spec = importlib.util.spec_from_file_location('pipeline', Path(__file__).with_name('pulso_news_app.py'))
 app = importlib.util.module_from_spec(spec)
@@ -81,6 +81,32 @@ class PipelineTest(unittest.TestCase):
     def test_midia_alterada_bloqueia(self):
         (self.ep/'out/video.mp4').write_bytes(b'outro')
         with self.assertRaises(ValueError):app.candidate(self.ep)
+
+    def test_gate_obrigatorio_ausente_nao_libera_pacote(self):
+        del self.ready['gates']['G4']
+        self.write('out/pronto-app.json',self.ready)
+        with self.assertRaisesRegex(ValueError,'Gates ausentes'):
+            app.candidate(self.ep)
+
+    def test_http200_mesmo_tamanho_hash_errado_nao_confirma_midia(self):
+        plan=self.plan()
+        response=MagicMock()
+        response.__enter__.return_value=response
+        response.status=200
+        response.read.return_value=b'xideo'  # Cinco bytes, mas não é b'video'.
+        with patch.object(app,'urlopen',return_value=response):
+            with self.assertRaisesRegex(ValueError,'outro candidato'):
+                app.public_media(self.ep,self.manifest,plan)
+
+    def test_http200_hash_e_bytes_corretos_confirma_ambas_midias(self):
+        plan=self.plan()
+        responses=[]
+        for data in (b'video',b'capa'):
+            response=MagicMock();response.__enter__.return_value=response
+            response.status=200;response.read.return_value=data;responses.append(response)
+        with patch.object(app,'urlopen',side_effect=responses) as read:
+            app.public_media(self.ep,self.manifest,plan)
+        self.assertEqual(read.call_count,2)
 
     def test_delimitador_do_nao_pode_ser_encerrado_por_metadados(self):
         meta=dict(self.meta,titulo="notícia $publicacao$; SELECT 'x'; --")
