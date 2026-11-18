@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pulso do Campo para os seus clientes</title>
+    <style>
+      :root {
+        --verde: #1f5d3a;
+        --verde-claro: #e9f2ec;
+        --tinta: #17201b;
+        --cinza: #5a655f;
+        --linha: #d5ddd8;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      @page {
+        size: A4;
+        margin: 14mm;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 182mm;
+        padding: 24px 16px;
+        font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+        color: var(--tinta);
+        line-height: 1.4;
+        font-size: 11.5pt;
+      }
+      header {
+        border-bottom: 3px solid var(--verde);
+        padding-bottom: 12px;
+      }
+      .marca {
+        font-size: 10pt;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--verde);
+      }
+      h1 {
+        margin: 6px 0 6px;
+        font-size: 22pt;
+        line-height: 1.15;
+      }
+      .sub {
+        margin: 0;
+        font-size: 12.5pt;
+        color: var(--cinza);
+      }
+      .numeros {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin: 16px 0;
+      }
+      .numero {
+        background: var(--verde-claro);
+        border-radius: 8px;
+        padding: 10px 12px;
+      }
+      .numero b {
+        display: block;
+        font-size: 20pt;
+        color: var(--verde);
+        line-height: 1.1;
+      }
+      .numero span {
+        font-size: 9.5pt;
+        color: var(--cinza);
+      }
+      .colunas {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+      }
+      h2 {
+        margin: 14px 0 6px;
+        font-size: 12.5pt;
+        color: var(--verde);
+      }
+      ul,
+      ol {
+        margin: 0;
+        padding-left: 18px;
+      }
+      li {
+        margin-bottom: 4px;
+      }
+      .piloto {
+        margin-top: 16px;
+        border: 1.5px solid var(--verde);
+        border-radius: 8px;
+        padding: 10px 14px 12px;
+      }
+      .piloto h2 {
+        margin-top: 0;
+      }
+      footer {
+        margin-top: 14px;
+        padding-top: 10px;
+        border-top: 1px solid var(--linha);
+        font-size: 9.5pt;
+        color: var(--cinza);
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .preencher {
+        background: #fff3c4;
+        padding: 0 3px;
+      }
+      @media print {
+        body {
+          padding: 0;
+        }
+        .preencher {
+          background: none;
+        }
+      }
+      @media (max-width: 640px) {
+        .numeros {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .colunas {
+          grid-template-columns: 1fr;
+          gap: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="marca">Pulso do Campo</div>
+      <h1>
+        O preço do dia na praça do seu cliente, no celular dele, com o nome da
+        <span class="preencher">[empresa]</span> no convite.
+      </h1>
+      <p class="sub">
+        Aplicativo de cotações, notícias e ferramentas para o produtor de Mato Grosso. Disponível
+        para iPhone e Android.
+      </p>
+    </header>
+
+    <section class="numeros" aria-label="Números do aplicativo">
+      <div class="numero"><b>139</b><span>municípios de MT com cotação</span></div>
+      <div class="numero"><b>15</b><span>produtos com preço na última semana</span></div>
+      <div class="numero"><b>2023</b><span>histórico de preços desde abril</span></div>
+      <div class="numero"><b>4,7</b><span>dias por mês: quanto volta quem usa as cotações</span></div>
+    </section>
+
+    <div class="colunas">
+      <section>
+        <h2>O que o seu cliente recebe</h2>
+        <ul>
+          <li>
+            Cotação de soja, milho, boi gordo, algodão e mais 11 produtos, da praça dele. Soja e
+            milho em 23 praças de MT, algodão em 13.
+          </li>
+          <li>Fontes públicas e nomeadas na tela: IMEA, CEPEA e ANP.</li>
+          <li>Preços atualizados de 2 a 3 vezes por dia útil.</li>
+          <li>Histórico para comparar com a semana, o mês e a safra passada.</li>
+          <li>Dólar, diesel e relação de troca no mesmo lugar.</li>
+          <li>Notícias do agro: cerca de 80 por semana, de 20 fontes.</li>
+          <li>No plano Pro: todas as culturas, comparador de praças e assistente com IA.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>O que a <span class="preencher">[empresa]</span> ganha</h2>
+        <ul>
+          <li>Um benefício de uso diário para entregar ao cliente, sem desenvolver nada.</li>
+          <li>O cliente entra com o código da empresa: o convite leva o seu nome.</li>
+          <li>
+            Relatório mensal: quantos clientes entraram pelo seu código e quantos usam toda semana.
+          </li>
+          <li>Um motivo a mais para o cliente falar com o seu vendedor: o preço do dia.</li>
+        </ul>
+      </section>
+    </div>
+
+    <section class="piloto">
+      <h2>Piloto de 30 dias, sem custo</h2>
+      <ol>
+        <li>A empresa indica os clientes que quer incluir (lista ou convite com o código).</li>
+        <li>Nós liberamos o plano Pro para eles por 30 dias.</li>
+        <li>No dia 30, mostramos quantos entraram e quantos usam. A empresa decide se continua.</li>
+      </ol>
+    </section>
+
+    <footer>
+      <span>
+        <span class="preencher">[seu nome]</span> ·
+        <span class="preencher">[telefone]</span> · pulsodocampo.com.br
+      </span>
+      <span>Números medidos em 18/11/2026.</span>
+    </footer>
+  </body>
+</html>
