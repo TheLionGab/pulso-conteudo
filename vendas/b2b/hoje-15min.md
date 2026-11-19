@@ -1,7 +1,16 @@
 # Sua parte em 15 minutos
 
-Tudo abaixo é para copiar e colar. No LinkedIn, só falta o nome da pessoa no lugar de `____`.
+Tudo abaixo é para copiar e colar. No LinkedIn, onde houver `____`, falta o nome da pessoa.
 Quem envia é você, do seu perfil. Contatos lidos nos sites das empresas em 18/11/2026.
+
+**Ordem de ataque (páginas relidas em 18/11/2026, à noite):**
+
+1. Grupo Agromave (seção 2): tem decisor com nome no site e já publica comentário de mercado.
+2. Coabra (seção 5): WhatsApp direto e fato recente para abrir a conversa.
+3. Fex Agro (seção 4): WhatsApp direto; nome do CEO vem de matéria, não do site.
+4. Agrofertil (seção 3): só formulário; nenhum nome publicado.
+5. Cooperfibra (seção 1): por último. Há notícia de aplicativo próprio para cooperado ("Cooper APP",
+   2024); a página não abriu na conferência, então não se sabe se ele mostra cotação.
 
 ## Antes de tudo: WhatsApp para um conhecido de revenda
 
@@ -55,11 +64,17 @@ Pulso do Campo · pulsodocampo.com.br
 
 **LinkedIn.** Busca:
 https://www.linkedin.com/search/results/people/?keywords=Agromave%20comercial
-Cargo a procurar: gerente ou diretor comercial, gerente de marketing.
+Pessoa a procurar: **Vinicius Ogawa**, "Diretor de Marketing / Diretor Comercial" (página
+https://www.grupoagromave.com.br/sobre/). Se não achar o perfil dele: André Andrade, "Diretor
+Comercial de Especialidades e Serviços" (troque o nome na mensagem). Página da empresa:
+https://www.linkedin.com/company/grupoagromave/
 
 ```
-Olá, ____. Sou o Gabriel, criei o Pulso do Campo, aplicativo com o preço do dia de soja e milho por praça em MT. Estou abrindo um piloto sem custo para a Agromave oferecer aos clientes. Posso te mostrar em 15 minutos?
+Olá, Vinicius. Sou o Gabriel, criei o Pulso do Campo, aplicativo com o preço do dia de soja e milho por praça em MT. Vi que a Agromave publica o "Mercado de Soja" e o "Mercado de Milho" no site; o aplicativo leva esse preço ao produtor todo dia. Estou abrindo um piloto sem custo para a Agromave oferecer aos clientes. Posso te mostrar em 15 minutos?
 ```
+
+**WhatsApp.** O botão do site abre o próprio 0800 730 0505 (https://wa.me/5508007300505). É
+atendimento geral: use a mensagem do Instagram abaixo.
 
 **Instagram.** https://www.instagram.com/agromave
 
@@ -135,11 +150,17 @@ Pulso do Campo · pulsodocampo.com.br
 
 **LinkedIn.** Busca:
 https://www.linkedin.com/search/results/people/?keywords=Fex%20Agro%20comercial
-Cargo a procurar: gerente ou diretor comercial, gerente de marketing.
+Cargo a procurar: gerente ou diretor comercial, gerente de marketing. Uma matéria do AgFeed
+cita Daniel Pinheiro Barbosa como CEO e sócio (matéria não relida; confira no perfil antes de
+usar o nome).
 
 ```
 Olá, ____. Sou o Gabriel, criei o Pulso do Campo, aplicativo com o preço do dia de soja, milho e boi por praça em MT. Estou abrindo um piloto sem custo para a Fex Agro oferecer aos clientes. Posso te mostrar em 15 minutos?
 ```
+
+**WhatsApp.** +55 66 99687-4574 (https://wa.me/5566996874574, link do https://linktr.ee/fexagro).
+Use a mensagem do Instagram abaixo. O site fexagro.com.br apareceu com links estranhos numa
+leitura de hoje: prefira o WhatsApp e o Instagram.
 
 **Instagram.** https://www.instagram.com/fexagro/
 
@@ -175,11 +196,16 @@ Pulso do Campo · pulsodocampo.com.br
 **LinkedIn.** Busca:
 https://www.linkedin.com/search/results/people/?keywords=Coabra%20comercial
 Cargo a procurar: gerente comercial, superintendente ou responsável por relacionamento com o
-cooperado.
+cooperado. O site não publica nome comercial nem de marketing. Página da cooperativa:
+https://www.linkedin.com/company/coabracoopagro
 
 ```
-Olá, ____. Sou o Gabriel, criei o Pulso do Campo, aplicativo com o preço do dia de soja e milho por praça em MT. Estou abrindo um piloto sem custo para a Coabra oferecer aos cooperados. Posso te mostrar em 15 minutos?
+Olá, ____. Sou o Gabriel, criei o Pulso do Campo, aplicativo com o preço do dia de soja e milho por praça em MT. Parabéns pelos 300 cooperados. Estou abrindo um piloto sem custo para a Coabra oferecer aos cooperados. Posso te mostrar em 15 minutos?
 ```
+
+**WhatsApp.** +55 65 2128-3500 (link do https://linktr.ee/coabra_). Use a mensagem do Instagram
+abaixo. Fatos da home do site para citar: 300 cooperados (12/08/2026) e Selo Prata do Programa
+Brasileiro GHG Protocol (02/09/2026).
 
 **Instagram.** https://www.instagram.com/coabra_/
 

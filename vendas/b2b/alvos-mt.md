@@ -7,17 +7,27 @@ contato no site antes de usar.
 ## Primeiros cinco (porte médio, decisão local, sem aplicativo de cotações encontrado)
 
 1. **Cooperfibra** — cooperativa de algodão, Campo Verde. 208 cooperados, 407 mil t de algodão
-   por ano (matéria de 07/2025). Contato: https://cooperfibra.com.br/contato
+   por ano (matéria de 07/2025). Contato: https://cooperfibra.com.br/contato. Há notícia de
+   aplicativo próprio para cooperado ("Cooper APP", 02/2024); a página não abriu na conferência
+   de 18/11 e não se sabe se ele mostra cotação. Último da ordem de ataque.
 2. **Grupo Agromave** — revenda de insumos, Sorriso (sede por cadastro de terceiro). 16 a 17
-   lojas, mais de 40 municípios de MT. Contato: https://www.grupoagromave.com.br/contato/ e
-   0800 730 0505.
-3. **Agrofertil** — revenda de insumos, Lucas do Rio Verde. 9 lojas no Médio-Norte e Norte.
-   Contato: https://agrofertilmt.com.br/contato
+   lojas, mais de 40 municípios de MT. Contato: https://www.grupoagromave.com.br/contato/,
+   atendimento@grupoagromave.com.br e 0800 730 0505. Decisor (página /sobre/): Vinicius Ogawa,
+   "Diretor de Marketing / Diretor Comercial"; também Marcos Camargo, CEO, e André Andrade,
+   Diretor Comercial de Especialidades e Serviços. Publica "Mercado de Soja" e "Mercado de
+   Milho" no site (11/03/2026). Primeiro da ordem de ataque.
+3. **Agrofertil** — revenda de insumos, matriz em Lucas do Rio Verde. Lojas em 9 cidades (Lucas
+   do Rio Verde, Tapurah, Sinop, Alta Floresta, Sorriso, Nova Mutum, Novo Mundo, Nova Maringá e
+   Juara). Contato: só formulário e endereços em https://agrofertilmt.com.br/contato; sem
+   e-mail, telefone ou nome de gestor no site. Não confundir com a Agrofértil do Paraguai.
 4. **Fex Agro** — revenda de insumos e nutrição animal, Primavera do Leste. 4 unidades em MT
    (Primavera do Leste, Campo Verde, Canarana, Vila Rica). Contato: (66) 3191-0839,
-   contato@fexagro.com.br
+   contato@fexagro.com.br, WhatsApp +55 66 99687-4574 (https://linktr.ee/fexagro). Outra
+   pesquisa de 18/11 achou 6 unidades em MT, SP e GO: número a confirmar.
 5. **Coabra** — cooperativa agrícola, Cuiabá, com unidades em Rondonópolis e Sinop. 300
-   cooperados (site, 08/2026). Contato: https://coabra-contato.web.app/
+   cooperados (site, 12/08/2026); Selo Prata do GHG Protocol (site, 02/09/2026). Contato:
+   https://coabra-contato.web.app/ e WhatsApp +55 65 2128-3500 (https://linktr.ee/coabra_).
+   Sem nome comercial ou de marketing no site. Segundo da ordem de ataque.
 
 ## Reservas
 
