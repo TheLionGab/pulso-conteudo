@@ -119,7 +119,10 @@ def cli(*args, sql=None, arquivo=None):
     if sql is None and arquivo is None:
         return ret.stdout
     dados = json.loads(ret.stdout)
-    return dados['rows'] if isinstance(dados, dict) else dados
+    linhas = dados.get('rows') if isinstance(dados, dict) else dados
+    if not isinstance(linhas, list):
+        raise RuntimeError('Supabase CLI devolveu formato inesperado')
+    return linhas
 
 
 def q(valor):

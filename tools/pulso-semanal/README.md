@@ -23,6 +23,11 @@ independente.
   o hash público, grava a linha só se o dia estiver livre e confere como `anon`.
   `publicado.json` no episódio impede republicar; fase `incerto` exige
   reconciliação. Publicar dispara o push do dia pelo cron do app.
+  O catálogo aceita uma edição publicada por dia e o diário do app também
+  roda aos domingos: se ele publicar antes, `publicar` recusa. Trocar a edição
+  do domingo é decisão do dono, não do script.
+  A leitura anon usa `begin; set local role anon; select …; commit;`, a mesma forma
+  de `tools/pulso_news_app.py`, conferida em produção em 22/11/2026.
 - Saída: `~/Studio/pulso-videos/diario/AAAA-MM-DD-semanal/`, com MP4, capa,
   pauta e manifesto. Log do Mac na pasta `diario/logs`.
 

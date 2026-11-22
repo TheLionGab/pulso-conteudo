@@ -37,6 +37,20 @@ class MetaTest(unittest.TestCase):
         self.assertIn("status='publicado'", sql)
 
 
+class CliTest(unittest.TestCase):
+    def test_formato_inesperado_vira_runtime_error(self):
+        saida = mock.Mock(returncode=0, stdout='{"error": "x"}')
+        with mock.patch.object(app.subprocess, 'run', return_value=saida):
+            with self.assertRaisesRegex(RuntimeError, 'formato inesperado'):
+                app.cli(sql='select 1')
+
+    def test_semana_no_app_engole_falha_opcional(self):
+        import domingo
+        from datetime import date
+        with mock.patch.object(domingo, 'cli', side_effect=KeyError('rows')):
+            self.assertEqual(domingo.semana_no_app(date(2026, 11, 22)), '')
+
+
 class PublicarTest(unittest.TestCase):
     def test_recibo_existente_bloqueia_antes_de_rede(self):
         with tempfile.TemporaryDirectory() as pasta:

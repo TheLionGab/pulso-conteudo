@@ -46,7 +46,7 @@ def semana_no_app(dia):
         linhas = cli(sql='select publicado_em,titulo,resumo from public.pulso_news_episodios '
                          f"where status='publicado' and publicado_em between '{inicio}' and "
                          f"'{dia.isoformat()}' order by publicado_em")
-    except (RuntimeError, ValueError, OSError, subprocess.SubprocessError):
+    except (RuntimeError, ValueError, KeyError, TypeError, OSError, subprocess.SubprocessError):
         return ''
     if not linhas:
         return ''
@@ -145,7 +145,7 @@ def main():
         try:
             preparar(destino)
             print(f'PRONTO {dia}: publicar com app.py publicar {destino}', flush=True)
-        except (ValueError, OSError, subprocess.SubprocessError) as erro:
+        except (ValueError, KeyError, TypeError, OSError, subprocess.SubprocessError) as erro:
             print(f'AVISO {dia}: vídeo pronto, meta do app pendente: {erro}', flush=True)
 
 
