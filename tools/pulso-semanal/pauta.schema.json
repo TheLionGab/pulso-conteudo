@@ -1,0 +1,101 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "data",
+    "titulo",
+    "cenas"
+  ],
+  "properties": {
+    "data": {
+      "type": "string"
+    },
+    "titulo": {
+      "type": "string"
+    },
+    "cenas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tipo",
+          "secao",
+          "titulo",
+          "nota",
+          "linhas",
+          "falas",
+          "fonte",
+          "url",
+          "data_fonte",
+          "virada"
+        ],
+        "properties": {
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "gancho",
+              "mapa",
+              "barras",
+              "decisao",
+              "fecho"
+            ]
+          },
+          "secao": {
+            "type": "string"
+          },
+          "titulo": {
+            "type": "string"
+          },
+          "nota": {
+            "type": "string"
+          },
+          "linhas": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "rotulo",
+                "valor",
+                "quantidade"
+              ],
+              "properties": {
+                "rotulo": {
+                  "type": "string"
+                },
+                "valor": {
+                  "type": "string"
+                },
+                "quantidade": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                }
+              }
+            }
+          },
+          "falas": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "fonte": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "data_fonte": {
+            "type": "string"
+          },
+          "virada": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
