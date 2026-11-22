@@ -1,0 +1,172 @@
+{
+  "data": "2026-11-22",
+  "titulo": "Domingo no campo: chuva desigual, venda e safrinha",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "secao": "SEMANA DE 16 A 22 NOV",
+      "titulo": "Temporal no radar. E no talhão?",
+      "nota": "Confira o aviso para o seu município.",
+      "linhas": [
+        {
+          "rotulo": "CLIMA",
+          "valor": "Aviso de tempestade em MT",
+          "quantidade": null
+        }
+      ],
+      "falas": [
+        "Tem temporal no radar de Mato Grosso. Mas chuva prevista não é água no talhão."
+      ],
+      "fonte": "",
+      "url": "",
+      "data_fonte": "",
+      "virada": ""
+    },
+    {
+      "tipo": "mapa",
+      "secao": "CLIMA · AVISO DO INMET",
+      "titulo": "Tempestade no norte, nordeste e sudeste",
+      "nota": "Perigo potencial: até 50 mm no dia e granizo. Não é chuva garantida.",
+      "linhas": [
+        {
+          "rotulo": "RAJADAS PREVISTAS",
+          "valor": "40–60 km/h",
+          "quantidade": null
+        },
+        {
+          "rotulo": "VIGÊNCIA DO AVISO",
+          "valor": "22 e 23/11",
+          "quantidade": null
+        }
+      ],
+      "falas": [
+        "O Inmet mantém aviso de tempestade no norte, nordeste e sudeste de Mato Grosso até segunda.",
+        "Pode ter rajadas de até sessenta quilômetros por hora e granizo."
+      ],
+      "fonte": "INMET · aviso 56474",
+      "url": "https://avisos.inmet.gov.br/56474",
+      "data_fonte": "2026-11-22",
+      "virada": ""
+    },
+    {
+      "tipo": "decisao",
+      "secao": "SOJA · CHUVA DESIGUAL",
+      "titulo": "O solo não reage por igual",
+      "nota": "Estresse hídrico observado não significa perda confirmada.",
+      "linhas": [
+        {
+          "rotulo": "O QUE A CONAB VIU",
+          "valor": "Veranico e estresse hídrico",
+          "quantidade": null
+        },
+        {
+          "rotulo": "MENOS CHUVA ATÉ 23/11",
+          "valor": "Norte, Centro-Sul e Sudoeste",
+          "quantidade": null
+        },
+        {
+          "rotulo": "NA PROPRIEDADE",
+          "valor": "Cheque o solo no talhão",
+          "quantidade": null
+        }
+      ],
+      "falas": [
+        "A Conab viu veranico e estresse hídrico na soja em várias regiões de Mato Grosso.",
+        "E até segunda, norte, centro-sul e sudoeste devem ter chuva menor.",
+        "Antes de operar, cheque a umidade do solo no talhão."
+      ],
+      "fonte": "Conab · condições das lavouras",
+      "data_fonte": "2026-11-16",
+      "url": "https://www.gov.br/conab/pt-br/atuacao/informacoes-agropecuarias/safras/progresso-de-safra/acompanhamento-das-lavouras-09-11-a-15-11-26/monitoramento-das-condicoes-das-lavouras.pdf",
+      "virada": ""
+    },
+    {
+      "tipo": "barras",
+      "secao": "MERCADO",
+      "titulo": "Exportação forte não é preço",
+      "nota": "Receita exportada pelo Brasil · outubro de 2026.",
+      "linhas": [
+        {
+          "rotulo": "SOJA EM GRÃO",
+          "valor": "US$ 3,1 bi",
+          "quantidade": 3.1
+        },
+        {
+          "rotulo": "MILHO",
+          "valor": "US$ 1,3 bi",
+          "quantidade": 1.3
+        }
+      ],
+      "falas": [
+        "Em outubro, a soja em grão liderou as exportações do agro brasileiro.",
+        "Mas exportação forte não garante preço melhor na sua praça.",
+        "Compare o valor líquido, depois do frete, e o prazo de pagamento."
+      ],
+      "fonte": "MAPA · exportações",
+      "url": "https://www.gov.br/agricultura/pt-br/assuntos/noticias/2026/exportacoes-do-agronegocio-somam-us-16-bilhoes-em-outubro-e-crescem-4-1",
+      "data_fonte": "2026-11-18",
+      "virada": "Compare o preço líquido"
+    },
+    {
+      "tipo": "decisao",
+      "secao": "SEGUNDA SAFRA",
+      "titulo": "Trigo em avaliação em MT",
+      "nota": "Debate técnico de 17 e 18/11, não recomendação geral de plantio.",
+      "linhas": [
+        {
+          "rotulo": "NO CAMPO",
+          "valor": "Cultivar e água",
+          "quantidade": null
+        },
+        {
+          "rotulo": "NA PLANILHA",
+          "valor": "Custo de produção",
+          "quantidade": null
+        },
+        {
+          "rotulo": "NA VENDA",
+          "valor": "Padrão e comprador",
+          "quantidade": null
+        }
+      ],
+      "falas": [
+        "Em Primavera do Leste e Campo Verde, a Embrapa discutiu trigo na segunda safra.",
+        "Antes de trocar, confira água, custo e o padrão que o comprador exige."
+      ],
+      "fonte": "Sedec-MT · encontro da Embrapa",
+      "url": "https://www.transparencia.mt.gov.br/web/sedec/w/trigo-%C3%A9-avaliado-como-alternativa-de-segunda-safra-em-mato-grosso",
+      "data_fonte": "2026-11-19",
+      "virada": ""
+    },
+    {
+      "tipo": "fecho",
+      "secao": "PARA A SEGUNDA-FEIRA",
+      "titulo": "Três decisões para a semana",
+      "nota": "Clima e cotações no Pulso do Campo.",
+      "linhas": [
+        {
+          "rotulo": "CAMPO",
+          "valor": "Cheque o solo, não só o radar",
+          "quantidade": null
+        },
+        {
+          "rotulo": "VENDA",
+          "valor": "Compare o preço líquido",
+          "quantidade": null
+        },
+        {
+          "rotulo": "SAFRINHA",
+          "valor": "Valide antes de trocar",
+          "quantidade": null
+        }
+      ],
+      "falas": [
+        "Pra começar a semana, confira o clima e o preço da sua praça no Pulso do Campo."
+      ],
+      "fonte": "",
+      "url": "",
+      "data_fonte": "",
+      "virada": ""
+    }
+  ]
+}

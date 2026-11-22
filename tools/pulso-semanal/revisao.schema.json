@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["aprovada", "falhas"],
+  "properties": {
+    "aprovada": {"type": "boolean"},
+    "falhas": {"type": "array", "items": {"type": "string"}}
+  }
+}
