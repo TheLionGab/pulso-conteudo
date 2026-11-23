@@ -28,6 +28,16 @@ independente.
   do domingo é decisão do dono, não do script.
   A leitura anon usa `begin; set local role anon; select …; commit;`, a mesma forma
   de `tools/pulso_news_app.py`, conferida em produção em 22/11/2026.
+- `promessa_app.py`: reprova roteiro ou texto de catálogo que mande o produtor
+  ver, conferir, receber ou abrir algo "no app" / "no Pulso do Campo" sem tela
+  correspondente, ou que prometa aviso por município, cidade, região, Inmet,
+  Defesa Civil ou evento climático. `app.py preparar` chama a checagem e recusa o
+  roteiro que reprovar. Uso avulso: `python3 promessa_app.py pauta.json` ou
+  `--texto "..."` (exit 1 com achados). Limite: checa o tema (clima, cotações,
+  notícias...), não a função exata; a lista de recursos e de promessas proibidas
+  é curada à mão. As telas vêm do snapshot `telas-app.json` (SHA e data do app);
+  `--atualizar-telas` o regenera com `git ls-tree` da origin/main de
+  Pulso-Do-Campo (só leitura), depois de um `git fetch` lá.
 - Saída: `~/Studio/pulso-videos/diario/AAAA-MM-DD-semanal/`, com MP4, capa,
   pauta e manifesto. Log do Mac na pasta `diario/logs`.
 

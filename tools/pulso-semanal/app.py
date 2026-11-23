@@ -17,6 +17,7 @@ import subprocess
 import sys
 from urllib.request import urlopen
 
+import promessa_app
 from render import hash_arquivo, hash_pauta
 
 PROJETO = 'jgsmgvplwhisapvuqcji'
@@ -98,6 +99,11 @@ def meta_da_pauta(pauta, manifesto):
 def preparar(ep):
     manifesto, pauta = pacote_integro(ep)
     meta = meta_da_pauta(pauta, manifesto)
+    achados = (promessa_app.checar_pauta(pauta, telas := promessa_app.carregar_telas())
+               + promessa_app.checar_linhas([meta], telas, 'meta'))
+    if achados:
+        raise ValueError('Roteiro promete o que o app não tem: ' + '; '.join(
+            f"{a['campo']}: \"{a['frase']}\" ({a['motivo']})" for a in achados))
     gravar(ep / 'meta-app.json', meta)
     cmd = ['node', str(PUBLICADOR), 'rascunho', '--meta', str(ep / 'meta-app.json'),
            '--video', str(ep / 'pulso-semanal.mp4'), '--capa', str(ep / 'capa.jpg'),
