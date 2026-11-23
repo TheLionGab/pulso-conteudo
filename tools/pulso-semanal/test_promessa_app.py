@@ -26,6 +26,21 @@ class TextoTest(unittest.TestCase):
         for frase in ('Veja o aviso do Inmet no app.', 'Abra o app e acompanhe os avisos oficiais.'):
             self.assertEqual(len(pa.checar_texto(frase, TELAS)), 1, frase)
 
+    def test_reprova_aviso_por_cidade_ou_evento(self):
+        for frase in ('Receba no app o aviso da sua cidade.',
+                      'O Pulso do Campo te notifica com o alerta de geada.',
+                      'No app, o aviso da Defesa Civil chega na hora.',
+                      'Receba no Pulso do Campo o aviso de tempestade da sua região.'):
+            self.assertEqual(len(pa.checar_texto(frase, TELAS)), 1, frase)
+
+    def test_app_como_sujeito_ou_objeto_nao_reprova(self):
+        for frase in ('Veja o que o Pulso do Campo apurou hoje.',
+                      'Os produtores consultam o Pulso do Campo todo dia.'):
+            self.assertEqual(pa.checar_texto(frase, TELAS), [], frase)
+
+    def test_promessa_de_receber_sem_recurso_reprova(self):
+        self.assertEqual(len(pa.checar_texto('Receba novidades no app.', TELAS)), 1)
+
     def test_reprova_tela_inexistente(self):
         sem_clima = TELAS - {'clima.tsx'}
         achados = pa.checar_texto('Veja a previsão de chuva no Pulso do Campo.', sem_clima)

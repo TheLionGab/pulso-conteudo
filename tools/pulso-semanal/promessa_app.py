@@ -8,6 +8,10 @@ proibidas conhecidas (ex.: aviso do município no app) reprovam sempre.
 Entradas: pauta.json, JSON de linhas do catálogo (titulo/resumo/push_*), lista de
 falas do roteiro, ou --texto. Saída: achados e exit 1 se reprovar.
 --atualizar-telas regenera o snapshot (só leitura no repo do app).
+Limite: checa TEMA, não função exata. "clima" casa clima.tsx, mas não prova que a
+tela tenha aquele dado ou botão; a lista de recursos e de promessas proibidas é
+curada à mão. Frase sem o app como lugar ("o Pulso do Campo apurou", "consultam o
+Pulso do Campo") não passa pela regra de recurso; só pelas promessas proibidas.
 """
 import argparse
 from datetime import date
@@ -40,13 +44,23 @@ RECURSOS = (
 # Promessas que o app não cumpre. aviso_inmet saiu da UI em 08/11/2026
 # (apps/meu-talhao/lib/push/channels.ts, ALERTAS_UI_CHANNELS): sem aviso oficial no app.
 PROIBIDAS = (
-    (r'avisos?\s+d[oa]s?\s+(?:seu\s+|sua\s+)?munic[ií]pios?', 'aviso do município: o app não tem'),
-    (r'avisos?\s+(?:do\s+)?inmet', 'aviso do Inmet: saiu do app em 08/11/2026'),
-    (r'avisos?\s+oficia(?:l|is)', 'avisos oficiais: o app não tem'),
+    (r'(?:avisos?|alertas?)\s+(?:d[oa]s?|de|para|pra)\s+(?:seu\s+|sua\s+|a\s+|o\s+)?'
+     r'(?:munic[ií]pios?|cidades?|regi[ãa]o|propriedade|talh[ãa]o)',
+     'aviso/alerta por município, cidade ou região: o app não tem'),
+    (r'(?:avisos?|alertas?)\s+(?:do\s+|da\s+)?(?:inmet|defesa civil)',
+     'aviso do Inmet ou da Defesa Civil: saiu do app em 08/11/2026'),
+    (r'(?:avisos?|alertas?)\s+(?:de|d[oa]s?)\s+(?:geadas?|tempestades?|temporais|temporal|granizo|vendaval)',
+     'aviso/alerta de evento climático: o app não tem'),
+    (r'(?:avisos?|alertas?)\s+oficia(?:l|is)', 'avisos oficiais: o app não tem'),
 )
 VERBO = re.compile(r'\b(?:ver|veja|vejam|confir[ae]\w*|conferir|abr[ae]\w*|abrir|acompanh\w+|'
-                   r'consult\w+|olh\w+|cheque|checar)\b', re.I)
+                   r'consult\w+|olh\w+|cheque|checar|receb\w+|chega\w*|notifica\w*|avisa\w*)\b', re.I)
 APP = re.compile(r'pulso do campo|\bapp\b|aplicativo', re.I)
+# O app como LUGAR ("no app", "pelo Pulso do Campo", "abra o app"), não como sujeito
+# ("o Pulso do Campo apurou") nem objeto de outro verbo ("consultam o Pulso do Campo").
+LUGAR = re.compile(r'\b(?:no|na|nos|nas|pelo|pela|do|da|dentro d[oa]|via|em)\s+(?:seu\s+|nosso\s+)?'
+                   r'(?:app|aplicativo|pulso do campo)\b|\babr[ae]\w*\s+o\s+(?:app|aplicativo|pulso do campo)\b',
+                   re.I)
 FRASES = re.compile(r'(?<=[.!?])\s+')
 
 
@@ -74,7 +88,7 @@ def checar_unidade(frase, campo, telas, app_no_contexto=False):
     for padrao, motivo in PROIBIDAS:
         if re.search(padrao, frase, re.I) and (tem_app or app_no_contexto):
             return [{'campo': campo, 'frase': frase, 'motivo': 'promessa proibida, ' + motivo}]
-    if tem_app and VERBO.search(frase):
+    if LUGAR.search(frase) and VERBO.search(frase):
         exigidas = [tela for padrao, tela in RECURSOS if re.search(padrao, frase, re.I)]
         if not exigidas:
             achados.append({'campo': campo, 'frase': frase,
