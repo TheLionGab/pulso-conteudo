@@ -44,7 +44,7 @@ RECURSOS = (
 # Promessas que o app não cumpre. aviso_inmet saiu da UI em 08/11/2026
 # (apps/meu-talhao/lib/push/channels.ts, ALERTAS_UI_CHANNELS): sem aviso oficial no app.
 PROIBIDAS = (
-    (r'(?:avisos?|alertas?)\s+(?:d[oa]s?|de|para|pra)\s+(?:seu\s+|sua\s+|a\s+|o\s+)?'
+    (r'(?:avisos?|alertas?)\s+(?:d[oa]s?|de|para|pra)\s+(?:(?:[ao]s?|seus?|suas?)\s+)*'
      r'(?:munic[ií]pios?|cidades?|regi[ãa]o|propriedade|talh[ãa]o)',
      'aviso/alerta por município, cidade ou região: o app não tem'),
     (r'(?:avisos?|alertas?)\s+(?:do\s+|da\s+)?(?:inmet|defesa civil)',
