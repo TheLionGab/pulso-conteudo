@@ -1,0 +1,37 @@
+{
+  "fonte": "IMEA",
+  "data_publicacao": "2026-11-19",
+  "origem": "fixture de teste (13 praças, IMEA 19/11/2026)",
+  "produtos": {
+    "soja": {
+      "Campo Novo do Parecis": 137.8,
+      "Campo Verde": 142.7,
+      "Canarana": 135.65,
+      "Diamantino": 138.4,
+      "Lucas do Rio Verde": 137.75,
+      "Nova Mutum": 138.05,
+      "Primavera do Leste": 142.5,
+      "Querência": 135.35,
+      "Rondonópolis": 144.0,
+      "Sapezal": 137.55,
+      "Sinop": 137.9,
+      "Sorriso": 138.2,
+      "Tangará da Serra": 137.85
+    },
+    "milho": {
+      "Campo Novo do Parecis": 46.2,
+      "Campo Verde": 47.8,
+      "Canarana": 45.2,
+      "Diamantino": 43.2,
+      "Lucas do Rio Verde": 44.1,
+      "Nova Mutum": 43.4,
+      "Primavera do Leste": 48.3,
+      "Querência": 45.9,
+      "Rondonópolis": 49.5,
+      "Sapezal": 46.5,
+      "Sinop": 44.2,
+      "Sorriso": 44.5,
+      "Tangará da Serra": 43.8
+    }
+  }
+}

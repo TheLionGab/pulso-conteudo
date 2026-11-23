@@ -1,0 +1,11 @@
+{
+  "name": "pulso-anuncio-praca",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "gerar": "python3 gerar.py --dados dados/imea-2026-11-19.json --produto soja --cidade Sorriso",
+    "check": "npx --yes hyperframes@0.9.86 check",
+    "render": "npx --yes hyperframes@0.9.86 render",
+    "test": "python3 -m unittest test_gerar -v"
+  }
+}
