@@ -33,6 +33,12 @@ class TextoTest(unittest.TestCase):
                       'Receba no Pulso do Campo o aviso de tempestade da sua região.'):
             self.assertEqual(len(pa.checar_texto(frase, TELAS)), 1, frase)
 
+    def test_reprova_aviso_com_artigo_e_possessivo_juntos(self):
+        for frase in ('Receba no app o alerta para a sua região.',
+                      'No Pulso do Campo chega o aviso para o seu município.',
+                      'Veja no app os avisos para as suas cidades.'):
+            self.assertEqual(len(pa.checar_texto(frase, TELAS)), 1, frase)
+
     def test_app_como_sujeito_ou_objeto_nao_reprova(self):
         for frase in ('Veja o que o Pulso do Campo apurou hoje.',
                       'Os produtores consultam o Pulso do Campo todo dia.'):
