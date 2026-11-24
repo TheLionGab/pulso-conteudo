@@ -27,6 +27,11 @@ Entradas (no fim deste texto): Dia, Pasta e Molde.
      `{dia 23|dia vinte e três}` para a legenda não partir a data. Escreva "PTAX"
      (a voz já diz "petax").
    - Gráfico `serie_linha`: todos os pontos da série, em ordem de data.
+   - Clipe de fundo (`clipe`): só chave de `Molde/assets/manifest.json` com destino `cenas/`.
+     Prefira os 17 de origem `fundos-omni/` (campo, chuva, colheita, estrada, grãos, milho,
+     porto, silos, soja); um clipe diferente por cena, ligado ao assunto da cena (cultura
+     errada, como milho num episódio de soja, não entra) e sem repetir a sequência de
+     clipes do episódio anterior.
    - `legenda_instagram` rica: série dia a dia dos números do vídeo, a conta explicada,
      a ressalva "IMEA é indicador, não preço de balcão. Não é recomendação de venda.",
      dias sem dado (feriado) ditos, chamada para o app e até 5 hashtags.
