@@ -17,9 +17,15 @@ name: Pulso Brasil diário
 # (deployment branch policy: só main). Idempotência: grupo de concorrência único, historico.jsonl com o dia
 # = já feito (sem Claude, sem voz, sem publicar) e consulta ao catálogo do app antes de publicar.
 #
-# Segredos (só nomes): ANTHROPIC_API_KEY (só no passo que executa o Claude), ELEVENLABS_API_KEY (só no render),
-# SUPABASE_SERVICE_ROLE_KEY (coleta, acervo e publicação; do ambiente producao), APP_REPO_TOKEN (só leitura de
-# Contents do privado TheLionGab/Pulso-Do-Campo). Nenhum é impresso; cada passo recebe só o que usa.
+# Segredos (só nomes), TODOS do ambiente `producao` e só em jobs com `environment: producao` (gerar e publicar;
+# contexto e alerta não usam nenhum): ANTHROPIC_API_KEY (só no passo que executa o Claude), ELEVENLABS_API_KEY (só
+# no render), SUPABASE_SERVICE_ROLE_KEY (coleta, acervo, publicação e a cifra do pacote privado), APP_REPO_TOKEN
+# (só leitura de Contents do privado TheLionGab/Pulso-Do-Campo, nos checkouts do app). Nenhum é impresso; cada passo
+# recebe só o que usa.
+# Artifact (público: o repo é público): só out/pulso-brasil.mp4, capa.jpg, ep.json, legenda-instagram.txt,
+# manifesto.json, o trecho final dos logs sem chaves e o pacote privado CIFRADO (dossie.json e episodio.json, que
+# o job publicar precisa; a senha é a service role do ambiente). Nada de fontes/ nem dado bruto de consulta.
+# O log de um passo também é público: o do Claude só mostra o fim, redigido.
 # Permissões: contents: read em tudo; contents: write só no job que anexa a linha ao historico.jsonl;
 # issues: write só no job do alerta.
 
@@ -313,12 +319,20 @@ jobs:
           Molde: $RAIZ"
           # Mesmas ferramentas do agendado.sh: leitura no molde e na pasta do dia, escrita só na pasta do dia,
           # e o episodio.py. Sem rede, sem banco, sem outro Bash.
+          # A saída do modelo vai só para arquivo: o log do passo é público e ela pode citar dado da consulta.
+          # Mostra apenas o fim, sem chaves (e se o Claude falhar, o passo falha depois de mostrar esse fim).
+          set +e
           "$RUNNER_TEMP/claude/bin/claude" -p "$prompt" \
             --add-dir "$RAIZ" --max-turns 60 \
             --allowedTools "Read(/$RAIZ/**)" "Read(/$PASTA/**)" \
               "Glob(/$RAIZ/**)" "Glob(/$PASTA/**)" "Grep(/$RAIZ/**)" "Grep(/$PASTA/**)" \
               "Write(/$PASTA/**)" "Edit(/$PASTA/**)" \
-              "Bash(python3 $RAIZ/episodio.py:*)" 2>&1 | tee "$LOGS/claude.log"
+              "Bash(python3 $RAIZ/episodio.py:*)" > "$LOGS/claude.log" 2>&1
+          codigo=$?
+          set -e
+          echo "--- fim da saída do Claude (saída $codigo, últimas 20 linhas, sem chaves) ---"
+          tail -n 20 "$LOGS/claude.log" | bash "$RAIZ/diario/redigir.sh"
+          [ "$codigo" -eq 0 ] || exit "$codigo"
           # PTAX e IMEA do script não podem ter sido mexidos e fontes/ não pode ter ganhado arquivo do modelo.
           python -I "$RAIZ/diario/coletar_dados.py" --conferir "$PASTA" --trava "$TRAVA" 2>&1 | tee -a "$LOGS/claude.log"
           if [ -f "$PASTA/sem-episodio.txt" ]; then
@@ -334,6 +348,8 @@ jobs:
             { echo "O Claude não gerou episodio.json e dossie.json" >&2; exit 1; }
           # Sem -I: o episodio.py importa audio/ da própria pasta (igual ao pulso-brasil.sh).
           python "$RAIZ/episodio.py" "$PASTA/episodio.json"
+          # O que o modelo escreveu tem de ser do dia pedido (data do episódio e do dossiê, id do dossiê).
+          python -I "$RAIZ/diario/conferir_episodio.py" "$DIA" "$PASTA"
           grep -q fontes_sha256 "$PASTA/dossie.json" || python -I "$RAIZ/gates/g1_dossie.py" "$PASTA" --travar
 
       - name: Render (G1 a G5, voz ElevenLabs, Remotion)
@@ -357,28 +373,52 @@ jobs:
           path: ${{ env.PULSO_CACHE_VOZ }}
           key: pulso-voz-${{ github.run_id }}-${{ needs.contexto.outputs.modo }}
 
+      - name: Conferir o episódio contra o dia (meta que o publicar.mjs usa)
+        if: env.SEM_EPISODIO != '1'
+        run: |
+          set -euo pipefail
+          trabalho="$(find "$RUNNER_TEMP/trabalho" -maxdepth 1 -type d -name 'pulso-brasil.*' | head -1)"
+          # data do episódio e do dossiê, id do dossiê e id/publicado_em do ep.json = o dia pedido
+          python -I "$RAIZ/diario/conferir_episodio.py" "$DIA" "$trabalho" --ep
+
+      - name: Empacotar dossie.json e episodio.json para a publicação (cifrado)
+        if: env.MODO == 'real' && env.SEM_EPISODIO != '1'
+        env:
+          PRIVADO_SENHA: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          # O artifact é público; o job publicar precisa do dossiê (gate de frescor) e do episódio (histórico).
+          # Vão cifrados com a senha do ambiente producao, que só os jobs desse ambiente têm.
+          trabalho="$(find "$RUNNER_TEMP/trabalho" -maxdepth 1 -type d -name 'pulso-brasil.*' | head -1)"
+          mkdir -p "$RUNNER_TEMP/artefato"
+          tar -czf - -C "$trabalho" dossie.json episodio.json |
+            openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -md sha256 -salt -pass env:PRIVADO_SENHA \
+              -out "$RUNNER_TEMP/artefato/privado.enc"
+
       - name: Pronto (todos os gates passaram)
         id: pronto
         if: env.SEM_EPISODIO != '1'
         run: echo "pronto=true" >> "$GITHUB_OUTPUT"
 
-      - name: Reunir o artifact
+      - name: Reunir o artifact (só o público; vídeo, capa, meta, legenda, manifesto e fim dos logs)
         if: always()
         run: |
+          set -euo pipefail
           dest="$RUNNER_TEMP/artefato"
-          mkdir -p "$dest"
+          mkdir -p "$dest/out" "$dest/logs"
           trabalho="$(find "$RUNNER_TEMP/trabalho" -maxdepth 1 -type d -name 'pulso-brasil.*' 2>/dev/null | head -1 || true)"
           if [ -n "$trabalho" ] && [ -d "$trabalho/out" ]; then
-            cp -R "$trabalho/out" "$dest/out"
-            cp "$trabalho/episodio.json" "$trabalho/dossie.json" "$dest/"
-            cp -R "$trabalho/fontes" "$dest/fontes"
-            mkdir -p "$dest/audio"
-            cp "$trabalho/audio/sintese.json" "$trabalho/audio/asr.json" "$dest/audio/" 2>/dev/null || true
-          else
-            cp "$PASTA"/episodio.json "$PASTA"/dossie.json "$PASTA"/sem-episodio.txt "$dest/" 2>/dev/null || true
-            cp -R "$PASTA/fontes" "$dest/fontes" 2>/dev/null || true
+            for f in pulso-brasil.mp4 capa.jpg ep.json legenda-instagram.txt manifesto.json; do
+              if [ -f "$trabalho/out/$f" ]; then cp "$trabalho/out/$f" "$dest/out/$f"; fi
+            done
           fi
-          cp -R "$LOGS" "$dest/logs" 2>/dev/null || true
+          # Sem fontes/, sem dossie/episodio em claro, sem log inteiro: só o fim, sem chaves.
+          for par in coleta:80 render:80 claude:30; do
+            if [ -f "$LOGS/${par%%:*}.log" ]; then
+              tail -n "${par##*:}" "$LOGS/${par%%:*}.log" | bash "$RAIZ/diario/redigir.sh" > "$dest/logs/${par%%:*}.log"
+            fi
+          done
+          if [ -f "$PASTA/sem-episodio.txt" ]; then cp "$PASTA/sem-episodio.txt" "$dest/"; fi
           find "$dest" -type f -printf '%s %P\n' | sort -k2
 
       - name: Resumo do job
@@ -398,7 +438,7 @@ jobs:
             echo "Artifact: ${{ needs.contexto.outputs.artefato }} (14 dias)."
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Guardar o artifact (mp4, capa, ep.json, legenda, manifesto, logs; 14 dias)
+      - name: Guardar o artifact (público; 14 dias)
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -421,9 +461,11 @@ jobs:
     env:
       DIA: ${{ needs.contexto.outputs.dia }}
     steps:
+      # Código da revisão que rodou (github.sha), sem credencial persistida: o token do push só entra no passo do push.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: main
+          ref: ${{ github.sha }}
+          persist-credentials: false
 
       - name: App Pulso (só leitura, publicar.mjs da origin/main)
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -458,19 +500,37 @@ jobs:
           name: ${{ needs.contexto.outputs.artefato }}
           path: ${{ runner.temp }}/artefato
 
-      - name: O app já tem episódio publicado neste dia?
+      - name: Abrir o pacote cifrado e conferir o episódio contra o dia
+        env:
+          PRIVADO_SENHA: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ART: ${{ runner.temp }}/artefato
+        run: |
+          set -euo pipefail
+          pub="$RUNNER_TEMP/pub"
+          mkdir -p "$pub"
+          cp -R "$ART/out" "$pub/out"
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -md sha256 -pass env:PRIVADO_SENHA -in "$ART/privado.enc" |
+            tar -xzf - -C "$pub" dossie.json episodio.json
+          # De novo, agora com o que o job de geração entregou: data, id e publicado_em têm de ser do dia.
+          python3 -I videos/pulso-brasil/diario/conferir_episodio.py "$DIA" "$pub" --ep
+          echo "PUB=$pub" >> "$GITHUB_ENV"
+
+      - name: O app já tem episódio neste dia, ou este id?
         id: ja
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
+          set -euo pipefail
+          id="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["id"])' "$PUB/out/ep.json")"
           set +e
-          python3 -I videos/pulso-brasil/diario/ja_publicado.py "$DIA"
+          python3 -I videos/pulso-brasil/diario/ja_publicado.py "$DIA" "$id"
           codigo=$?
           set -e
           case "$codigo" in
             0) echo "pulado=false" >> "$GITHUB_OUTPUT" ;;
             10) echo "pulado=true" >> "$GITHUB_OUTPUT"
                 echo "## Pulso Brasil $DIA: o app já tem episódio publicado; nada foi publicado de novo." >> "$GITHUB_STEP_SUMMARY" ;;
+            11) echo "O id $id já existe no catálogo: recusado (decisão humana: retirar ou escolher outro id)." >&2; exit 11 ;;
             *) exit "$codigo" ;;
           esac
 
@@ -479,37 +539,40 @@ jobs:
         if: steps.ja.outputs.pulado != 'true'
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          ART: ${{ runner.temp }}/artefato
         run: |
           set -euo pipefail
           tmp="$RUNNER_TEMP/publicar"
           mkdir -p "$tmp"
           for f in publicar.mjs frescor.mjs; do git -C app show "origin/main:scripts/pulso-news/$f" > "$tmp/$f"; done
-          id="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["id"])' "$ART/out/ep.json")"
-          node "$tmp/publicar.mjs" rascunho --meta "$ART/out/ep.json" --video "$ART/out/pulso-brasil.mp4" \
-            --capa "$ART/out/capa.jpg" --dossie "$ART/dossie.json"
-          node "$tmp/publicar.mjs" aprovar --id "$id" --dossie "$ART/dossie.json"
+          id="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["id"])' "$PUB/out/ep.json")"
+          node "$tmp/publicar.mjs" rascunho --meta "$PUB/out/ep.json" --video "$PUB/out/pulso-brasil.mp4" \
+            --capa "$PUB/out/capa.jpg" --dossie "$PUB/dossie.json"
+          node "$tmp/publicar.mjs" aprovar --id "$id" --dossie "$PUB/dossie.json"
           echo "publicado=true" >> "$GITHUB_OUTPUT"   # daqui em diante o episódio está no ar
 
       - name: Anexar a linha do dia ao historico.jsonl (commit do bot)
         if: steps.ja.outputs.pulado != 'true'
         env:
-          ART: ${{ runner.temp }}/artefato
+          GH_TOKEN: ${{ github.token }}   # só neste passo (o checkout não deixou credencial no repo)
         run: |
           set -euo pipefail
           h=videos/pulso-brasil/historico.jsonl
+          # O script da revisão que rodou, copiado antes de trocar de branch: a main pode andar entre as tentativas.
+          cp videos/pulso-brasil/diario/registrar_historico.py "$RUNNER_TEMP/registrar_historico.py"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          auth="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')"
+          echo "::add-mask::$auth"
           for tentativa in 1 2 3; do
-            python3 -I videos/pulso-brasil/diario/registrar_historico.py "$ART/episodio.json" "$h"
+            # Sempre sobre a main atual (repo público: o fetch não precisa de credencial), sem rebase nem conflito pendente.
+            git fetch -q origin main
+            git checkout -q -B main origin/main
+            python3 -I "$RUNNER_TEMP/registrar_historico.py" "$PUB/episodio.json" "$h" --dia "$DIA"
             if git diff --quiet -- "$h"; then echo "nada a commitar"; exit 0; fi
             git add "$h"
             git commit -q -m "chore(pulso-brasil): histórico do episódio de $DIA publicado"
-            if git push origin HEAD:main; then exit 0; fi
-            # Push recusado (main andou): refaz sobre a main atual, sem rebase nem conflito pendente.
+            if git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" push origin HEAD:main; then exit 0; fi
             echo "push recusado (tentativa $tentativa); refazendo sobre a main atual" >&2
-            git fetch -q origin main
-            git checkout -q -B main origin/main
             sleep $((tentativa * 5))
           done
           echo "O episódio JÁ FOI publicado no app, mas não consegui gravar o histórico" >&2; exit 1
@@ -517,14 +580,21 @@ jobs:
   alerta:
     name: alerta (issue)
     needs: [contexto, gerar, publicar]
-    if: always() && (contains(fromJSON('["failure","cancelled"]'), needs.gerar.result) || contains(fromJSON('["failure","cancelled"]'), needs.publicar.result))
+    if: always() && (contains(fromJSON('["failure","cancelled"]'), needs.contexto.result) || contains(fromJSON('["failure","cancelled"]'), needs.gerar.result) || contains(fromJSON('["failure","cancelled"]'), needs.publicar.result))
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
       contents: read
       issues: write
     steps:
+      # Sem segredo de produção neste job (não tem environment): só o token do próprio run, para a issue.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        if: needs.contexto.result == 'success'
         continue-on-error: true
         with:
           name: ${{ needs.contexto.outputs.artefato }}
@@ -535,17 +605,19 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           DIA: ${{ needs.contexto.outputs.dia }}
+          CONTEXTO: ${{ needs.contexto.result }}
           GERAR: ${{ needs.gerar.result }}
           PUBLICAR: ${{ needs.publicar.result }}
           PUBLICADO: ${{ needs.publicar.outputs.publicado }}
         run: |
           set -euo pipefail
-          redigir() { sed -E 's/(eyJ|sk-ant-|sk_|sb_secret_|AIza|github_pat_|ghp_|ghs_)[A-Za-z0-9_.-]{16,}/[redigido]/g'; }
           log=""
           for f in coleta.log claude.log render.log; do  # o último que existir é a etapa em que parou
-            if [ -f "$RUNNER_TEMP/artefato/logs/$f" ]; then log="$(tail -n 12 "$RUNNER_TEMP/artefato/logs/$f" | redigir)"; fi
+            if [ -f "$RUNNER_TEMP/artefato/logs/$f" ]; then log="$(tail -n 12 "$RUNNER_TEMP/artefato/logs/$f" | bash videos/pulso-brasil/diario/redigir.sh)"; fi
           done
-          if [ "$PUBLICAR" = failure ] || [ "$PUBLICAR" = cancelled ]; then
+          if [ "$CONTEXTO" = failure ] || [ "$CONTEXTO" = cancelled ]; then
+            estado="O workflow falhou antes de gerar (job contexto: $CONTEXTO). Nada foi publicado."
+          elif [ "$PUBLICAR" = failure ] || [ "$PUBLICAR" = cancelled ]; then
             if [ "$PUBLICADO" = true ]; then
               estado="O episódio FOI publicado no app, mas a etapa seguinte (linha do dia no videos/pulso-brasil/historico.jsonl) falhou. Anexe a linha de $DIA ao histórico à mão; sem ela o próximo run pode refazer o dia."
             else
@@ -555,7 +627,7 @@ jobs:
             estado="Nada foi publicado: o vídeo não passou da geração (job gerar: $GERAR)."
           fi
           # shellcheck disable=SC2016  # as crases do bloco de código são literais
-          corpo=$(printf 'O vídeo diário do Pulso Brasil (%s) NAO saiu como esperado.\n\n%s\n\nRun: %s\n\nÚltimas linhas do log:\n```\n%s\n```\n\nO artifact (se existir) tem os logs completos por 14 dias.' "${DIA:-?}" "$estado" "$RUN_URL" "$log")
+          corpo=$(printf 'O vídeo diário do Pulso Brasil (%s) NAO saiu como esperado.\n\n%s\n\nRun: %s\n\nÚltimas linhas do log:\n```\n%s\n```\n\nO artifact (se existir) tem o fim dos logs, sem chaves, por 14 dias.' "${DIA:-?}" "$estado" "$RUN_URL" "$log")
           n=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --label pulso-brasil-diario --json number -q '.[0].number // empty')
           if [ -n "$n" ]; then gh issue comment "$n" --repo "$GITHUB_REPOSITORY" --body "$corpo"
           else gh label create pulso-brasil-diario --repo "$GITHUB_REPOSITORY" --color B60205 --description "Alerta do Pulso Brasil diario" 2>/dev/null || true

@@ -17,6 +17,9 @@ Entradas (no fim deste texto): Dia, Pasta e Molde.
 2. Escreva `episodio.json` e `dossie.json` seguindo `Molde/episodio.schema.json`,
    `Molde/exemplos/` e o episódio de 2026-11-24 em `Molde/exemplos/2026-11-24-dolar-soja/`
    (`episodio.json`, `dossie.json`, `fontes/`) como modelo de forma (não de conteúdo).
+   - `data` do episódio e do dossiê é o Dia desta execução, e `dossie.episodio` (o id no app) é
+     `pulso-brasil-<Dia>-<assunto-em-minúsculas>` (até 80 caracteres, só a-z, 0-9 e hífen); o agendador
+     reprova data ou id de outro dia.
    - Cada número do roteiro, das cenas, da legenda e de `numeros_chave` sai de uma linha
      do dossiê com `json_campo` apontando para o arquivo em `fontes/`; conta derivada vai em
      `derivados` com a fórmula.

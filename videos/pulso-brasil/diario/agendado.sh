@@ -56,6 +56,8 @@ Molde: $raiz" \
 fi
 
 test -f episodio.json && test -f dossie.json || { echo "Claude não gerou episodio.json e dossie.json"; exit 1; }
+# O que o modelo escreveu tem de ser do dia pedido (data do episódio e do dossiê, id do dossiê).
+python3 -I "$raiz/diario/conferir_episodio.py" "$dia" "$pasta"
 grep -q fontes_sha256 dossie.json || python3 -I "$raiz/gates/g1_dossie.py" "$pasta" --travar
 pulso-video "$dia"
 touch .pronto
