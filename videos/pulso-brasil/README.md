@@ -1,7 +1,7 @@
 # Pulso Brasil
 
 Da pasta deste molde: `./pulso-brasil.sh caminho/episodio.json`. No sucesso, o
-comando imprime o MP4 em `/tmp/pulso-brasil.*/out/`, junto com capa, manifesto,
+comando imprime o MP4 em `$TMPDIR/pulso-brasil.*/out/`, junto com capa, manifesto,
 `ep.json` e `legenda-instagram.txt`. Não publica nem agenda.
 
 - Use os JSONs de `exemplos/` para montar a pauta. O roteiro é uma lista de
@@ -32,8 +32,10 @@ comando imprime o MP4 em `/tmp/pulso-brasil.*/out/`, junto com capa, manifesto,
 - `PULSO_ACERVO` altera a raiz do iCloud `Pulso-Videos-Arquivo`.
   `assets/obter.sh <public>` recupera a trilha e os clipes do manifesto.
   A síntese usa o cache em `PULSO_CACHE_VOZ` (padrão
-  `~/Library/Caches/Pulso-Brasil/voz`). Sem cache completo, só sintetiza com
-  `GEMINI_API_KEY` já no ambiente. Nunca troca de voz.
+  `~/Library/Caches/Pulso-Brasil/voz`). Voz oficial: ElevenLabs
+  (`config/voz.json`, a mesma do app). Sem cache completo, só sintetiza com
+  `ELEVENLABS_API_KEY` já no ambiente, até `PULSO_ELEVEN_TETO` caracteres
+  novos (padrão 2500). Nunca troca de voz.
 
 Verificação offline: `python3 -m unittest discover -s testes -v`.
 Com as dependências Node instaladas: `cd video && npx tsc --noEmit`.

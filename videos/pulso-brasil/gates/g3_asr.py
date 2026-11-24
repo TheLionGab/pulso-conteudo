@@ -9,7 +9,7 @@ WER por segmento, em palavras normalizadas (minúsculas, sem acento e sem pontua
 escutas: o trecho cru (audio/segs) e, sem --so-cru, o trecho como vai ao ar (video/public/voz.wav,
 com pausas encurtadas e atempo do montar.py; a timeline tem de ser da mesma voz do sintese.json).
 Reprova (código 1) se algum segmento passar do teto (padrão 0,35) em qualquer escuta. Grava
-audio/asr.json com o resultado e a lista "reprovados" (o gerar_voz_gemini.sh regera só esses).
+audio/asr.json com o resultado e a lista "reprovados" (regere só esses).
 O teto mede "a voz leu outra coisa", não sotaque: Whisper base erra nome próprio sozinho.
 """
 import json, os, subprocess, sys, tempfile, unicodedata
