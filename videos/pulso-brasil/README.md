@@ -20,10 +20,15 @@ comando imprime o MP4 em `/tmp/pulso-brasil.*/out/`, junto com capa, manifesto,
   que tiver sido publicado.
 - Instale FFmpeg, Node e as dependências em `video/` (`npm install` para gerar
   o lock se ausente; depois `npm ci`). Use Python ≥3.11 com `numpy`,
-  `soundfile` e `sherpa-onnx`; `PULSO_PYTHON` pode apontar ao ambiente
-  virtual. Aponte `PULSO_MODELOS` à pasta que contém
-  `sherpa-onnx-whisper-base/`. O G5 usa a `origin/main` **local** do checkout
-  `PULSO_APP_REPO` (padrão: `~/Developer/Pulso-Do-Campo`), em dry-run.
+  `soundfile`; `PULSO_PYTHON` pode apontar ao ambiente virtual. O G3 usa
+  `sherpa-onnx` com `PULSO_MODELOS` (pasta com `sherpa-onnx-whisper-base/`)
+  ou, sem ele, `whisper-cli` com `PULSO_WHISPER_MODELO` (um `ggml-*.bin`).
+  `PULSO_CHROME` aponta um chrome-headless-shell já baixado. O G5 usa a
+  `origin/main` **local** do checkout `PULSO_APP_REPO` (padrão:
+  `~/Developer/Pulso-Do-Campo`), em dry-run.
+- Trave as fontes do dossiê uma vez, na pasta do episódio:
+  `python3 -I gates/g1_dossie.py <pasta> --travar`. O pipeline reprova
+  cópia sem trava, e `numeros_chave` fora do dossiê provado.
 - `PULSO_ACERVO` altera a raiz do iCloud `Pulso-Videos-Arquivo`.
   `assets/obter.sh <public>` recupera a trilha e os clipes do manifesto.
   A síntese usa o cache em `PULSO_CACHE_VOZ` (padrão

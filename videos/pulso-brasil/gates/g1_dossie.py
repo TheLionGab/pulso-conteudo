@@ -1,18 +1,21 @@
 """G1: confere cada número do dossie.json contra a cópia local da fonte (fontes/), sem rede.
 
-Uso: python3 -I g1_dossie.py <pasta_episodio>
+Uso: python3 -I g1_dossie.py <pasta_episodio> [--travar]
+Sem --travar (o pipeline), toda cópia usada já tem de estar em fontes_sha256: a trava vem do
+dossiê de origem e não é criada numa cópia descartável. --travar grava as travas que faltam.
 Cada linha declara como se prova, e a primeira regra que casar vale:
 - "json_campo": {"arquivo", "caminho": [chaves]} -> o valor no JSON é igual a "numero".
 - "json_moda": {"arquivo", "campo", "contagem": "k/n"} -> o valor mais comum de "campo" entre as
   entradas do JSON tem dia igual a "numero" e aparece k vezes em n.
 - "snapshot": "fontes/<arquivo>" -> "trecho_literal" está no texto da cópia e "numero" está no trecho.
-O sha256 de cada cópia fica em dossie["fontes_sha256"] na primeira passada; cópia alterada depois
-reprova. Os "derivados" são recalculados, duas casas: "A / B - 1" (em %) ou "A / B" (razão, que
+O sha256 de cada cópia fica em dossie["fontes_sha256"] (gravado com --travar); cópia alterada
+depois reprova. Os "derivados" são recalculados, duas casas: "A / B - 1" (em %) ou "A / B" (razão, que
 pode ser usada por um derivado seguinte).
 Falha fecha: qualquer linha sem prova sai com código 1 e não grava nada.
 """
 import collections, hashlib, html, json, os, re, sys
 
+TRAVAR = "--travar" in sys.argv[2:]
 EP = os.path.realpath(sys.argv[1])
 CAMINHO = os.path.join(EP, "dossie.json")
 dossie = json.load(open(CAMINHO, encoding="utf-8"))
@@ -25,6 +28,8 @@ def arquivo(rel):
         raise ValueError(f"cópia ausente ou fora de fontes/: {rel}")
     dado = open(p, "rb").read()
     sha = hashlib.sha256(dado).hexdigest()
+    if rel not in travas and not TRAVAR:
+        raise ValueError(f"{rel} sem trava em fontes_sha256; trave na pasta do episódio com --travar")
     if travas.setdefault(rel, sha) != sha:
         raise ValueError(f"{rel} mudou depois de travado (sha256 {sha[:12]} != {travas[rel][:12]})")
     return dado.decode("utf-8", errors="ignore"), p
@@ -120,10 +125,24 @@ for af in dossie.get("afirmacoes", []):  # Pulso Brasil 28/10: frase sem número
 
 if not dossie.get("linhas"):
     falhas.append("dossiê sem linhas")
+
+# numeros_chave alimentam o g_repeticao: cada um tem de ser número provado aqui (linha ou derivado),
+# senão o autor declara qualquer valor e o anti-repetição vira enfeite.
+caminho_ep = os.path.join(EP, "episodio.json")
+if os.path.isfile(caminho_ep):
+    provados = {round(float(v), 4) for v in ids.values()}
+    provados |= {round(float(dv["valor"]), 4) for dv in dossie.get("derivados", []) if "valor" in dv}
+    chave = json.load(open(caminho_ep, encoding="utf-8")).get("numeros_chave") or []
+    if not chave:
+        falhas.append("episodio.json sem numeros_chave")
+    for item in chave:
+        if round(float(item.get("numero", "nan")), 4) not in provados:
+            falhas.append(f"numeros_chave {item.get('numero')!r} não é linha nem derivado provado do dossiê")
+            print(f"FALHA numeros_chave {item.get('numero')!r}: fora do dossiê")
 if falhas:
     print(f"G1 reprovado: {len(falhas)} falha(s)", file=sys.stderr)
     sys.exit(1)
-if travas != dossie.get("fontes_sha256"):
+if TRAVAR and travas != dossie.get("fontes_sha256"):
     dossie["fontes_sha256"] = travas
     json.dump(dossie, open(CAMINHO, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 print(f"G1 aprovado: {len(ids)} linhas e {len(dossie.get('derivados', []))} derivado(s), {len(travas)} cópias travadas")

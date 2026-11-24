@@ -30,17 +30,17 @@ if os.path.isfile(registro):
     with open(registro) as entrada:
         sintese = json.load(entrada)
     checar_voz(sintese)
-    hashes = sintese.get("segmentos_sha256")
-    if hashes is not None:
-        from pathlib import Path
-        reais = [hashlib.sha256((Path(A) / "segs" / f"seg_{i:03d}.wav").read_bytes()).hexdigest()
-                 for i in range(len(ROTEIRO))]
-        if reais != hashes:
-            sys.exit("WAVs não correspondem à síntese canônica.")
-    if "roteiro_sha256" in sintese:
-        atual = hashlib.sha256(json.dumps(ROTEIRO, ensure_ascii=False).encode()).hexdigest()
-        if sintese["roteiro_sha256"] != atual or sintese.get("segmentos") != len(ROTEIRO):
-            sys.exit("Roteiro não corresponde à síntese: montagem cancelada antes de escrever saídas.")
+    faltam = [k for k in ("segmentos_sha256", "roteiro_sha256", "segmentos") if k not in sintese]
+    if faltam:
+        sys.exit(f"sintese.json sem {', '.join(faltam)}: gere a voz pelo audio.voz.")
+    from pathlib import Path
+    reais = [hashlib.sha256((Path(A) / "segs" / f"seg_{i:03d}.wav").read_bytes()).hexdigest()
+             for i in range(len(ROTEIRO))]
+    if reais != sintese["segmentos_sha256"]:
+        sys.exit("WAVs não correspondem à síntese canônica.")
+    atual = hashlib.sha256(json.dumps(ROTEIRO, ensure_ascii=False).encode()).hexdigest()
+    if sintese["roteiro_sha256"] != atual or sintese["segmentos"] != len(ROTEIRO):
+        sys.exit("Roteiro não corresponde à síntese: montagem cancelada antes de escrever saídas.")
     VOICE = f"{sintese['modelo']}/{sintese['voz']}"
 if VOICE is None:
     sys.exit("sintese.json canônico não encontrado.")

@@ -1,5 +1,7 @@
 import json
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -64,6 +66,55 @@ class Molde(unittest.TestCase):
         self.assertEqual(len(exemplos), 2)
         for arquivo in exemplos:
             validar(json.loads(arquivo.read_text()))
+
+    def test_schema_numeros_chave(self):
+        exemplo = json.loads((ROOT / 'exemplos/2026-11-04-soja.json').read_text())
+        with self.assertRaisesRegex(ValueError, 'numeros_chave'):
+            validar(dict(exemplo, numeros_chave=[]))
+
+    def _g1(self, pasta, *extra):
+        return subprocess.run([sys.executable, '-I', str(ROOT / 'gates/g1_dossie.py'), str(pasta), *extra],
+                              capture_output=True, text=True)
+
+    def test_g1_trava_e_numeros_chave(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            pasta = Path(tmp)
+            (pasta / 'fontes').mkdir()
+            (pasta / 'fontes/f.json').write_text(json.dumps({'a': 10.0, 'b': 8.0}))
+            linhas = [dict(id=k, numero=v, json_campo=dict(arquivo='fontes/f.json', caminho=[k]))
+                      for k, v in (('a', 10.0), ('b', 8.0))]
+            dossie = dict(linhas=linhas, derivados=[dict(id='d', de=['a', 'b'], formula='A - B', valor=2.0)])
+            (pasta / 'dossie.json').write_text(json.dumps(dossie))
+            ep = dict(numeros_chave=[dict(numero=2.0, fonte='x', data='2026-11-24')])
+            (pasta / 'episodio.json').write_text(json.dumps(ep))
+            sem_trava = self._g1(pasta)
+            self.assertEqual(sem_trava.returncode, 1, sem_trava.stdout)
+            self.assertIn('sem trava', sem_trava.stdout)
+            self.assertNotIn('fontes_sha256', (pasta / 'dossie.json').read_text())
+            self.assertEqual(self._g1(pasta, '--travar').returncode, 0)
+            self.assertIn('fontes_sha256', (pasta / 'dossie.json').read_text())
+            self.assertEqual(self._g1(pasta).returncode, 0)
+            (pasta / 'episodio.json').write_text(json.dumps(dict(numeros_chave=[dict(ep['numeros_chave'][0], numero=3.0)])))
+            fora = self._g1(pasta)
+            self.assertEqual(fora.returncode, 1)
+            self.assertIn('numeros_chave', fora.stdout)
+            (pasta / 'episodio.json').write_text(json.dumps(ep))
+            (pasta / 'fontes/f.json').write_text(json.dumps({'a': 10.0, 'b': 8.0, 'c': 1}))
+            self.assertIn('mudou depois de travado', self._g1(pasta).stdout)
+
+    def test_montar_exige_hashes_da_sintese(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            audio = Path(tmp) / 'audio'
+            audio.mkdir()
+            roteiro = [['intro', 'Texto.', 0.1]]
+            (audio / 'roteiro.json').write_text(json.dumps(roteiro))
+            (Path(tmp) / 'dossie.json').write_text(json.dumps({'linhas': []}))
+            (audio / 'sintese.json').write_text(json.dumps(
+                {'provedor': 'gemini', 'modelo': 'gemini-3.8-flash-tts', 'voz': 'Sadaltager'}))
+            r = subprocess.run([sys.executable, str(ROOT / 'audio/montar.py'), str(audio), str(Path(tmp) / 'pub'),
+                                'auto', str(audio / 'roteiro.json')], capture_output=True, text=True, cwd=ROOT)
+            self.assertNotEqual(r.returncode, 0)
+            self.assertIn('segmentos_sha256', r.stderr)
 
     def test_formato(self):
         video = dict(width=1080, height=1920, avg_frame_rate='30/1', r_frame_rate='30/1')

@@ -126,7 +126,7 @@
           }
         }
       },
-      "minItems": 0
+      "minItems": 1
     },
     "roteiro": {
       "type": "array",
