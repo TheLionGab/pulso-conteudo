@@ -1,33 +1,23 @@
 import React from 'react';
-import { AbsoluteFill, OffthreadVideo, Sequence, staticFile } from 'remotion';
-import lista from '../public/cenas/lista.json';
-import { C, FPS, TL, janela } from './lib';
+import { AbsoluteFill, Loop, OffthreadVideo, Sequence, staticFile } from 'remotion';
+import { FPS, janela } from './lib';
+import type { Cena, Timeline } from './tipos';
 
 const CLIPE = 8;
 const LENTO_MAX = 0.8;
 const FADE = 0.5;
-const EXISTE = new Set(lista as string[]);
 
 type Trecho = { arquivo: string; de: number; ate: number };
 
-const trechos = (): Trecho[] => {
-  const fim = TL.duracao as number;
-  const t = (arquivo: string, de: number, ate: number): Trecho => ({
-    arquivo,
-    de: Math.max(0, de - FADE / 2),
-    ate: Math.min(ate + FADE / 2, fim),
-  });
-
-  const c = (n: string) => (n in TL.cenas ? (TL.cenas[n] as { s: number; e: number }).s : (TL.cues[n] as number));
-  return [
-    t('cena09_plantio_soja', 0, c('oni')),
-    t('cena03_silos', c('oni'), c('regioes')),
-    t('cena09_plantio_soja', c('regioes'), c('alerta')),
-    t('cena_trator_preparo', c('alerta'), c('bolso')),
-    t('cena09_plantio_soja', c('bolso'), c('fecho')),
-    t('cena_ceu_nuvens_cerrado', c('fecho'), fim),
-  ].filter((tr) => EXISTE.has(tr.arquivo));
-};
+const trechos = (cenas: Cena[], timeline: Timeline): Trecho[] => cenas.flatMap((cena, i) => {
+  if (!cena.clipe) return [];
+  const { s, e } = timeline.cenas[cena.id];
+  return [{
+    arquivo: cena.clipe,
+    de: i === 0 ? 0 : Math.max(0, s - FADE / 2),
+    ate: Math.min(e + FADE / 2, timeline.duracao),
+  }];
+});
 
 const Clipe: React.FC<{ tr: Trecho; t: number }> = ({ tr, t }) => {
   const dur = tr.ate - tr.de;
@@ -36,21 +26,23 @@ const Clipe: React.FC<{ tr: Trecho; t: number }> = ({ tr, t }) => {
   const o = janela(t, tr.de === 0 ? -FADE : tr.de, tr.ate, FADE, FADE);
   const k = Math.max(0, Math.min(1, (t - tr.de) / dur));
   return (
-    <Sequence from={Math.round(tr.de * FPS)} durationInFrames={Math.round(dur * FPS)} layout="none">
+    <Sequence from={Math.round(tr.de * FPS)} durationInFrames={Math.max(1, Math.round(tr.ate * FPS) - Math.round(tr.de * FPS))} layout="none">
       <AbsoluteFill style={{ opacity: o * 0.62 }}>
-        <OffthreadVideo
-          src={staticFile(`cenas/${tr.arquivo}.mp4`)}
-          muted
-          playbackRate={rate}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${1.04 + 0.05 * k})`, filter: 'saturate(0.88) brightness(0.85)' }}
-        />
+        <Loop layout="none" durationInFrames={Math.floor(CLIPE * FPS / rate)}>
+          <OffthreadVideo
+            src={staticFile(`cenas/${tr.arquivo}.mp4`)}
+            muted
+            playbackRate={rate}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${1.04 + 0.05 * k})`, filter: 'saturate(0.88) brightness(0.85)' }}
+          />
+        </Loop>
       </AbsoluteFill>
     </Sequence>
   );
 };
 
-export const CenasReais: React.FC<{ t: number }> = ({ t }) => {
-  const lst = trechos();
+export const CenasReais: React.FC<{ t: number; cenas: Cena[]; timeline: Timeline }> = ({ t, cenas, timeline }) => {
+  const lst = trechos(cenas, timeline);
   return (
     <AbsoluteFill style={{ pointerEvents: 'none' }}>
       {lst.map((tr, i) => (

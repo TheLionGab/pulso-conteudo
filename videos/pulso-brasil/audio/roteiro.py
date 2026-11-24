@@ -40,3 +40,14 @@ def parse(texto):
     if cues_pendentes and unidades:
         unidades[-1].setdefault("cues_fim", []).extend(cues_pendentes)
     return unidades
+
+
+def parse_validado(texto):
+    """Confere a marcação antes de usar o parser original."""
+    sem_marcas = re.sub(r"\[\w+\]|\{[^{}|\[\]]+\|[^{}|\[\]]+\}", "", texto)
+    unidades = parse(texto)
+    if re.search(r"[\[\]{}|]", sem_marcas) or texto.count("*") % 2 or not unidades:
+        raise ValueError("roteiro: marcação inválida ou fala vazia")
+    if any(not u["fala"].strip() or not u["exibe"].strip() for u in unidades):
+        raise ValueError("roteiro: marcação sem texto de exibição ou de fala")
+    return unidades

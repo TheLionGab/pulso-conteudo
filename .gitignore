@@ -18,3 +18,7 @@ __pycache__/
 .env.*
 !.env.example
 videos/**/.hyperframes/
+
+# Mídia local do molde Pulso Brasil (assets/manifest.json segue versionado).
+/videos/pulso-brasil/video/public/
+/videos/pulso-brasil/audio/segs/

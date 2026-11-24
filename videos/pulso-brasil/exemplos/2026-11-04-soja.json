@@ -1,0 +1,180 @@
+{
+  "pauta_id": "plantio-soja-mt",
+  "tema": "Plantio e estabelecimento da soja em Mato Grosso",
+  "titulo": "Soja avança em MT: como estão as lavouras?",
+  "data": "2026-11-04",
+  "cabecalho": "QUARTA, 04/11/2026 · SOJA",
+  "resumo": "O plantio da soja avançou em Mato Grosso. A Conab descreve bom desenvolvimento, com diferenças pontuais no estabelecimento das lavouras.",
+  "legenda_instagram": "A soja já ocupava 90,8% da área prevista em Mato Grosso até 30/10. Avanço da semeadura não é previsão de produtividade. Confira o estabelecimento no talhão com assistência técnica. Fonte: Conab.",
+  "fontes": [
+    {
+      "nome": "Conab, Soja2026/27",
+      "url": "https://www.gov.br/conab/pt-br/atuacao/informacoes-agropecuarias/safras/progresso-de-safra/acompanhamento-das-lavouras-26-10-a-01-11-26/plantio-e-colheita-24-10-a-30-10.xlsx",
+      "data": "2026-11-03"
+    }
+  ],
+  "numeros_chave": [
+    {
+      "numero": 75.78,
+      "fonte": "https://www.gov.br/conab/pt-br/atuacao/informacoes-agropecuarias/safras/progresso-de-safra/acompanhamento-das-lavouras-26-10-a-01-11-26/plantio-e-colheita-24-10-a-30-10.xlsx",
+      "data": "2026-11-03"
+    },
+    {
+      "numero": 90.8,
+      "fonte": "https://www.gov.br/conab/pt-br/atuacao/informacoes-agropecuarias/safras/progresso-de-safra/acompanhamento-das-lavouras-26-10-a-01-11-26/plantio-e-colheita-24-10-a-30-10.xlsx",
+      "data": "2026-11-03"
+    },
+    {
+      "numero": 54.3,
+      "fonte": "https://www.gov.br/conab/pt-br/atuacao/informacoes-agropecuarias/safras/progresso-de-safra/acompanhamento-das-lavouras-26-10-a-01-11-26/plantio-e-colheita-24-10-a-30-10.xlsx",
+      "data": "2026-11-03"
+    },
+    {
+      "numero": 95,
+      "fonte": "https://www.gov.br/conab/pt-br/atuacao/informacoes-agropecuarias/safras/progresso-de-safra/acompanhamento-das-lavouras-26-10-a-01-11-26/plantio-e-colheita-24-10-a-30-10.xlsx",
+      "data": "2026-11-03"
+    },
+    {
+      "numero": 12,
+      "fonte": "https://www.gov.br/conab/pt-br/atuacao/informacoes-agropecuarias/safras/progresso-de-safra/acompanhamento-das-lavouras-26-10-a-01-11-26/plantio-e-colheita-24-10-a-30-10.xlsx",
+      "data": "2026-11-03"
+    }
+  ],
+  "push": {
+    "titulo": "Soja em Mato Grosso",
+    "corpo": "O plantio avançou. Veja o que observar no estabelecimento das lavouras."
+  },
+  "roteiro": [
+    [
+      "intro",
+      "[gancho]O plantio da soja está perto do fim em Mato Grosso.",
+      0.15
+    ],
+    [
+      "intro",
+      "[g97]Mas como estão essas lavouras?",
+      0.15
+    ],
+    [
+      "oni",
+      "[oni]Nos *{12|doze}* estados acompanhados pela Conab, eram *{54,3%|cinquenta e quatro vírgula três por cento}*.",
+      0.15
+    ],
+    [
+      "regioes",
+      "[regioes]Em Mato Grosso, uma semana antes, eram *{75,78%|quase setenta e seis por cento}*.",
+      0.15
+    ],
+    [
+      "alerta",
+      "[alerta]A Conab descreve bom desenvolvimento das lavouras. Mas aponta diferenças pontuais no estabelecimento.",
+      0.15
+    ],
+    [
+      "bolso",
+      "[bolso]O avanço do plantio não mede produtividade. [s_v]Confira como as plantas estão se estabelecendo, com assistência técnica.",
+      0.15
+    ],
+    [
+      "fecho",
+      "[fecho]Dados até *{30/10|trinta de outubro}*. [tchau]*{Pulso News|Pulso News}*, informação para a decisão no campo.",
+      0.5
+    ]
+  ],
+  "cenas": [
+    {
+      "id": "intro",
+      "tipo": "gancho_numero",
+      "clipe": "cena09_plantio_soja",
+      "fonte": "CONAB · soja 2026/27 · até 30/10/2026",
+      "chamada": "SOJA · MATO GROSSO",
+      "titulo": "O plantio avançou.",
+      "numero": "90,8%",
+      "rotulo": "DA ÁREA PREVISTA SEMEADA",
+      "percentual": 90.8,
+      "mapa_mt": "90,8%",
+      "pergunta": "Como estão essas lavouras?"
+    },
+    {
+      "id": "oni",
+      "tipo": "cards",
+      "clipe": "cena03_silos",
+      "fonte": "CONAB · até 30/10/2026\nNão é média simples dos estados.",
+      "chamada": "O CONTEXTO NO BRASIL",
+      "titulo": "Na mesma série,\no retrato é este:",
+      "itens": [
+        {
+          "titulo": "Agregado dos 12 estados\nacompanhados pela Conab.",
+          "rotulo": "DA ÁREA SEMEADA",
+          "numero": "54,3%",
+          "percentual": 54.3,
+          "cor": "azul"
+        },
+        {
+          "titulo": "Esses estados correspondem\na 95% da área cultivada.",
+          "cor": "azul"
+        }
+      ]
+    },
+    {
+      "id": "regioes",
+      "tipo": "barras",
+      "clipe": "cena09_plantio_soja",
+      "fonte": "CONAB · MT · área prevista semeada\nBarras na mesma escala de 0 a 100%.",
+      "chamada": "MATO GROSSO · UMA SEMANA",
+      "titulo": "O avanço\nna mesma base.",
+      "nota": "+15,02 pontos percentuais",
+      "itens": [
+        {
+          "rotulo": "ATÉ 23/10",
+          "numero": "75,78%",
+          "percentual": 75.78
+        },
+        {
+          "rotulo": "ATÉ 30/10",
+          "numero": "90,8%",
+          "percentual": 90.8
+        }
+      ]
+    },
+    {
+      "id": "alerta",
+      "tipo": "cards",
+      "clipe": "cena_trator_preparo",
+      "fonte": "CONAB · Monitoramento de 03/11/2026\nNão demonstra perda generalizada.",
+      "chamada": "A LEITURA DA CONAB",
+      "titulo": "O quadro\né favorável.",
+      "itens": [
+        {
+          "titulo": "Desenvolvimento\nvegetativo favorável",
+          "texto": "Situação fitossanitária normal.",
+          "cor": "verde"
+        },
+        {
+          "rotulo": "A RESSALVA É PONTUAL",
+          "titulo": "Há diferenças no\nestabelecimento das lavouras.",
+          "cor": "ouro"
+        }
+      ]
+    },
+    {
+      "id": "bolso",
+      "tipo": "checklist_acao",
+      "clipe": "cena09_plantio_soja",
+      "fonte": "Informação para acompanhamento.\nNão é prescrição de manejo.",
+      "chamada": "PARA QUEM JÁ PLANTOU",
+      "titulo": "O próximo olhar\né no talhão.",
+      "destaque": "Área semeada\nnão mede produtividade.",
+      "acao": "Como as plantas\nestão se estabelecendo.",
+      "apoio": "Acompanhamento com\nassistência técnica."
+    },
+    {
+      "id": "fecho",
+      "tipo": "fecho_app",
+      "clipe": "cena_ceu_nuvens_cerrado",
+      "fonte": "Fonte: CONAB · safra 2026/27\nVoz sintética · imagens ilustrativas.",
+      "selo": "DADOS ATÉ 30/10/2026"
+    }
+  ],
+  "cta_final": "Informação para\na decisão no campo."
+}

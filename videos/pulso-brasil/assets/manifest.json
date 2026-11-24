@@ -1,0 +1,32 @@
+{
+  "cena09_plantio_soja": {
+    "origem": "pulso-brasil-2026-11-04/video/public/cenas/cena09_plantio_soja.mp4",
+    "destino": "cenas/cena09_plantio_soja.mp4",
+    "sha256": "a433591d9481f028cab56ce76e50d63fae37496b37d6d15ec7aa74b49cb66b0c"
+  },
+  "cena03_silos": {
+    "origem": "pulso-brasil-2026-11-04/video/public/cenas/cena03_silos.mp4",
+    "destino": "cenas/cena03_silos.mp4",
+    "sha256": "4bace3bf59f657b33af01d0455f4d84f4e480aaf4e0a3ff7b7080aa7d25f343f"
+  },
+  "cena_trator_preparo": {
+    "origem": "pulso-brasil-2026-11-04/video/public/cenas/cena_trator_preparo.mp4",
+    "destino": "cenas/cena_trator_preparo.mp4",
+    "sha256": "5d0268a87b6c60bdad013df9b4220d4db25237862c60ebf3fe015125973bc9a1"
+  },
+  "cena_ceu_nuvens_cerrado": {
+    "origem": "pulso-brasil-2026-11-04/video/public/cenas/cena_ceu_nuvens_cerrado.mp4",
+    "destino": "cenas/cena_ceu_nuvens_cerrado.mp4",
+    "sha256": "a5594024766e6f41cdbf52427119a9b4a8ae06e2d5d4c0d2c2495e210eec1cdc"
+  },
+  "cena_armazem_graos": {
+    "origem": "pulso-brasil-2026-11-04/video/public/cenas/cena_armazem_graos.mp4",
+    "destino": "cenas/cena_armazem_graos.mp4",
+    "sha256": "7a7bd05b68c7f578bcf6b5698bd3df80ac30fb7c0668f80e198f5d030f386285"
+  },
+  "trilha": {
+    "origem": "pulso-brasil-2026-11-04/video/public/musica.wav",
+    "destino": "canon/trilha.wav",
+    "sha256": "652ed00ec96f72d55cfcd2b60928f57d42808ace54a93f5282a07d5464396206"
+  }
+}

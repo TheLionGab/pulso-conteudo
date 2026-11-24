@@ -1,8 +1,8 @@
 """G3 (ASR): transcreve cada segmento da voz com Whisper local (sherpa-onnx) e compara com a fala.
 
 Uso: <python com sherpa_onnx> g3_asr.py <pasta_episodio> <pasta_modelos> [teto_wer] [--so-cru]
-Números não entram no WER (ver NUMERAIS). Não está no montar-e-renderizar.sh: roda depois da
-voz final, no venv que tem sherpa_onnx (pulso-news-2026-10-14/venv).
+Números não entram no WER (ver NUMERAIS). O pipeline roda o G3 depois da montagem,
+com o Python que tem sherpa_onnx.
 <pasta_modelos> contém sherpa-onnx-whisper-base/ (já baixado; este script não baixa nada).
 WER por segmento, em palavras normalizadas (minúsculas, sem acento e sem pontuação), em duas
 escutas: o trecho cru (audio/segs) e, sem --so-cru, o trecho como vai ao ar (video/public/voz.wav,
@@ -21,8 +21,14 @@ ARGS = [a for a in sys.argv[1:] if not a.startswith("--")]
 SO_CRU = "--so-cru" in sys.argv
 EP, MOD = os.path.abspath(ARGS[0]), os.path.abspath(ARGS[1])
 TETO = float(ARGS[2]) if len(ARGS) > 2 else 0.35
-sys.path.insert(0, os.path.join(EP, "audio"))
+caminho = os.path.join(EP, "episodio.json")
+pasta_audio = os.path.join(os.path.dirname(os.path.dirname(__file__)), "audio")
+sys.path.insert(0, pasta_audio if os.path.isfile(caminho) else os.path.join(EP, "audio"))
 from roteiro import ROTEIRO, parse  # noqa: E402
+
+if os.path.isfile(caminho):
+    with open(caminho, encoding="utf-8") as entrada:
+        ROTEIRO = json.load(entrada)["roteiro"]
 
 M = os.path.join(MOD, "sherpa-onnx-whisper-base")
 rec = sherpa_onnx.OfflineRecognizer.from_whisper(
@@ -71,7 +77,7 @@ escutas = [("cru", [sf.read(os.path.join(EP, "audio", "segs", f"seg_{i:03d}.wav"
 if not SO_CRU:
     tl = json.load(open(os.path.join(EP, "video", "public", "timeline.json")))
     if tl.get("voz") != f"{sintese['modelo']}/{sintese['voz']}":
-        sys.exit(f"G3 reprovado: timeline montada com {tl.get('voz')}, síntese é {sintese['modelo']}/{sintese['voz']}; rode o montar-e-renderizar.sh")
+        sys.exit(f"G3 reprovado: timeline montada com {tl.get('voz')}, síntese é {sintese['modelo']}/{sintese['voz']}; rode o pulso-brasil.sh")
     v, vsr = sf.read(os.path.join(EP, "video", "public", "voz.wav"), dtype="float32")
     escutas.append((f"ar x{tl.get('velocidade')}", [(v[int(s["s"] * vsr):int(s["e"] * vsr)], vsr) for s in tl["segmentos"]]))
 

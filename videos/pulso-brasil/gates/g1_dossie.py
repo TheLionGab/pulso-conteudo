@@ -13,14 +13,14 @@ Falha fecha: qualquer linha sem prova sai com código 1 e não grava nada.
 """
 import collections, hashlib, html, json, os, re, sys
 
-EP = os.path.abspath(sys.argv[1])
+EP = os.path.realpath(sys.argv[1])
 CAMINHO = os.path.join(EP, "dossie.json")
 dossie = json.load(open(CAMINHO, encoding="utf-8"))
 falhas, travas = [], dict(dossie.get("fontes_sha256", {}))
 
 
 def arquivo(rel):
-    p = os.path.normpath(os.path.join(EP, rel))
+    p = os.path.realpath(os.path.join(EP, rel))
     if not p.startswith(os.path.join(EP, "fontes") + os.sep) or not os.path.isfile(p):
         raise ValueError(f"cópia ausente ou fora de fontes/: {rel}")
     dado = open(p, "rb").read()

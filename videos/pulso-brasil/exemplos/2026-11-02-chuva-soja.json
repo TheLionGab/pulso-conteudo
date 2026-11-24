@@ -1,0 +1,180 @@
+{
+  "pauta_id": "chuva-soja-ecmwf-0211",
+  "tema": "Previsão regional de chuva e plantio de soja",
+  "titulo": "A chuva não chega igual",
+  "data": "2026-11-02",
+  "cabecalho": "SEGUNDA, 02/11/2026 · CHUVA E SOJA",
+  "resumo": "A rodada do ECMWF apontava chuva desigual entre as regiões. Confira as condições do solo antes de decidir o plantio.",
+  "legenda_instagram": "Previsão de 02/11/2026: a chuva não chega igual no Sul, no Nordeste e no Centro-Oeste. O corte de 20 mm não é recomendação de plantio. Confira o solo e a previsão da sua cidade no Pulso do Campo.",
+  "fontes": [
+    {
+      "nome": "ECMWF IFS ENS",
+      "url": "https://www.ecmwf.int/en/forecasts/datasets/open-data",
+      "data": "2026-11-02"
+    },
+    {
+      "nome": "Conab",
+      "url": "https://www.gov.br/conab/pt-br/atuacao/informacoes-agropecuarias/safras/progresso-de-safra",
+      "data": "2026-10-23"
+    }
+  ],
+  "numeros_chave": [
+    {
+      "numero": 1189,
+      "fonte": "https://www.ecmwf.int/en/forecasts/datasets/open-data",
+      "data": "2026-11-02"
+    },
+    {
+      "numero": 1008,
+      "fonte": "https://www.ecmwf.int/en/forecasts/datasets/open-data",
+      "data": "2026-11-02"
+    },
+    {
+      "numero": 34,
+      "fonte": "https://www.ecmwf.int/en/forecasts/datasets/open-data",
+      "data": "2026-11-02"
+    },
+    {
+      "numero": 83,
+      "fonte": "https://www.ecmwf.int/en/forecasts/datasets/open-data",
+      "data": "2026-11-02"
+    },
+    {
+      "numero": 210,
+      "fonte": "https://www.ecmwf.int/en/forecasts/datasets/open-data",
+      "data": "2026-11-02"
+    },
+    {
+      "numero": 437,
+      "fonte": "https://www.ecmwf.int/en/forecasts/datasets/open-data",
+      "data": "2026-11-02"
+    },
+    {
+      "numero": 42.76,
+      "fonte": "https://www.gov.br/conab/pt-br/atuacao/informacoes-agropecuarias/safras/progresso-de-safra",
+      "data": "2026-10-23"
+    }
+  ],
+  "push": {
+    "titulo": "A chuva não chega igual",
+    "corpo": "Veja a diferença entre as regiões e confira a previsão da sua cidade."
+  },
+  "roteiro": [
+    [
+      "intro",
+      "[gancho]A chuva desta semana não chega igual. No Sul, *{1.189|mil cento e oitenta e nove}* municípios até domingo. No Nordeste, só *{1|um}*.",
+      0.15
+    ],
+    [
+      "metodo",
+      "São *{50|cinquenta}* cenários do ECMWF. Contamos onde passa de *{20 mm|vinte milímetros}* em mais da metade deles.",
+      0.15
+    ],
+    [
+      "mapa",
+      "Até quarta, o Sul chega a *{1.008|mil e oito}* municípios no mesmo corte.",
+      0.15
+    ],
+    [
+      "serie",
+      "O Centro-Oeste muda no fim de semana: de *{34|trinta e quatro}* até quarta para *{437|quatrocentos e trinta e sete}* até domingo.",
+      0.15
+    ],
+    [
+      "acao",
+      "E a soja? A Conab contava *{42,76%|quarenta e dois vírgula setenta e seis por cento}* plantados até *{23/10|vinte e três de outubro}*. Confira seu solo.",
+      0.15
+    ],
+    [
+      "fecho",
+      "Veja a chance de chuva da sua cidade dia a dia, de graça no app Pulso do Campo.",
+      0.5
+    ]
+  ],
+  "cenas": [
+    {
+      "id": "intro",
+      "tipo": "gancho_numero",
+      "clipe": "cena09_plantio_soja",
+      "fonte": "ECMWF · rodada de 02/11/2026 · previsão, não certeza.",
+      "chamada": "BRASIL · PREVISÃO ATÉ DOM 08/11",
+      "titulo": "A chuva não chega igual",
+      "numero": "1.189",
+      "rotulo": "DE 1.191 MUNICÍPIOS NO SUL",
+      "percentual": 99.8320738874895,
+      "pergunta": "E no Nordeste? 1 de 1.794 municípios."
+    },
+    {
+      "id": "metodo",
+      "tipo": "cards",
+      "clipe": "cena_armazem_graos",
+      "fonte": "ECMWF · rodada de 02/11/2026 · previsão, não certeza.",
+      "chamada": "COMO SE CONTA · ECMWF",
+      "titulo": "50 cenários, um corte",
+      "itens": [
+        {
+          "numero": "20 MM",
+          "titulo": "Corte do cálculo, não é sinal de plantio",
+          "texto": "Conta onde mais da metade dos cenários indica esse volume ou mais.",
+          "cor": "azul"
+        }
+      ]
+    },
+    {
+      "id": "mapa",
+      "tipo": "mapa_regioes",
+      "clipe": "cena03_silos",
+      "fonte": "ECMWF · rodada de 02/11/2026 · previsão, não certeza.",
+      "chamada": "ATÉ QUARTA, 04/11 · ECMWF",
+      "titulo": "O Sul sai na frente",
+      "regioes": {
+        "Sul": 0.8463476070528967
+      }
+    },
+    {
+      "id": "serie",
+      "tipo": "serie_linha",
+      "clipe": "cena09_plantio_soja",
+      "fonte": "ECMWF · rodada de 02/11/2026 · previsão, não certeza.",
+      "chamada": "A VIRADA · CENTRO-OESTE",
+      "titulo": "Muda no fim de semana",
+      "pontos": [
+        {
+          "rotulo": "04/11",
+          "valor": 34
+        },
+        {
+          "rotulo": "06/11",
+          "valor": 83
+        },
+        {
+          "rotulo": "07/11",
+          "valor": 210
+        },
+        {
+          "rotulo": "08/11",
+          "valor": 437
+        }
+      ]
+    },
+    {
+      "id": "acao",
+      "tipo": "checklist_acao",
+      "clipe": "cena_trator_preparo",
+      "fonte": "CONAB · safra 2026/27 · 12 estados · até 23/10/2026.",
+      "chamada": "RECADO PARA QUEM PLANTA",
+      "titulo": "E a soja?",
+      "destaque": "42,76% da área prevista semeada.",
+      "acao": "Confira seu solo.",
+      "apoio": "20 mm não é sinal de plantar. Previsão não é certeza."
+    },
+    {
+      "id": "fecho",
+      "tipo": "fecho_app",
+      "clipe": "cena03_silos",
+      "fonte": "Voz sintética · imagens ilustrativas.",
+      "selo": "PULSO DO CAMPO · BAIXE GRÁTIS"
+    }
+  ],
+  "cta_final": "Chance de chuva da sua cidade\ndia a dia, grátis."
+}

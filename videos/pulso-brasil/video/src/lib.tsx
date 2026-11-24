@@ -1,12 +1,13 @@
 import React from 'react';
-import { Easing, random, spring, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
-import tl from '../public/timeline.json';
-
-export const TL = tl as any;
+import { Easing, random, spring, useCurrentFrame, useVideoConfig } from 'remotion';
+import '@fontsource/inter/latin-500.css';
+import '@fontsource/inter/latin-600.css';
+import '@fontsource/inter/latin-700.css';
+import '@fontsource/inter/latin-800.css';
+import '@fontsource/inter/latin-900.css';
 export const FPS = 30;
 export const W = 1080;
 export const H = 1920;
-export const DUR = TL.duracao as number;
 
 export const C = {
   bg: '#05070A',
@@ -31,37 +32,11 @@ export const C = {
 
 export const FONT = 'Inter, system-ui, sans-serif';
 
-export const fontFaces = `
-${[500, 600, 700, 800, 900]
-  .map(
-    (w) => `@font-face{font-family:'Inter';font-weight:${w};font-style:normal;font-display:block;src:url('${staticFile(
-      `fonts/inter-latin-${w}-normal.woff2`,
-    )}') format('woff2');}`,
-  )
-  .join('\n')}
-`;
-
 /** tempo atual em segundos */
 export const useT = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   return frame / fps;
-};
-
-export const cue = (name: string): number => {
-  const v = TL.cues[name];
-  if (v === undefined) throw new Error(`cue ausente: ${name}`);
-  return v;
-};
-export const cena = (name: string) => TL.cenas[name] as { s: number; e: number };
-
-/** início da 1ª palavra que começa com `txt` a partir de `depois` */
-export const palavra = (txt: string, depois: number): number => {
-  const p = (TL.palavras as any[]).find(
-    (w) => w.s >= depois - 0.01 && w.d.toLowerCase().replace(/[.,:;!?…]/g, '').startsWith(txt.toLowerCase()),
-  );
-  if (!p) throw new Error(`palavra ausente: ${txt} depois de ${depois}`);
-  return p.s;
 };
 
 export const clamp01 = (x: number) => Math.max(0, Math.min(1, x));

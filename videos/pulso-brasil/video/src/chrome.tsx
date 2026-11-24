@@ -1,5 +1,6 @@
 import React from 'react';
-import { C, DUR, FONT, H, TL, W, cena, clamp01, cue, janela, pop, prog } from './lib';
+import { C, FONT, H, W, clamp01, pop, prog } from './lib';
+import type { Palavra, Timeline } from './tipos';
 
 export const BEAT = 60 / 104;
 /** Reels: topo ~120 px, base ~420 px, largura da legenda 840. */
@@ -50,8 +51,7 @@ export const Fundo: React.FC<{ t: number }> = ({ t }) => {
   );
 };
 
-export const Cabecalho: React.FC<{ t: number }> = ({ t }) => {
-  const fechoS = (TL.cenas?.fecho?.s as number) ?? DUR;
+export const Cabecalho: React.FC<{ t: number; texto: string; fechoS: number }> = ({ t, texto, fechoS }) => {
   const o = 1 - prog(t, fechoS - 0.2, 0.5);
   if (o <= 0) return null;
   return (
@@ -63,7 +63,7 @@ export const Cabecalho: React.FC<{ t: number }> = ({ t }) => {
         <div style={{ fontFamily: FONT, fontWeight: 900, fontSize: 31, color: C.text, letterSpacing: 2.5 }}>
           PULSO <span style={{ color: C.greenLight }}>NEWS</span>
         </div>
-        <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 22, color: C.amber, letterSpacing: 1.2 }}>QUARTA, 04/11/2026 · SOJA</div>
+        <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 22, color: C.amber, letterSpacing: 1.2 }}>{texto}</div>
       </div>
     </div>
   );
@@ -71,8 +71,8 @@ export const Cabecalho: React.FC<{ t: number }> = ({ t }) => {
 
 const LIGA = new Set(['de', 'do', 'da', 'o', 'a', 'os', 'as', 'um', 'uma', 'por', 'em', 'na', 'no', 'e', 'que', 'com', 'se', 'é']);
 
-const grupos = (ws: any[]) => {
-  const out: any[][] = [];
+const grupos = (ws: Palavra[]) => {
+  const out: Palavra[][] = [];
   for (const w of ws) {
     const ult = out[out.length - 1];
     const prev = ult?.[ult.length - 1];
@@ -83,17 +83,17 @@ const grupos = (ws: any[]) => {
   return out;
 };
 
-export const Legendas: React.FC<{ t: number }> = ({ t }) => {
-  const leg = (TL.legendas as any[]).find((l) => t >= l.s - 0.04 && t < l.e);
+export const Legendas: React.FC<{ t: number; timeline: Timeline }> = ({ t, timeline }) => {
+  const leg = timeline.legendas.find((l) => t >= l.s - 0.04 && t < l.e);
   if (!leg) return null;
-  const ws = leg.w.map((i: number) => TL.palavras[i]);
+  const ws = leg.w.map((i: number) => timeline.palavras[i]);
   const k = pop(t, leg.s - 0.04, { damping: 16, stiffness: 260 });
   return (
     <div style={{ position: 'absolute', left: 0, right: 0, bottom: REELS.baseLegenda, display: 'flex', justifyContent: 'center', alignItems: 'flex-end', zIndex: 10 }}>
       <div style={{ transform: `scale(${0.88 + 0.12 * k}) translateY(${(1 - k) * 12}px)`, transformOrigin: '50% 100%', opacity: clamp01(k * 1.6), background: 'rgba(5,7,10,0.85)', border: '1.5px solid rgba(255,255,255,0.08)', borderRadius: 24, padding: '16px 32px 18px', maxWidth: REELS.larguraLegenda, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0 16px', boxShadow: '0 16px 45px rgba(0,0,0,0.6)' }}>
-        {grupos(ws).map((g: any[], gi: number) => (
+        {grupos(ws).map((g: Palavra[], gi: number) => (
           <span key={gi} style={{ display: 'inline-flex', gap: 16, whiteSpace: 'nowrap' }}>
-            {g.map((w: any, i: number) => {
+            {g.map((w: Palavra, i: number) => {
               const falado = t >= w.s - 0.02;
               const ativo = falado && t < w.e + 0.05;
               const ka = ativo ? pop(t, w.s - 0.02, { damping: 12, stiffness: 300 }) : 1;
@@ -110,15 +110,13 @@ export const Legendas: React.FC<{ t: number }> = ({ t }) => {
   );
 };
 
-export const Progresso: React.FC<{ t: number }> = ({ t }) => {
-  const p = clamp01(t / DUR);
-  const cenasNomes = ['oni', 'regioes', 'alerta', 'bolso', 'fecho'];
-  const marcos = cenasNomes.map((n) => (TL.cenas?.[n]?.s ?? 0) / DUR);
+export const Progresso: React.FC<{ t: number; duracao: number; marcos: number[] }> = ({ t, duracao, marcos }) => {
+  const p = clamp01(t / duracao);
   return (
     <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 14, zIndex: 20 }}>
       <div style={{ position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.07)' }} />
       <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: `${p * 100}%`, background: `linear-gradient(90deg, ${C.green}, ${C.greenLight} 55%, ${C.amber})`, boxShadow: '0 0 18px rgba(52,211,153,0.6)' }} />
-      {marcos.map((m, i) => <div key={i} style={{ position: 'absolute', left: `${m * 100}%`, top: 0, bottom: 0, width: 4, background: p > m ? 'rgba(5,7,10,0.65)' : 'rgba(255,255,255,0.22)' }} />)}
+      {marcos.map((segundo, i) => <div key={i} style={{ position: 'absolute', left: `${segundo / duracao * 100}%`, top: 0, bottom: 0, width: 4, background: t > segundo ? 'rgba(5,7,10,0.65)' : 'rgba(255,255,255,0.22)' }} />)}
     </div>
   );
 };

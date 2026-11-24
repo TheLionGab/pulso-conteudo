@@ -3,7 +3,7 @@
 Uso: montar.py <pasta_audio> <pasta_saida> [atempo] [roteiro.json]
 Mesma lógica de tempo do narracao.py original (Kokoro), trocando só a origem do áudio.
 """
-import hashlib, json, os, re, subprocess, sys, tempfile
+import hashlib, json, os, re, subprocess, sys
 import numpy as np
 import soundfile as sf
 from roteiro import ROTEIRO, parse
@@ -14,25 +14,36 @@ OUT = sys.argv[2]
 ATEMPO_ARG = sys.argv[3] if len(sys.argv) > 3 else "auto"
 ALVO, ATEMPO_MAX, PAUSA_MAX = 49.0, 1.25, 0.2  # Pulso Brasil 28–29/10: 35–50 s
 CAUDA = 1.0  # segundo extra depois da voz para o acorde final da trilha respirar (dono, 02/11/2026)
-VOICE = "gemini-3.8-flash-tts/Sadaltager"
+VOICE = None
 if len(sys.argv) > 4:
     with open(sys.argv[4]) as entrada:
         ROTEIRO = json.load(entrada)
 # G2 antes de escrever qualquer saída: fala sem dígito e comparativo com id do dossiê.
-EP = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.join(EP, "gates"))
+EP = os.path.dirname(os.path.abspath(A))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), "gates"))
 from g2_fala import checar  # noqa: E402
+from g_voz import checar as checar_voz  # noqa: E402
 
 checar(ROTEIRO, parse, os.path.join(EP, "dossie.json"))
 registro = os.path.join(A, "sintese.json")
 if os.path.isfile(registro):
     with open(registro) as entrada:
         sintese = json.load(entrada)
+    checar_voz(sintese)
+    hashes = sintese.get("segmentos_sha256")
+    if hashes is not None:
+        from pathlib import Path
+        reais = [hashlib.sha256((Path(A) / "segs" / f"seg_{i:03d}.wav").read_bytes()).hexdigest()
+                 for i in range(len(ROTEIRO))]
+        if reais != hashes:
+            sys.exit("WAVs não correspondem à síntese canônica.")
     if "roteiro_sha256" in sintese:
         atual = hashlib.sha256(json.dumps(ROTEIRO, ensure_ascii=False).encode()).hexdigest()
         if sintese["roteiro_sha256"] != atual or sintese.get("segmentos") != len(ROTEIRO):
             sys.exit("Roteiro não corresponde à síntese: montagem cancelada antes de escrever saídas.")
     VOICE = f"{sintese['modelo']}/{sintese['voz']}"
+if VOICE is None:
+    sys.exit("sintese.json canônico não encontrado.")
 SR = 24000
 LIGA = {"de", "do", "da", "o", "a", "os", "as", "um", "uma", "por", "em", "na", "no", "e", "que", "com", "se", "é"}
 
@@ -76,8 +87,8 @@ def define_atempo():
 def carrega(idx):
     a, sr = bruto(idx)
     if ATEMPO != 1.0:
-        src = os.path.join(tempfile.gettempdir(), f"pn_in_{idx:03d}.wav")
-        tmp = os.path.join(tempfile.gettempdir(), f"pn_seg_{idx:03d}.wav")
+        src = os.path.join(A, f"pn_in_{idx:03d}.wav")
+        tmp = os.path.join(A, f"pn_seg_{idx:03d}.wav")
         sf.write(src, a, sr)
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", src, "-af", f"atempo={ATEMPO}", "-ar", str(SR), tmp], check=True)
         a, sr = sf.read(tmp, dtype="float32")
@@ -155,6 +166,8 @@ def main():
         assert sr == SR
         a = a.astype(np.float32)
         regs = regioes_voz(a, sr)
+        if not regs or not np.any(a):
+            sys.exit(f"Segmento {idx:03d} sem voz detectável.")
         ini, fim = regs[0][0], regs[-1][1]
         # 0,07 s antes da voz cortava o "Chi" de Chicago (G3, 27/10)
         a0, a1 = max(0, int((ini - 0.12) * sr)), min(len(a), int((fim + 0.15) * sr))

@@ -45,7 +45,12 @@ def checar(roteiro, parse, dossie_path):
 
 if __name__ == "__main__":
     ep = os.path.abspath(sys.argv[1])
-    sys.path.insert(0, os.path.join(ep, "audio"))
+    caminho = os.path.join(ep, "episodio.json")
+    pasta_audio = os.path.join(os.path.dirname(os.path.dirname(__file__)), "audio")
+    sys.path.insert(0, pasta_audio if os.path.isfile(caminho) else os.path.join(ep, "audio"))
     from roteiro import ROTEIRO, parse
 
+    if os.path.isfile(caminho):
+        with open(caminho, encoding="utf-8") as entrada:
+            ROTEIRO = json.load(entrada)["roteiro"]
     checar(ROTEIRO, parse, os.path.join(ep, "dossie.json"))
