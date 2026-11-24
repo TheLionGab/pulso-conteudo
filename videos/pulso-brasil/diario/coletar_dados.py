@@ -1,16 +1,16 @@
 """Coleta determinística dos dados do episódio diário: o modelo não busca nem transcreve dado.
 
 Uso:
-  python3 -I coletar_dados.py <pasta_do_dia> <AAAA-MM-DD>    grava fontes/ e coleta.sha256
-  python3 -I coletar_dados.py --conferir <pasta_do_dia>      confere que as fontes não mudaram
+  python3 -I coletar_dados.py <pasta_do_dia> <AAAA-MM-DD> --trava <arquivo>   grava fontes/ e a trava
+  python3 -I coletar_dados.py --conferir <pasta_do_dia> --trava <arquivo>     confere depois do modelo
 
 Grava em <pasta_do_dia>/fontes/:
   bcb-ptax.json     PTAX venda dos 15 dias até o dia (Banco Central, Olinda), bytes da resposta.
   pulso-imea.json   IMEA soja e milho de MT na semana do último pregão, e as praças da soja nesse dia
                     (public.mercado_quotes do Supabase do Pulso, REST só leitura, service role).
   pulso-imea.sql    A mesma leitura em SQL e as URLs REST usadas, para quem revisar refazer.
-E <pasta_do_dia>/coleta.sha256 (fora de fontes/): sha256 dos três arquivos, para o agendador
-conferir depois do passo do modelo.
+E a trava (--trava, FORA da pasta do dia, onde o modelo não escreve): sha256 dos três arquivos. O
+--conferir reprova se algum mudou ou sumiu, ou se fontes/ ganhou qualquer arquivo (nem link simbólico).
 
 Ambiente: SUPABASE_SERVICE_ROLE_KEY (obrigatória; nunca impressa nem gravada) e SUPABASE_URL
 (padrão: projeto do Pulso). Mac (agendado.sh) e nuvem (pulso-brasil-diario.yml) usam este mesmo caminho.
@@ -126,27 +126,63 @@ def coletar_imea(dia, base, chave, pasta):
         + "\n".join(f"-- {r}" for r in rest) + "\n", encoding="utf-8")
 
 
-def gravar_trava(pasta):
-    linhas = [f"{sha256(pasta / rel)}  {rel}\n" for rel in ARQUIVOS]
-    (pasta / "coleta.sha256").write_text("".join(linhas))
+def fora_da_pasta(pasta, trava):
+    """A trava fica fora da pasta onde o modelo escreve: senão ele refaz arquivo e trava juntos."""
+    if trava == pasta or pasta in trava.parents:
+        raise RuntimeError("--trava tem de ficar fora da pasta do dia (o modelo escreve nela)")
 
 
-def conferir(pasta):
-    travas = (pasta / "coleta.sha256").read_text().splitlines()
-    if len(travas) != len(ARQUIVOS):
-        raise RuntimeError("coleta.sha256 incompleto")
-    for linha in travas:
-        sha, rel = linha.split("  ", 1)
+def arquivos_em_fontes(pasta):
+    """Todo arquivo em fontes/ (relativo à pasta do dia). Link simbólico e pasta aninhada são recusados."""
+    achados = []
+    for caminho in sorted((pasta / "fontes").rglob("*")):
+        if caminho.is_symlink():
+            raise RuntimeError(f"link simbólico em fontes/: {caminho.relative_to(pasta)}")
+        if caminho.is_file():
+            achados.append(caminho.relative_to(pasta).as_posix())
+    return achados
+
+
+def gravar_trava(pasta, trava):
+    extras = [a for a in arquivos_em_fontes(pasta) if a not in ARQUIVOS]
+    if extras:
+        raise RuntimeError(f"fontes/ tem arquivo que a coleta não gravou: {', '.join(extras)}")
+    trava.parent.mkdir(parents=True, exist_ok=True)
+    trava.write_text("".join(f"{sha256(pasta / rel)}  {rel}\n" for rel in ARQUIVOS))
+
+
+def conferir(pasta, trava):
+    """Falha se fonte mudou, sumiu ou se fontes/ ganhou qualquer arquivo depois da coleta."""
+    fora_da_pasta(pasta, trava)
+    travas = dict(reversed(linha.split("  ", 1)) for linha in trava.read_text().splitlines())
+    if set(travas) != set(ARQUIVOS):
+        raise RuntimeError("trava da coleta incompleta")
+    atuais = arquivos_em_fontes(pasta)
+    extras = [a for a in atuais if a not in travas]
+    if extras:
+        raise RuntimeError(f"arquivo novo em fontes/ depois da coleta (o modelo não pode criar fonte): {', '.join(extras)}")
+    for rel, sha in travas.items():
+        if rel not in atuais:
+            raise RuntimeError(f"{rel} sumiu depois da coleta")
         if sha256(pasta / rel) != sha:
             raise RuntimeError(f"{rel} mudou depois da coleta (o modelo não pode alterar fonte)")
-    print("fontes da coleta intactas:", ", ".join(rel for rel in ARQUIVOS))
+    print("fontes da coleta intactas:", ", ".join(ARQUIVOS))
 
 
 def main(argv):
+    argv = list(argv)
+    trava = None
+    if "--trava" in argv:
+        i = argv.index("--trava")
+        trava = Path(argv[i + 1]).resolve()
+        del argv[i:i + 2]
+    if trava is None:
+        raise RuntimeError("falta --trava <arquivo> (fora da pasta do dia)")
     if argv[:1] == ["--conferir"]:
-        conferir(Path(argv[1]).resolve())
+        conferir(Path(argv[1]).resolve(), trava)
         return 0
     pasta, dia = Path(argv[0]).resolve(), argv[1]
+    fora_da_pasta(pasta, trava)
     dt.date.fromisoformat(dia)
     chave = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "").strip()
     if not chave:
@@ -157,6 +193,9 @@ def main(argv):
         print("coletar_dados: SUPABASE_URL tem de ser https", file=sys.stderr)
         return 1
     (pasta / "fontes").mkdir(parents=True, exist_ok=True)
+    sobras = [a for a in arquivos_em_fontes(pasta) if a not in ARQUIVOS]
+    if sobras:  # coleta nova não herda arquivo de execução anterior
+        raise RuntimeError(f"fontes/ já tem arquivo que não é da coleta: {', '.join(sobras)}")
     try:
         coletar_ptax(dia, pasta / "fontes/bcb-ptax.json")
         coletar_imea(dia, base, chave, pasta)
@@ -164,7 +203,7 @@ def main(argv):
         (pasta / "sem-episodio.txt").write_text(f"{motivo}\n")
         print(f"Sem episódio: {motivo}")
         return 3
-    gravar_trava(pasta)
+    gravar_trava(pasta, trava)
     imea = json.loads((pasta / "fontes/pulso-imea.json").read_text())
     print(f"coleta ok: {dia}; PTAX {len(json.loads((pasta / 'fontes/bcb-ptax.json').read_text())['value'])} dias; "
           f"IMEA soja {sorted(imea['imea_mt']['soja'])[-1]}, {len(imea['imea_mt']['soja'])} pregões; "

@@ -20,7 +20,9 @@ avisar() {
 if [ -f "$pasta/.pronto" ] || [ -f "$pasta/sem-episodio.txt" ]; then
   echo "Já tratado; nada a fazer."; exit 0
 fi
-trap 'codigo=$?; [ "$codigo" -eq 0 ] || avisar "Pulso: vídeo $dia falhou" "Saída $codigo. Detalhe no fim de Studio/pulso-videos/diario/agendado.log."' EXIT
+# A trava das fontes da coleta fica fora de $pasta (o modelo só escreve em $pasta).
+trava="$(mktemp "${TMPDIR:-/tmp}/pulso-coleta.XXXXXXXX")" || { echo "mktemp falhou"; exit 1; }
+trap 'codigo=$?; rm -f "$trava"; [ "$codigo" -eq 0 ] || avisar "Pulso: vídeo $dia falhou" "Saída $codigo. Detalhe no fim de Studio/pulso-videos/diario/agendado.log."' EXIT
 sem_episodio() { echo "Sem episódio: $(cat sem-episodio.txt)"; avisar "Pulso: sem vídeo $dia" "$(cat sem-episodio.txt)"; exit 0; }
 cd "$pasta"
 
@@ -30,7 +32,7 @@ if [ ! -f episodio.json ]; then
   chave_app="${SUPABASE_SERVICE_ROLE_KEY:-$(security find-generic-password -a "$USER" -s pulso-supabase-service -w 2>/dev/null)}" ||
     { echo "Chave do app não encontrada. Rode uma vez: pulso-video --guardar-chave-app"; exit 1; }
   coleta=0
-  SUPABASE_SERVICE_ROLE_KEY="$chave_app" python3 -I "$raiz/diario/coletar_dados.py" "$pasta" "$dia" || coleta=$?
+  SUPABASE_SERVICE_ROLE_KEY="$chave_app" python3 -I "$raiz/diario/coletar_dados.py" "$pasta" "$dia" --trava "$trava" || coleta=$?
   unset chave_app
   [ "$coleta" -ne 3 ] || sem_episodio
   [ "$coleta" -eq 0 ] || { echo "Coleta de dados falhou (saída $coleta)"; exit 1; }
@@ -47,8 +49,8 @@ Molde: $raiz" \
       "Write(/$pasta/**)" "Edit(/$pasta/**)" \
       "Bash(python3 $raiz/episodio.py:*)"
 
-  # PTAX e IMEA gravados pelo script não podem ter sido mexidos pelo modelo.
-  python3 -I "$raiz/diario/coletar_dados.py" --conferir "$pasta" ||
+  # PTAX e IMEA gravados pelo script não podem ter sido mexidos pelo modelo, e fontes/ não ganha arquivo novo.
+  python3 -I "$raiz/diario/coletar_dados.py" --conferir "$pasta" --trava "$trava" ||
     { echo "fonte mudou durante o claude; episódio descartado"; mv episodio.json episodio.rejeitado.json 2>/dev/null; exit 1; }
   if [ -f sem-episodio.txt ]; then sem_episodio; fi
 fi

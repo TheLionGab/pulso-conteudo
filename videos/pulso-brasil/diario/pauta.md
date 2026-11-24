@@ -9,8 +9,8 @@ Entradas (no fim deste texto): Dia, Pasta e Molde.
      `fontes/bcb-ptax.json` (PTAX, Banco Central, Olinda, últimos 15 dias),
      `fontes/pulso-imea.json` (IMEA soja e milho de MT na semana do último pregão, e as praças
      da soja nesse dia; chave `imea_mt`, `pracas_soja_<data>`) e `fontes/pulso-imea.sql` (a
-     consulta usada). Leia, não altere nenhum dos três: o agendador confere o sha256 depois
-     e descarta o episódio se algum mudou.
+     consulta usada). Leia, não altere nenhum dos três nem crie arquivo em `fontes/`: o
+     agendador confere depois e descarta o episódio se algum mudou ou se `fontes/` ganhou arquivo.
    - Sem PTAX nem IMEA novos desde o último episódio em `Molde/historico.jsonl`:
      não escreva episódio; grave `sem-episodio.txt` com o motivo em uma linha e pare.
 
