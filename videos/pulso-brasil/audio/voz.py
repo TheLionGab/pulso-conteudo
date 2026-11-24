@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import sys
 import tempfile
@@ -27,6 +28,16 @@ def cache_valido(arquivo):
                     and wav.getnframes() > 0 and len(wav.readframes(wav.getnframes())) == 2 * wav.getnframes())
     except (OSError, EOFError, wave.Error):
         return False
+
+
+PRONUNCIA = json.loads((Path(__file__).resolve().parents[1] / "config/pronuncia.json").read_text())
+
+
+def pronunciar(fala):
+    """Troca siglas pela forma falada só no texto enviado à voz (o roteiro e a legenda não mudam)."""
+    for sigla, falada in PRONUNCIA.items():
+        fala = re.sub(rf"(?<!\w){re.escape(sigla)}(?!\w)", falada, fala)
+    return fala
 
 
 def sintetizar(fala, chave, destino, anteriores):
@@ -66,7 +77,7 @@ def sintetizar(fala, chave, destino, anteriores):
 def gerar(episodio, destino, cache):
     roteiro = validar(episodio)["roteiro"]
     prefixo = json.dumps(CANON, sort_keys=True) + "\n"
-    falas = [" ".join(u["fala"] for u in parse(texto)) for _, texto, _ in roteiro]
+    falas = [pronunciar(" ".join(u["fala"] for u in parse(texto))) for _, texto, _ in roteiro]
     arquivos = [cache / (hashlib.sha256((prefixo + fala).encode()).hexdigest() + ".wav") for fala in falas]
     faltam = {arq: fala for arq, fala in zip(arquivos, falas) if not cache_valido(arq)}
     if faltam:

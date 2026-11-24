@@ -38,6 +38,11 @@ class Molde(unittest.TestCase):
             with self.subTest(chave=chave), self.assertRaisesRegex(ValueError, chave):
                 checar_voz(dict(canon, **{chave: 'alternativo'}))
 
+    def test_pronuncia_so_na_voz(self):
+        from audio.voz import pronunciar
+        self.assertEqual(pronunciar('A PTAX foi de cinco. PTAX, hoje.'), 'A petax foi de cinco. petax, hoje.')
+        self.assertEqual(pronunciar('PTAXES e XPTAX ficam'), 'PTAXES e XPTAX ficam')
+
     def test_voz_sem_chave_nao_troca_de_voz(self):
         from audio import voz
         exemplo = json.loads((ROOT / 'exemplos/2026-11-04-soja.json').read_text())
