@@ -12,7 +12,7 @@ Reprova (código 1) se algum segmento passar do teto (padrão 0,35) em qualquer 
 audio/asr.json com o resultado e a lista "reprovados" (regere só esses).
 O teto mede "a voz leu outra coisa", não sotaque: Whisper base erra nome próprio sozinho.
 """
-import json, os, subprocess, sys, tempfile, unicodedata
+import json, os, re, subprocess, sys, tempfile, unicodedata
 
 import numpy as np
 import soundfile as sf
@@ -51,6 +51,9 @@ NUMERAIS = set("""zero um uma dois duas tres quatro cinco seis sete oito nove de
 catorze quatorze quinze dezesseis dezessete dezoito dezenove vinte trinta quarenta cinquenta sessenta
 setenta oitenta noventa cem cento duzentos trezentos quatrocentos quinhentos seiscentos setecentos
 oitocentos novecentos mil milhao milhoes virgula meio e por""".split())
+
+
+PRONUNCIA = json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config", "pronuncia.json")))
 
 
 def palavras(t):
@@ -101,6 +104,8 @@ res, ruins = [], set()
 for nome, trechos in escutas:
     for i, (a, sr) in enumerate(trechos):
         ouvido = ouve(a, sr)
+        for sigla, falada in PRONUNCIA.items():  # a voz diz "petax"; o roteiro escreve "PTAX"
+            ouvido = re.sub(rf"(?i)(?<!\w){re.escape(falada)}(?!\w)", sigla, ouvido)
         w = round(wer(palavras(falas[i]), palavras(ouvido)), 3)
         res.append({"seg": i, "escuta": nome, "wer": w, "fala": falas[i], "ouvido": ouvido})
         marca = "FALHA" if w > TETO else "ok   "
