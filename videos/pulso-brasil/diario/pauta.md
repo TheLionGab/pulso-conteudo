@@ -4,21 +4,29 @@ Só escreve arquivos na pasta do dia. Não publica, não renderiza, não chama v
 Entradas (no fim deste texto): Dia, Pasta e Molde.
 
 1. Dados
-   - PTAX: o agendador já gravou `fontes/bcb-ptax.json` (Banco Central, Olinda, últimos 15 dias).
-     Não altere esse arquivo.
-   - IMEA (soja MT, média e praças): consulte só leitura pelo MCP supabase-pulso-ro
-     (`execute_sql`, só SELECT). Grave o resultado bruto, sem arredondar nem editar, em
-     `fontes/pulso-imea.json`, e a consulta usada em `fontes/pulso-imea.sql`, para quem
-     revisar refazer a mesma leitura.
+   - O agendador já gravou, por script, os dados do dia em `fontes/` (você não busca nem
+     transcreve dado; não há banco nem rede para você):
+     `fontes/bcb-ptax.json` (PTAX, Banco Central, Olinda, últimos 15 dias),
+     `fontes/pulso-imea.json` (IMEA soja e milho de MT na semana do último pregão, e as praças
+     da soja nesse dia; chave `imea_mt`, `pracas_soja_<data>`) e `fontes/pulso-imea.sql` (a
+     consulta usada). Leia, não altere nenhum dos três nem crie arquivo em `fontes/`: o
+     agendador confere depois e descarta o episódio se algum mudou ou se `fontes/` ganhou arquivo.
    - Sem PTAX nem IMEA novos desde o último episódio em `Molde/historico.jsonl`:
      não escreva episódio; grave `sem-episodio.txt` com o motivo em uma linha e pare.
 
 2. Escreva `episodio.json` e `dossie.json` seguindo `Molde/episodio.schema.json`,
-   `Molde/exemplos/` e o episódio de 2026-11-24 em
-   `~/Studio/pulso-videos/diario/2026-11-24-instagram/` como modelo de forma (não de conteúdo).
+   `Molde/exemplos/` e o episódio de 2026-11-24 em `Molde/exemplos/2026-11-24-dolar-soja/`
+   (`episodio.json`, `dossie.json`, `fontes/`) como modelo de forma (não de conteúdo).
+   - `data` do episódio e do dossiê é o Dia desta execução, e `dossie.episodio` (o id no app) é
+     `pulso-brasil-<Dia>-<assunto-em-minúsculas>` (até 80 caracteres, só a-z, 0-9 e hífen); o agendador
+     reprova data ou id de outro dia.
    - Cada número do roteiro, das cenas, da legenda e de `numeros_chave` sai de uma linha
      do dossiê com `json_campo` apontando para o arquivo em `fontes/`; conta derivada vai em
      `derivados` com a fórmula.
+   - O dado mais recente de cada série (PTAX, IMEA MT e as praças citadas) leva `banco`
+     (serie, commodity, localidade, indicador, campo, data) como no exemplo; o gate de frescor
+     do app confere isso no banco na hora de publicar. Ponto antigo da comparação usa
+     `"banco": null` com `isento_motivo`.
    - Tema novo: não repita tema nem número-chave de `Molde/historico.jsonl`.
    - Só fato e aritmética. Nada de causa que os dados não provam ("o câmbio segurou"),
      previsão ("se o dólar continuar...") nem orientação de venda. Diferença entre praças
