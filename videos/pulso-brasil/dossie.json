@@ -1,0 +1,123 @@
+{
+  "data": "2026-11-04",
+  "episodio": "pulso-brasil-2026-11-04-soja",
+  "pesquisado_em": "Pesquisa confirmada em04/11, ediçãoConab26/10–01/11; observação até30/10.",
+  "tese": "Avanço de implantação emMT; quadro favorável com diferenças pontuais; acompanhamento do talhão.",
+  "ressalvas": [
+    "Conab54,3% é agregado de12estados que cobrem95%daárea; não média simples nem censo integral.",
+    "75,78% narrado como quase76%, com dado exato na tela.",
+    "Semeadura não mede rendimento; sem perda generalizada demonstrada.",
+    "Uma origem institucional; pesquisa intermediária não conta como segunda confirmação."
+  ],
+  "linhas": [
+    {
+      "id": "mt_anterior",
+      "numero": 75.78,
+      "unidade": "%",
+      "descricao": "Área MT semeada até23/10",
+      "fonte_primaria": "Conab, Soja2026/27",
+      "fonte_url": "https://www.gov.br/conab/pt-br/atuacao/informacoes-agropecuarias/safras/progresso-de-safra/acompanhamento-das-lavouras-26-10-a-01-11-26/plantio-e-colheita-24-10-a-30-10.xlsx",
+      "data_publicacao": "03/11/2026",
+      "json_campo": {
+        "arquivo": "fontes/conab-celulas.json",
+        "caminho": [
+          "valores",
+          "mt_anterior"
+        ]
+      }
+    },
+    {
+      "id": "mt_atual",
+      "numero": 90.8,
+      "unidade": "%",
+      "descricao": "Área MT semeada até30/10",
+      "fonte_primaria": "Conab, Soja2026/27",
+      "fonte_url": "https://www.gov.br/conab/pt-br/atuacao/informacoes-agropecuarias/safras/progresso-de-safra/acompanhamento-das-lavouras-26-10-a-01-11-26/plantio-e-colheita-24-10-a-30-10.xlsx",
+      "data_publicacao": "03/11/2026",
+      "json_campo": {
+        "arquivo": "fontes/conab-celulas.json",
+        "caminho": [
+          "valores",
+          "mt_atual"
+        ]
+      }
+    },
+    {
+      "id": "brasil_12_estados",
+      "numero": 54.3,
+      "unidade": "%",
+      "descricao": "Agregado dos12estados até30/10",
+      "fonte_primaria": "Conab, Soja2026/27",
+      "fonte_url": "https://www.gov.br/conab/pt-br/atuacao/informacoes-agropecuarias/safras/progresso-de-safra/acompanhamento-das-lavouras-26-10-a-01-11-26/plantio-e-colheita-24-10-a-30-10.xlsx",
+      "data_publicacao": "03/11/2026",
+      "json_campo": {
+        "arquivo": "fontes/conab-celulas.json",
+        "caminho": [
+          "valores",
+          "brasil_12_estados"
+        ]
+      }
+    },
+    {
+      "id": "cobertura_area",
+      "numero": 95,
+      "unidade": "%",
+      "descricao": "Cobertura dos12estados na área cultivada",
+      "fonte_primaria": "Conab, Soja2026/27",
+      "fonte_url": "https://www.gov.br/conab/pt-br/atuacao/informacoes-agropecuarias/safras/progresso-de-safra/acompanhamento-das-lavouras-26-10-a-01-11-26/plantio-e-colheita-24-10-a-30-10.xlsx",
+      "data_publicacao": "03/11/2026",
+      "json_campo": {
+        "arquivo": "fontes/conab-celulas.json",
+        "caminho": [
+          "valores",
+          "cobertura_area"
+        ]
+      }
+    },
+    {
+      "id": "estados",
+      "numero": 12,
+      "unidade": "estados",
+      "descricao": "Estados acompanhados",
+      "fonte_primaria": "Conab, Soja2026/27",
+      "fonte_url": "https://www.gov.br/conab/pt-br/atuacao/informacoes-agropecuarias/safras/progresso-de-safra/acompanhamento-das-lavouras-26-10-a-01-11-26/plantio-e-colheita-24-10-a-30-10.xlsx",
+      "data_publicacao": "03/11/2026",
+      "json_campo": {
+        "arquivo": "fontes/conab-celulas.json",
+        "caminho": [
+          "valores",
+          "estados"
+        ]
+      }
+    }
+  ],
+  "derivados": [
+    {
+      "id": "avanco_pp",
+      "de": [
+        "mt_atual",
+        "mt_anterior"
+      ],
+      "formula": "mt_atual - mt_anterior",
+      "valor": 15.02,
+      "unidade": "pontos percentuais"
+    }
+  ],
+  "afirmacoes": [
+    {
+      "id": "sanidade",
+      "snapshot": "fontes/conab-condicoes.txt",
+      "trecho_literal": "quadro fitossanitário normal"
+    },
+    {
+      "id": "estabelecimento",
+      "snapshot": "fontes/conab-condicoes.txt",
+      "trecho_literal": "heterogeneidade pontual no estabelecimento das lavouras"
+    }
+  ],
+  "comparativos": [],
+  "fontes_sha256": {
+    "fontes/conab-celulas.json": "76088db09e76ff9d0a8d932560346d54bde31fed7f4402b76c6a8be7feb8f1fd",
+    "fontes/conab-condicoes.txt": "4e4690120c4eaa9ef5c742779dd4f629701455444b2dc3b9bd9432be6d65dd8c"
+  }
+}
