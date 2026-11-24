@@ -1,6 +1,7 @@
 """G3 (ASR): transcreve cada segmento da voz com Whisper local (sherpa-onnx) e compara com a fala.
 
-Uso: <python com sherpa_onnx> g3_asr.py <pasta_episodio> <pasta_modelos> [teto_wer] [--so-cru]
+Uso: g3_asr.py <pasta_episodio> <pasta_modelos | modelo ggml-*.bin> [teto_wer] [--so-cru]
+Com pasta: sherpa-onnx (Python com sherpa_onnx). Com .bin: whisper-cli do whisper.cpp.
 Números não entram no WER (ver NUMERAIS). O pipeline roda o G3 depois da montagem,
 com o Python que tem sherpa_onnx.
 <pasta_modelos> contém sherpa-onnx-whisper-base/ (já baixado; este script não baixa nada).
@@ -11,10 +12,9 @@ Reprova (código 1) se algum segmento passar do teto (padrão 0,35) em qualquer 
 audio/asr.json com o resultado e a lista "reprovados" (o gerar_voz_gemini.sh regera só esses).
 O teto mede "a voz leu outra coisa", não sotaque: Whisper base erra nome próprio sozinho.
 """
-import json, os, sys, unicodedata
+import json, os, subprocess, sys, tempfile, unicodedata
 
 import numpy as np
-import sherpa_onnx
 import soundfile as sf
 
 ARGS = [a for a in sys.argv[1:] if not a.startswith("--")]
@@ -30,10 +30,19 @@ if os.path.isfile(caminho):
     with open(caminho, encoding="utf-8") as entrada:
         ROTEIRO = json.load(entrada)["roteiro"]
 
-M = os.path.join(MOD, "sherpa-onnx-whisper-base")
-rec = sherpa_onnx.OfflineRecognizer.from_whisper(
-    encoder=f"{M}/base-encoder.onnx", decoder=f"{M}/base-decoder.onnx", tokens=f"{M}/base-tokens.txt",
-    language="pt", num_threads=4)
+# Dois motores locais, nenhum baixa nada: <MOD> pode ser a pasta com sherpa-onnx-whisper-base/
+# (Python com sherpa_onnx) ou um arquivo ggml-*.bin do whisper.cpp (whisper-cli no PATH).
+if os.path.isfile(MOD) and MOD.endswith(".bin"):
+    WHISPER_CLI = os.environ.get("PULSO_WHISPER_CLI", "whisper-cli")
+    MODELO_ASR = f"whisper.cpp/{os.path.basename(MOD)}"
+    rec = None
+else:
+    import sherpa_onnx
+    M = os.path.join(MOD, "sherpa-onnx-whisper-base")
+    MODELO_ASR = "sherpa-onnx-whisper-base"
+    rec = sherpa_onnx.OfflineRecognizer.from_whisper(
+        encoder=f"{M}/base-encoder.onnx", decoder=f"{M}/base-decoder.onnx", tokens=f"{M}/base-tokens.txt",
+        language="pt", num_threads=4)
 
 
 # Números saem dos dois lados: o Whisper escreve "16" onde a fala diz "dezesseis", e o valor de cada
@@ -65,6 +74,13 @@ def ouve(a, sr):
         a = a.mean(1)
     n = int(len(a) * 16000 / sr)
     x = np.interp(np.linspace(0, len(a) - 1, n), np.arange(len(a)), a).astype(np.float32)
+    if rec is None:
+        with tempfile.TemporaryDirectory() as tmp:
+            wav = os.path.join(tmp, "seg.wav")
+            sf.write(wav, x, 16000, subtype="PCM_16")
+            r = subprocess.run([WHISPER_CLI, "-m", MOD, "-l", "pt", "-nt", "-np", "-ng", "-t", "4", "-f", wav],  # CPU: igual em qualquer shell
+                               capture_output=True, text=True, check=True)
+        return " ".join(r.stdout.split())
     st = rec.create_stream()
     st.accept_waveform(16000, x)
     rec.decode_stream(st)
@@ -92,7 +108,7 @@ for nome, trechos in escutas:
         if w > TETO:
             ruins.add(i)
 
-json.dump({"voz": sintese.get("voz"), "modelo_asr": "sherpa-onnx-whisper-base", "teto_wer": TETO,
+json.dump({"voz": sintese.get("voz"), "modelo_asr": MODELO_ASR, "teto_wer": TETO,
            "reprovados": sorted(ruins), "segmentos": res},
           open(os.path.join(EP, "audio", "asr.json"), "w"), ensure_ascii=False, indent=1)
 media = sum(r["wer"] for r in res) / len(res)
