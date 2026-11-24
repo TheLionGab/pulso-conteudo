@@ -1,0 +1,14 @@
+{
+  "estado": "pronto-voz",
+  "titulo": "Soja avança em MT: como estão as lavouras?",
+  "tema": "Plantio e estabelecimento da soja em Mato Grosso",
+  "pauta_id": "plantio-soja-mt",
+  "pesquisa_sha256": "1d9b064b5c0d3e4efc8b5f4dc1ed5d1ce423d6873b95ad52fdb29a8bb692a028",
+  "explicacao": {
+    "fato": "90,8% semeado emMT até30/10.",
+    "mecanismo": "Avanço operacional; causa específica não estabelecida.",
+    "impacto_mt": "Condição favorável não elimina diferenças pontuais.",
+    "acao": "Conferir estabelecimento com assistência técnica."
+  },
+  "publicado": false
+}

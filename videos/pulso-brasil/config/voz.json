@@ -1,0 +1,5 @@
+{
+  "provedor": "gemini",
+  "modelo": "gemini-3.8-flash-tts",
+  "voz": "Sadaltager"
+}

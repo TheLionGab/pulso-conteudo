@@ -1,0 +1,580 @@
+{
+  "type": "object",
+  "required": [
+    "legenda_instagram",
+    "pauta_id",
+    "tema",
+    "titulo",
+    "data",
+    "cabecalho",
+    "resumo",
+    "push",
+    "fontes",
+    "numeros_chave",
+    "roteiro",
+    "cenas",
+    "cta_final"
+  ],
+  "properties": {
+    "legenda_instagram": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "pauta_id": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "tema": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "titulo": {
+      "type": "string",
+      "pattern": "\\S",
+      "maxLength": 80
+    },
+    "data": {
+      "type": "string",
+      "pattern": "\\S",
+      "format": "date"
+    },
+    "cabecalho": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "resumo": {
+      "type": "string",
+      "pattern": "\\S",
+      "maxLength": 240
+    },
+    "push": {
+      "type": "object",
+      "required": [
+        "titulo",
+        "corpo"
+      ],
+      "properties": {
+        "titulo": {
+          "type": "string",
+          "pattern": "\\S",
+          "maxLength": 45
+        },
+        "corpo": {
+          "type": "string",
+          "pattern": "\\S",
+          "maxLength": 130
+        }
+      }
+    },
+    "fontes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "nome",
+          "url",
+          "data"
+        ],
+        "properties": {
+          "nome": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "url": {
+            "type": "string",
+            "pattern": "^https?://[^\\s/]+[^\\s]*$",
+            "format": "uri"
+          },
+          "data": {
+            "type": "string",
+            "pattern": "\\S",
+            "format": "date"
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "numeros_chave": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "numero",
+          "fonte",
+          "data"
+        ],
+        "properties": {
+          "numero": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^-?\\d+(?:[.,]\\d+)?$"
+              }
+            ]
+          },
+          "fonte": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "data": {
+            "type": "string",
+            "pattern": "\\S",
+            "format": "date"
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "roteiro": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "prefixItems": [
+          {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 2
+          }
+        ],
+        "minItems": 3,
+        "maxItems": 3
+      },
+      "minItems": 1
+    },
+    "cenas": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "id",
+              "tipo",
+              "chamada",
+              "titulo",
+              "numero",
+              "rotulo"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "tipo": {
+                "const": "gancho_numero"
+              },
+              "chamada": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "titulo": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "numero": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "rotulo": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "clipe": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "fonte": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "percentual": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "mapa_mt": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "pergunta": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "id",
+              "tipo",
+              "chamada",
+              "titulo",
+              "pontos"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "tipo": {
+                "const": "serie_linha"
+              },
+              "chamada": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "titulo": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "pontos": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "rotulo",
+                    "valor"
+                  ],
+                  "properties": {
+                    "rotulo": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "valor": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "minItems": 2
+              },
+              "clipe": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "fonte": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "id",
+              "tipo",
+              "chamada",
+              "titulo",
+              "itens",
+              "nota"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "tipo": {
+                "const": "barras"
+              },
+              "chamada": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "titulo": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "itens": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "rotulo",
+                    "numero",
+                    "percentual"
+                  ],
+                  "properties": {
+                    "rotulo": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "numero": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "percentual": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    "cor": {
+                      "enum": [
+                        "verde",
+                        "azul",
+                        "ouro",
+                        "cinza"
+                      ]
+                    }
+                  }
+                },
+                "minItems": 1
+              },
+              "nota": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "clipe": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "fonte": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "id",
+              "tipo",
+              "chamada",
+              "titulo",
+              "regioes"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "tipo": {
+                "const": "mapa_regioes"
+              },
+              "chamada": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "titulo": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "regioes": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "Norte": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "Nordeste": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "Centro-Oeste": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "Sudeste": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "Sul": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                }
+              },
+              "clipe": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "fonte": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "mapa_mt": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "id",
+              "tipo",
+              "chamada",
+              "titulo",
+              "itens"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "tipo": {
+                "const": "cards"
+              },
+              "chamada": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "titulo": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "itens": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "titulo"
+                  ],
+                  "properties": {
+                    "titulo": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "rotulo": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "texto": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "cor": {
+                      "enum": [
+                        "verde",
+                        "azul",
+                        "ouro",
+                        "cinza"
+                      ]
+                    },
+                    "numero": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "percentual": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    }
+                  }
+                },
+                "minItems": 1
+              },
+              "clipe": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "fonte": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "id",
+              "tipo",
+              "chamada",
+              "titulo",
+              "destaque",
+              "acao",
+              "apoio"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "tipo": {
+                "const": "checklist_acao"
+              },
+              "chamada": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "titulo": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "destaque": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "acao": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "apoio": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "clipe": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "fonte": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "id",
+              "tipo",
+              "selo"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "tipo": {
+                "const": "fecho_app"
+              },
+              "selo": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "clipe": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "fonte": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          }
+        ]
+      },
+      "minItems": 2
+    },
+    "cta_final": {
+      "type": "string",
+      "pattern": "\\S"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

@@ -1,0 +1,67 @@
+{
+  "cena09_plantio_soja": {
+    "origem": "pulso-brasil-2026-11-04/video/public/cenas/cena09_plantio_soja.mp4",
+    "destino": "cenas/cena09_plantio_soja.mp4",
+    "sha256": "a433591d9481f028cab56ce76e50d63fae37496b37d6d15ec7aa74b49cb66b0c"
+  },
+  "cena03_silos": {
+    "origem": "pulso-brasil-2026-11-04/video/public/cenas/cena03_silos.mp4",
+    "destino": "cenas/cena03_silos.mp4",
+    "sha256": "4bace3bf59f657b33af01d0455f4d84f4e480aaf4e0a3ff7b7080aa7d25f343f"
+  },
+  "cena_trator_preparo": {
+    "origem": "pulso-brasil-2026-11-04/video/public/cenas/cena_trator_preparo.mp4",
+    "destino": "cenas/cena_trator_preparo.mp4",
+    "sha256": "5d0268a87b6c60bdad013df9b4220d4db25237862c60ebf3fe015125973bc9a1"
+  },
+  "cena_ceu_nuvens_cerrado": {
+    "origem": "pulso-brasil-2026-11-04/video/public/cenas/cena_ceu_nuvens_cerrado.mp4",
+    "destino": "cenas/cena_ceu_nuvens_cerrado.mp4",
+    "sha256": "a5594024766e6f41cdbf52427119a9b4a8ae06e2d5d4c0d2c2495e210eec1cdc"
+  },
+  "cena_armazem_graos": {
+    "origem": "pulso-brasil-2026-11-04/video/public/cenas/cena_armazem_graos.mp4",
+    "destino": "cenas/cena_armazem_graos.mp4",
+    "sha256": "7a7bd05b68c7f578bcf6b5698bd3df80ac30fb7c0668f80e198f5d030f386285"
+  },
+  "cena04_caminhoes": {
+    "origem": "pulso-brasil-2026-11-02/video/public/cenas/cena04_caminhoes.mp4",
+    "destino": "cenas/cena04_caminhoes.mp4",
+    "sha256": "9bc7a4f30430faf2adfc81ad579d49c4cb224838d4cd27df217db30f0df8d345"
+  },
+  "cena05_porto": {
+    "origem": "pulso-brasil-2026-11-02/video/public/cenas/cena05_porto.mp4",
+    "destino": "cenas/cena05_porto.mp4",
+    "sha256": "edc0369914aff1eba8f4cac40b986bff3f8048cc2848dcaa6b581f067dfad415"
+  },
+  "cena06_graos": {
+    "origem": "pulso-brasil-2026-11-02/video/public/cenas/cena06_graos.mp4",
+    "destino": "cenas/cena06_graos.mp4",
+    "sha256": "e0b086b489177ca102795d6d27b21ced5519b963051bf47fdc8820dcdf7752a2"
+  },
+  "cena_porto_navio": {
+    "origem": "_previas/pulso-brasil-2026-11-03-pulado/video/public/cenas/cena_porto_navio.mp4",
+    "destino": "cenas/cena_porto_navio.mp4",
+    "sha256": "f33fca00f1c451307154a97467e918be8d272f93933be56cbc3894d3f3a46ce1"
+  },
+  "cena_rodovia_caminhoes": {
+    "origem": "_previas/pulso-brasil-2026-11-03-pulado/video/public/cenas/cena_rodovia_caminhoes.mp4",
+    "destino": "cenas/cena_rodovia_caminhoes.mp4",
+    "sha256": "6892959c8d5b9c2a9d5a1dd5a2b1639e3173ac071a5a29141bd2d360ae214e5a"
+  },
+  "cena_caminhao_carregando": {
+    "origem": "_previas/pulso-brasil-2026-11-03-pulado/video/public/cenas/cena_caminhao_carregando.mp4",
+    "destino": "cenas/cena_caminhao_carregando.mp4",
+    "sha256": "18660093aae004797db55dff7fbad1dfd53ad93ab2cf146503bd64c3bf9b99b6"
+  },
+  "cena_silos_metalicos": {
+    "origem": "_previas/pulso-brasil-2026-11-03-pulado/video/public/cenas/cena_silos_metalicos.mp4",
+    "destino": "cenas/cena_silos_metalicos.mp4",
+    "sha256": "057df785ac891f9fad88b2e78f8496df8b24bcf9978c8a49603d0353168fbb4a"
+  },
+  "trilha": {
+    "origem": "pulso-brasil-2026-11-04/video/public/musica.wav",
+    "destino": "canon/trilha.wav",
+    "sha256": "652ed00ec96f72d55cfcd2b60928f57d42808ace54a93f5282a07d5464396206"
+  }
+}
