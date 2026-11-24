@@ -50,7 +50,8 @@ const Conteudo: React.FC<ConteudoProps> = ({ dados, t, inicio, cta }) => {
       const baixo = Math.min(...valores);
       const alto = Math.max(...valores);
       const pontos: [number, number][] = dados.pontos.map((p, i) => [
-        i / (valores.length - 1), alto === baixo ? 0.5 : (p.valor - baixo) / (alto - baixo),
+        // y do SVG cresce para baixo: o maior valor fica em cima
+        i / (valores.length - 1), alto === baixo ? 0.5 : (alto - p.valor) / (alto - baixo),
       ]);
       return <>
         <Titulo {...dados} cor={BLUE} />
