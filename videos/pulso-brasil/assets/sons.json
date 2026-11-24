@@ -1,0 +1,16 @@
+{
+  "_nota": "Pedidos à ElevenLabs (Music e Sound Effects). Geração única: o arquivo vai ao acervo e entra no manifest.json com sha256; o pipeline diário não chama API de som.",
+  "musica": {
+    "trilha_mercado": "Instrumental underscore for a Brazilian agribusiness market news short. Confident, modern and optimistic, 104 BPM, tight soft electronic kick, muted plucked acoustic guitar ostinato, warm analog synth pad, light shaker, gentle bass. Sparse mid-range to leave space for a voice-over. Steady energy from start to end, clean professional broadcast mix, no vocals.",
+    "trilha_dados": "Instrumental underscore for financial and commodity market data videos. Focused and slightly tense but hopeful, 112 BPM, crisp ticking hi-hats, deep sub bass, simple felt piano motif, subtle string swells every 8 bars, minimal and polished, broadcast quality, no vocals, room for narration.",
+    "trilha_campo": "Instrumental cinematic documentary underscore about farmland in Mato Grosso at sunrise. Uplifting and warm, 92 BPM, airy ambient pads, gentle marimba pattern, soft round kick, light acoustic guitar harmonics, wide stereo, broadcast quality, no vocals, leaves space for voice-over."
+  },
+  "duracao_musica_ms": 75000,
+  "efeitos": {
+    "riser_abertura": {"texto": "Short cinematic tension riser that ends in a soft clean hit, modern TV news intro, no music", "segundos": 1.8},
+    "whoosh_transicao": {"texto": "Fast clean airy cinematic whoosh for a video scene transition, smooth, no impact, no tail", "segundos": 0.9},
+    "tick_numero": {"texto": "Very short soft modern digital interface tick, subtle and crisp, for a number appearing on screen", "segundos": 0.5},
+    "pop_card": {"texto": "Soft gentle pop for an information card appearing on screen, rounded, modern UI", "segundos": 0.5},
+    "sting_logo": {"texto": "Short brand logo sting, warm bright synth chord with soft shimmer and gentle reverb tail, positive and premium", "segundos": 2.5}
+  }
+}
