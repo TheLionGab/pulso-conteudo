@@ -148,7 +148,7 @@
           <div class="kicker">No seu celular, todo dia</div>
           <div class="h2">Decida com o preço da <span class="green">sua</span> praça.</div>
         </div>
-        <div class="phone" id="phone"><img src="assets/device/diagnostico.png" alt="" /></div>
+        <div class="phone" id="phone"><img src="assets/device/cotacoes.png" alt="" /></div>
         <div class="chips">
           <div class="chip" id="c1"><i>📍</i><span id="c1-t"></span></div>
           <div class="chip" id="c2"><i>🚛</i><span>Frete e valor líquido da carga</span></div>
@@ -168,8 +168,8 @@
         </svg>
         <div class="name">Pulso do Campo</div>
         <div class="tag">O app do produtor de Mato Grosso</div>
-        <div class="cta" id="cta">Teste 14 dias grátis</div>
-        <div class="stores">Android e iPhone</div>
+        <div class="cta" id="cta"></div>
+        <div class="stores" id="stores"></div>
         <div class="fine" id="fine"></div>
       </div>
 
@@ -185,7 +185,7 @@
     </div>
 
     <script>
-      var D = {"produto": "soja", "produto_rotulo": "Soja", "cidade": "Sorriso", "preco": 138.2, "fonte": "IMEA", "data": "19/11/2026", "ranking": [{"cidade": "Rondonópolis", "valor": 144.0, "largura": 1.0, "eu": false, "topo": true}, {"cidade": "Alto Araguaia", "valor": 143.75, "largura": 0.9819, "eu": false, "topo": false}, {"cidade": "Alto Garças", "valor": 143.0, "largura": 0.9277, "eu": false, "topo": false}, {"cidade": "Sorriso", "valor": 138.2, "largura": 0.5809, "eu": true, "topo": false}, {"cidade": "Canarana", "valor": 135.65, "largura": 0.3967, "eu": false, "topo": false}, {"cidade": "Querência", "valor": 135.35, "largura": 0.375, "eu": false, "topo": false}], "comparacao": {"diferenca": 5.8, "titulo": "Rondonópolis paga mais", "subtitulo": "por saca do que Sorriso", "total": 58000, "sacas_rotulo": "10.000"}};
+      var D = {"loja": "ios", "fecho": {"cta": "Teste 14 dias grátis", "lojas": "No iPhone · App Store", "nota": "14 dias grátis no plano anual, para quem ainda não assinou."}, "produto": "soja", "produto_rotulo": "Soja", "cidade": "Sorriso", "preco": 138.2, "fonte": "IMEA", "data": "19/11/2026", "ranking": [{"cidade": "Rondonópolis", "valor": 144.0, "largura": 1.0, "eu": false, "topo": true}, {"cidade": "Alto Araguaia", "valor": 143.75, "largura": 0.9819, "eu": false, "topo": false}, {"cidade": "Alto Garças", "valor": 143.0, "largura": 0.9277, "eu": false, "topo": false}, {"cidade": "Sorriso", "valor": 138.2, "largura": 0.5809, "eu": true, "topo": false}, {"cidade": "Canarana", "valor": 135.65, "largura": 0.3967, "eu": false, "topo": false}, {"cidade": "Querência", "valor": 135.35, "largura": 0.375, "eu": false, "topo": false}], "comparacao": {"diferenca": 5.8, "titulo": "Rondonópolis paga mais", "subtitulo": "por saca do que Sorriso", "total": 58000, "sacas_rotulo": "10.000"}};
 
       function brl(v, casas) {
         var s = v.toFixed(casas);
@@ -206,7 +206,9 @@
       txt("s3-t1", "Em " + D.comparacao.sacas_rotulo + " sacas, isso é");
       txt("s3-note", "Antes do frete. O app calcula o seu líquido.");
       txt("c1-t", "Preço de " + D.produto + " em " + D.cidade + ", todo dia");
-      txt("fine", "Preços " + D.fonte + " de " + D.data + ". Teste no plano anual.");
+      txt("cta", D.fecho.cta);
+      txt("stores", D.fecho.lojas);
+      txt("fine", "Preços " + D.fonte + " de " + D.data + ". " + D.fecho.nota);
 
       var bars = document.getElementById("bars");
       D.ranking.forEach(function (r, i) {
