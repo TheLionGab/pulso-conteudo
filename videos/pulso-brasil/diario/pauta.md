@@ -7,8 +7,9 @@ Entradas (no fim deste texto): Dia, Pasta e Molde.
    - PTAX: o agendador já gravou `fontes/bcb-ptax.json` (Banco Central, Olinda, últimos 15 dias).
      Não altere esse arquivo.
    - IMEA (soja MT, média e praças): consulte só leitura pelo MCP supabase-pulso-ro
-     (`execute_sql`, só SELECT). Grave o resultado bruto, sem arredondar, em
-     `fontes/pulso-imea.json`.
+     (`execute_sql`, só SELECT). Grave o resultado bruto, sem arredondar nem editar, em
+     `fontes/pulso-imea.json`, e a consulta usada em `fontes/pulso-imea.sql`, para quem
+     revisar refazer a mesma leitura.
    - Sem PTAX nem IMEA novos desde o último episódio em `Molde/historico.jsonl`:
      não escreva episódio; grave `sem-episodio.txt` com o motivo em uma linha e pare.
 
