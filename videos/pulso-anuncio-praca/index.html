@@ -1,0 +1,279 @@
+<!doctype html>
+<!--
+  Anúncio "Preço da sua praça" — 9:16, 20 s, mudo-primeiro (texto carrega a mensagem).
+  NÃO EDITE index.html: ele é gerado por gerar.py a partir deste template.
+  O bloco __DADOS__ é trocado pelo JSON da praça (sem fetch: render determinístico).
+-->
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_500Medium.ttf') format('truetype'); font-weight: 500; font-display: block; }
+      @font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_700Bold.ttf') format('truetype'); font-weight: 700; font-display: block; }
+      @font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_800ExtraBold.ttf') format('truetype'); font-weight: 800; font-display: block; }
+      @font-face { font-family: 'Inter'; src: url('assets/fonts/Inter_900Black.ttf') format('truetype'); font-weight: 900; font-display: block; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05070a; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: "Inter", system-ui, sans-serif; color: #fafaf9; }
+      .bg { position: absolute; inset: 0; background: radial-gradient(1200px 900px at 50% 18%, #0f2a1f 0%, #05070a 62%); }
+      .grain { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0 2px, transparent 2px 4px); }
+      .scene { position: absolute; inset: 0; opacity: 0; }
+      .kicker { font-weight: 700; font-size: 34px; letter-spacing: 0.16em; text-transform: uppercase; color: #6ee7b7; }
+      .h1 { font-weight: 900; font-size: 92px; line-height: 1.02; letter-spacing: -0.035em; }
+      .h2 { font-weight: 800; font-size: 72px; line-height: 1.06; letter-spacing: -0.03em; }
+      .muted { color: #a8a29e; font-weight: 500; }
+      .green { color: #10b981; }
+      .amber { color: #f59e0b; }
+      .pad { position: absolute; left: 120px; right: 210px; }
+
+      /* brand bug */
+      .bug { position: absolute; top: 290px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 14px; opacity: 0; }
+      .bug svg { width: 46px; height: 46px; }
+      .bug span { font-weight: 800; font-size: 30px; letter-spacing: -0.02em; }
+      .pdc-p { fill: none; stroke: url(#pdcg); stroke-linecap: round; stroke-linejoin: round; }
+
+      /* S1 */
+      #s1 .pad { top: 470px; }
+      #s1 .h1 { margin-top: 26px; }
+      .price-card { margin-top: 90px; border: 2px solid rgba(16,185,129,0.45); border-radius: 44px; padding: 48px 44px; background: linear-gradient(180deg, rgba(20,40,32,0.92), rgba(12,18,16,0.92)); box-shadow: 0 40px 120px rgba(16,185,129,0.18); }
+      .price-card .lbl { font-weight: 700; font-size: 40px; color: #d6d3d1; }
+      .price-card .val { font-weight: 900; font-size: 116px; letter-spacing: -0.05em; line-height: 1; margin-top: 18px; white-space: nowrap; }
+      .price-card .val small { font-size: 46px; font-weight: 700; color: #a8a29e; letter-spacing: -0.01em; }
+      .price-card .src { margin-top: 26px; font-size: 32px; }
+
+      /* S2 */
+      #s2 .pad { top: 430px; }
+      .bars { margin-top: 70px; display: flex; flex-direction: column; gap: 34px; }
+      .bar-row { display: grid; grid-template-columns: 1fr; gap: 10px; }
+      .bar-top { display: flex; justify-content: space-between; font-size: 36px; font-weight: 700; }
+      .bar-top .v { font-weight: 800; }
+      .bar-track { height: 34px; border-radius: 15px; background: rgba(255,255,255,0.06); overflow: hidden; }
+      .bar-fill { height: 100%; border-radius: 15px; background: #44403c; transform-origin: left center; }
+      .bar-row.me .bar-top { color: #6ee7b7; }
+      .bar-row.me .bar-fill { background: linear-gradient(90deg, #059669, #10b981); }
+      .bar-row.top .bar-top { color: #fbbf24; }
+      .bar-row.top .bar-fill { background: linear-gradient(90deg, #d97706, #f59e0b); }
+
+      /* S3 */
+      #s3 .pad { top: 540px; left: 150px; right: 150px; text-align: center; }
+      .big-diff { font-weight: 900; font-size: 150px; letter-spacing: -0.05em; line-height: 1; margin-top: 30px; white-space: nowrap; }
+      .per { font-size: 48px; font-weight: 700; color: #d6d3d1; margin-top: 12px; }
+      .total-box { margin-top: 90px; display: inline-block; padding: 40px 56px; border-radius: 36px; background: rgba(245,158,11,0.10); border: 2px solid rgba(245,158,11,0.45); }
+      .total-box .t1 { font-size: 40px; font-weight: 700; color: #d6d3d1; }
+      .total-box .t2 { font-size: 104px; font-weight: 900; letter-spacing: -0.04em; color: #fbbf24; margin-top: 8px; white-space: nowrap; }
+      .note { margin-top: 44px; font-size: 32px; }
+
+      /* S4 */
+      #s4 .pad { top: 380px; }
+      .phone { position: absolute; left: 610px; top: 640px; width: 400px; height: 866px; border-radius: 76px; border: 14px solid #1c1917; background: #000; overflow: hidden; box-shadow: 0 60px 140px rgba(0,0,0,0.65), 0 0 0 2px #44403c; }
+      .phone img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+      .chips { position: absolute; left: 120px; top: 700px; width: 470px; display: flex; flex-direction: column; gap: 24px; }
+      .chip { display: flex; gap: 22px; align-items: center; padding: 26px 26px; border-radius: 30px; background: rgba(28,25,23,0.94); border: 2px solid rgba(16,185,129,0.35); font-size: 34px; font-weight: 700; line-height: 1.2; }
+      .chip i { flex: none; width: 66px; height: 66px; border-radius: 20px; background: rgba(16,185,129,0.16); display: grid; place-items: center; font-style: normal; font-size: 36px; }
+
+      /* S5 */
+      #s5 { display: flex; flex-direction: column; align-items: center; text-align: center; padding-right: 60px; }
+      #s5 .logo { margin-top: 380px; width: 210px; height: 210px; }
+      #s5 .name { font-weight: 900; font-size: 84px; letter-spacing: -0.04em; margin-top: 28px; }
+      #s5 .tag { font-size: 40px; font-weight: 700; color: #d6d3d1; margin-top: 18px; }
+      .cta { margin-top: 80px; padding: 38px 70px; border-radius: 999px; background: linear-gradient(180deg, #10b981, #059669); font-weight: 900; font-size: 54px; letter-spacing: -0.02em; color: #04130d; box-shadow: 0 30px 90px rgba(16,185,129,0.45); }
+      .stores { margin-top: 56px; font-size: 38px; font-weight: 700; color: #a8a29e; }
+      .fine { margin-top: 40px; max-width: 720px; font-size: 28px; color: #78716c; text-align: center; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="20" data-width="1080" data-height="1920">
+      <div class="bg"></div>
+      <div class="grain"></div>
+
+      <svg width="0" height="0" style="position:absolute">
+        <defs>
+          <linearGradient id="pdcg" x1="220" y1="310" x2="804" y2="830" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#6EE7B7"></stop><stop offset="0.48" stop-color="#10B981"></stop><stop offset="1" stop-color="#047857"></stop>
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <div id="bug" class="bug clip" data-start="0" data-duration="15.8" data-track-index="9">
+        <svg viewBox="0 0 1024 1024" aria-hidden="true">
+          <path class="pdc-p" d="M220 462H350L405 405L467 536L548 310L618 462H804" stroke-width="58"></path>
+          <path class="pdc-p" d="M512 584V832" stroke-width="58"></path>
+          <path class="pdc-p" d="M452 584C438 680 406 760 360 830" stroke-width="48" opacity="0.88"></path>
+          <path class="pdc-p" d="M572 584C586 680 618 760 664 830" stroke-width="48" opacity="0.88"></path>
+        </svg>
+        <span>Pulso do Campo</span>
+      </div>
+
+      <!-- S1: gancho com o preço da praça -->
+      <div id="s1" class="scene clip" data-start="0" data-duration="3.8" data-track-index="1">
+        <div class="pad">
+          <div class="kicker" id="s1-kicker"></div>
+          <div class="h1" id="s1-h1"></div>
+          <div class="price-card" id="s1-card">
+            <div class="lbl" id="s1-lbl"></div>
+            <div class="val"><span id="s1-val">R$ 0,00</span> <small>/saca</small></div>
+            <div class="src muted" id="s1-src"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- S2: ranking das praças -->
+      <div id="s2" class="scene clip" data-start="3.6" data-duration="4.8" data-track-index="2">
+        <div class="pad">
+          <div class="kicker" id="s2-kicker"></div>
+          <div class="h2" id="s2-h2"></div>
+          <div class="bars" id="bars"></div>
+        </div>
+      </div>
+
+      <!-- S3: o dinheiro -->
+      <div id="s3" class="scene clip" data-start="8.2" data-duration="3.8" data-track-index="1">
+        <div class="pad">
+          <div class="kicker" id="s3-kicker"></div>
+          <div class="big-diff"><span id="s3-diff">+R$ 0,00</span></div>
+          <div class="per" id="s3-per"></div>
+          <div class="total-box">
+            <div class="t1" id="s3-t1"></div>
+            <div class="t2" id="s3-t2">R$ 0</div>
+          </div>
+          <div class="note muted" id="s3-note"></div>
+        </div>
+      </div>
+
+      <!-- S4: o app -->
+      <div id="s4" class="scene clip" data-start="11.7" data-duration="4.3" data-track-index="2">
+        <div class="pad">
+          <div class="kicker">No seu celular, todo dia</div>
+          <div class="h2">Decida com o preço da <span class="green">sua</span> praça.</div>
+        </div>
+        <div class="phone" id="phone"><img src="assets/device/cotacoes.png" alt="" /></div>
+        <div class="chips">
+          <div class="chip" id="c1"><i>📍</i><span id="c1-t"></span></div>
+          <div class="chip" id="c2"><i>🚛</i><span>Frete e valor líquido da carga</span></div>
+          <div class="chip" id="c3"><i>📸</i><span>Praga por foto com IA</span></div>
+                  </div>
+      </div>
+
+      <!-- S5: CTA -->
+      <div id="s5" class="scene clip" data-start="15.8" data-duration="4.2" data-track-index="1">
+        <svg class="logo" viewBox="0 0 1024 1024" aria-hidden="true">
+          <path class="pdc-p" d="M220 462H350L405 405L467 536L548 310L618 462H804" stroke-width="58"></path>
+          <path class="pdc-p" d="M512 584V832" stroke-width="58"></path>
+          <path class="pdc-p" d="M452 584C438 680 406 760 360 830" stroke-width="48" opacity="0.88"></path>
+          <path class="pdc-p" d="M572 584C586 680 618 760 664 830" stroke-width="48" opacity="0.88"></path>
+          <path class="pdc-p" d="M398 594C352 678 306 754 246 814" stroke-width="38" opacity="0.48"></path>
+          <path class="pdc-p" d="M626 594C672 678 718 754 778 814" stroke-width="38" opacity="0.48"></path>
+        </svg>
+        <div class="name">Pulso do Campo</div>
+        <div class="tag">O app do produtor de Mato Grosso</div>
+        <div class="cta" id="cta"></div>
+        <div class="stores" id="stores"></div>
+        <div class="fine" id="fine"></div>
+      </div>
+
+      <audio id="bgm" src="assets/bgm/bed-pulso-heygen-v22.mp3" data-start="0" data-duration="20" data-track-index="19" data-volume="0.3"></audio>
+      <audio id="sx1" src="assets/sfx/pop.mp3" data-start="0.5" data-duration="0.5" data-track-index="20" data-volume="0.35"></audio>
+      <audio id="sx2" src="assets/sfx/whoosh-short.mp3" data-start="3.6" data-duration="0.57" data-track-index="21" data-volume="0.32"></audio>
+      <audio id="sx3" src="assets/sfx/click-soft.mp3" data-start="4.6" data-duration="0.37" data-track-index="22" data-volume="0.35"></audio>
+      <audio id="sx4" src="assets/sfx/whoosh-short.mp3" data-start="8.2" data-duration="0.57" data-track-index="23" data-volume="0.32"></audio>
+      <audio id="sx5" src="assets/sfx/impact-bass-1.mp3" data-start="9.9" data-duration="1.1" data-track-index="24" data-volume="0.4"></audio>
+      <audio id="sx6" src="assets/sfx/whoosh-short.mp3" data-start="11.6" data-duration="0.57" data-track-index="25" data-volume="0.32"></audio>
+      <audio id="sx7" src="assets/sfx/riser.mp3" data-start="14.4" data-duration="1.4" data-track-index="26" data-volume="0.3"></audio>
+      <audio id="sx8" src="assets/sfx/impact-bass-1.mp3" data-start="15.8" data-duration="1.1" data-track-index="27" data-volume="0.4"></audio>
+    </div>
+
+    <script>
+      var D = {"loja": "ios", "fecho": {"cta": "Teste 14 dias grátis", "lojas": "No iPhone · App Store", "nota": "14 dias grátis no plano anual, para quem ainda não assinou."}, "produto": "soja", "produto_rotulo": "Soja", "cidade": "Sorriso", "preco": 138.2, "fonte": "IMEA", "data": "19/11/2026", "ranking": [{"cidade": "Rondonópolis", "valor": 144.0, "largura": 1.0, "eu": false, "topo": true}, {"cidade": "Alto Araguaia", "valor": 143.75, "largura": 0.9819, "eu": false, "topo": false}, {"cidade": "Alto Garças", "valor": 143.0, "largura": 0.9277, "eu": false, "topo": false}, {"cidade": "Sorriso", "valor": 138.2, "largura": 0.5809, "eu": true, "topo": false}, {"cidade": "Canarana", "valor": 135.65, "largura": 0.3967, "eu": false, "topo": false}, {"cidade": "Querência", "valor": 135.35, "largura": 0.375, "eu": false, "topo": false}], "comparacao": {"diferenca": 5.8, "titulo": "Rondonópolis paga mais", "subtitulo": "por saca do que Sorriso", "total": 58000, "sacas_rotulo": "10.000"}};
+
+      function brl(v, casas) {
+        var s = v.toFixed(casas);
+        var p = s.split(".");
+        p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return "R$ " + (casas > 0 ? p[0] + "," + p[1] : p[0]);
+      }
+      function txt(id, t) { document.getElementById(id).textContent = t; }
+
+      txt("s1-kicker", D.produto_rotulo + " · " + D.cidade);
+      txt("s1-h1", "Quanto vale a sua " + D.produto + " hoje?");
+      txt("s1-lbl", D.produto_rotulo + " em " + D.cidade);
+      txt("s1-src", "Preço disponível · " + D.fonte + " · " + D.data);
+      txt("s2-kicker", "Mato Grosso · " + D.data);
+      txt("s2-h2", "Mesma " + D.produto + ". Preços diferentes.");
+      txt("s3-kicker", D.comparacao.titulo);
+      txt("s3-per", D.comparacao.subtitulo);
+      txt("s3-t1", "Em " + D.comparacao.sacas_rotulo + " sacas, isso é");
+      txt("s3-note", "Antes do frete. O app calcula o seu líquido.");
+      txt("c1-t", "Preço de " + D.produto + " em " + D.cidade + ", todo dia");
+      txt("cta", D.fecho.cta);
+      txt("stores", D.fecho.lojas);
+      txt("fine", "Preços " + D.fonte + " de " + D.data + ". " + D.fecho.nota);
+
+      var bars = document.getElementById("bars");
+      D.ranking.forEach(function (r, i) {
+        var row = document.createElement("div");
+        row.className = "bar-row" + (r.eu ? " me" : "") + (r.topo ? " top" : "");
+        row.innerHTML = '<div class="bar-top"><span></span><span class="v"></span></div><div class="bar-track"><div class="bar-fill"></div></div>';
+        row.querySelector(".bar-top span").textContent = r.cidade + (r.eu ? "  ← você" : "");
+        row.querySelector(".v").textContent = brl(r.valor, 2);
+        row.querySelector(".bar-fill").style.width = (r.largura * 100).toFixed(1) + "%";
+        row.id = "row" + i;
+        bars.appendChild(row);
+      });
+
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+
+      // brand bug
+      tl.set("#bug", { opacity: 1 }, 0);
+      tl.to("#bug", { opacity: 0, duration: 0.3 }, 15.4);
+
+      // S1
+      tl.set("#s1", { opacity: 1 }, 0);
+      tl.fromTo("#s1-kicker", { y: 0 }, { y: -6, duration: 0.6, ease: "sine.inOut" }, 0);
+      tl.fromTo("#s1-h1", { scale: 1.04, transformOrigin: "left center" }, { scale: 1, duration: 0.7, ease: "power3.out" }, 0);
+      tl.fromTo("#s1-card", { y: 30, scale: 0.97 }, { y: 0, scale: 1, duration: 0.6, ease: "back.out(1.4)" }, 0);
+      // o preço real já aparece no quadro 0 (miniatura): nada de contagem a partir de um número falso
+      txt("s1-val", brl(D.preco, 2));
+      tl.fromTo("#s1-val", { color: "#fafaf9" }, { color: "#6ee7b7", duration: 0.3, yoyo: true, repeat: 1, ease: "sine.inOut" }, 0.6);
+      tl.fromTo(".price-card .val", { scale: 1 }, { scale: 1.05, transformOrigin: "left center", duration: 0.3, yoyo: true, repeat: 1, ease: "sine.inOut" }, 0.6);
+      
+      tl.to("#s1", { opacity: 0, x: -120, duration: 0.25, ease: "power2.in" }, 3.3);
+
+      // S2
+      tl.fromTo("#s2", { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 3.6);
+      D.ranking.forEach(function (r, i) {
+        var t = 4.1 + i * 0.22;
+        tl.fromTo("#row" + i, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, t);
+        tl.fromTo("#row" + i + " .bar-fill", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "power3.out" }, t + 0.05);
+      });
+      tl.to("#s2", { opacity: 0, y: -80, duration: 0.25, ease: "power2.in" }, 7.95);
+
+      // S3
+      tl.fromTo("#s3", { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.35, ease: "power3.out" }, 8.25);
+      var c3 = { v: 0 };
+      tl.to(c3, { v: D.comparacao.diferenca, duration: 0.8, ease: "power2.out", onUpdate: function () { txt("s3-diff", "+" + brl(c3.v, 2)); } }, 8.45);
+      tl.fromTo(".total-box", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)" }, 9.5);
+      var c4 = { v: 0 };
+      tl.to(c4, { v: D.comparacao.total, duration: 0.9, ease: "power3.out", onUpdate: function () { txt("s3-t2", brl(c4.v, 0)); } }, 9.6);
+      tl.fromTo("#s3-note", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 8.7);
+      tl.to("#s3", { opacity: 0, duration: 0.25 }, 11.62);
+
+      // S4
+      tl.fromTo("#s4", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 11.9);
+      tl.fromTo("#phone", { y: 700, rotation: 6 }, { y: 0, rotation: -3, duration: 0.8, ease: "power3.out" }, 11.65);
+      ["#c1", "#c2", "#c3"].forEach(function (s, i) {
+        tl.fromTo(s, { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 12.2 + i * 0.45);
+      });
+      tl.to("#s4", { opacity: 0, scale: 1.4, filter: "blur(8px)", duration: 0.3, ease: "power3.in" }, 15.5);
+
+      // S5
+      tl.fromTo("#s5", { opacity: 0, scale: 0.7, filter: "blur(8px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.45, ease: "power3.out" }, 15.85);
+      tl.fromTo("#cta", { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(2)" }, 16.4);
+      tl.to("#cta", { scale: 1.06, duration: 0.45, yoyo: true, repeat: 3, ease: "sine.inOut" }, 17.1);
+      tl.to({}, { duration: 20 }, 0);
+    </script>
+  </body>
+</html>
