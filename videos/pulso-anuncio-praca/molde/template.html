@@ -148,7 +148,7 @@
           <div class="kicker">No seu celular, todo dia</div>
           <div class="h2">Decida com o preço da <span class="green">sua</span> praça.</div>
         </div>
-        <div class="phone" id="phone"><img src="assets/device/diagnostico.png" alt="" /></div>
+        <div class="phone" id="phone"><img src="assets/device/cotacoes.png" alt="" /></div>
         <div class="chips">
           <div class="chip" id="c1"><i>📍</i><span id="c1-t"></span></div>
           <div class="chip" id="c2"><i>🚛</i><span>Frete e valor líquido da carga</span></div>
@@ -168,8 +168,8 @@
         </svg>
         <div class="name">Pulso do Campo</div>
         <div class="tag">O app do produtor de Mato Grosso</div>
-        <div class="cta" id="cta">Teste 14 dias grátis</div>
-        <div class="stores">Android e iPhone</div>
+        <div class="cta" id="cta"></div>
+        <div class="stores" id="stores"></div>
         <div class="fine" id="fine"></div>
       </div>
 
@@ -206,7 +206,9 @@
       txt("s3-t1", "Em " + D.comparacao.sacas_rotulo + " sacas, isso é");
       txt("s3-note", "Antes do frete. O app calcula o seu líquido.");
       txt("c1-t", "Preço de " + D.produto + " em " + D.cidade + ", todo dia");
-      txt("fine", "Preços " + D.fonte + " de " + D.data + ". Teste no plano anual.");
+      txt("cta", D.fecho.cta);
+      txt("stores", D.fecho.lojas);
+      txt("fine", "Preços " + D.fonte + " de " + D.data + ". " + D.fecho.nota);
 
       var bars = document.getElementById("bars");
       D.ranking.forEach(function (r, i) {

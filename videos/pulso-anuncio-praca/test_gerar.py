@@ -41,6 +41,31 @@ class TestGerar(unittest.TestCase):
         self.assertNotIn("/*__DADOS__*/ null", html)
         self.assertIn('"cidade": "Sinop"', html)
 
+    def test_padrao_e_ios_com_teste_de_14_dias(self):
+        d = gerar.montar_dados(BASE, "soja", "Sorriso")
+        self.assertEqual(d["loja"], "ios")
+        self.assertEqual(d["fecho"]["cta"], "Teste 14 dias grátis")
+        self.assertIn("iPhone", d["fecho"]["lojas"])
+
+    def test_android_nao_promete_teste_gratis(self):
+        d = gerar.montar_dados(BASE, "soja", "Sorriso", "android")
+        textos = " ".join(d["fecho"].values())
+        self.assertNotIn("14 dias", textos)
+        self.assertNotIn("iPhone", textos)
+        self.assertNotIn("App Store", textos)
+        self.assertIn("Google Play", d["fecho"]["lojas"])
+
+    def test_index_leva_o_fecho_da_loja(self):
+        html = gerar.escrever_index(gerar.montar_dados(BASE, "soja", "Sorriso", "android")).read_text(encoding="utf-8")
+        self.assertIn('"cta": "Baixe grátis"', html)
+        molde = (Path(gerar.__file__).parent / "molde" / "template.html").read_text(encoding="utf-8")
+        self.assertNotIn("14 dias", molde)
+        self.assertIn("D.fecho.cta", molde)
+
+    def test_cli_rejeita_loja_desconhecida(self):
+        with self.assertRaises(SystemExit):
+            gerar.main(["--dados", "x.json", "--cidade", "Sorriso", "--loja", "web"])
+
 
 if __name__ == "__main__":
     unittest.main()

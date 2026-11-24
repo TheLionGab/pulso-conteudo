@@ -5,10 +5,10 @@ Fluxo:
   1. Lê os preços de um JSON (offline) ou baixa do Supabase (--baixar).
   2. Monta os dados do vídeo (ranking, diferença, total em 10 mil sacas).
   3. Escreve index.html a partir de template.html.
-  4. Com --render, chama o HyperFrames e grava out/<produto>-<cidade>-<data>.mp4.
+  4. Com --render, chama o HyperFrames e grava out/<produto>-<cidade>-<loja>-<data>.mp4.
 
 Exemplos:
-  python3 gerar.py --dados dados/imea-2026-11-19.json --produto soja --cidade Sorriso --render
+  python3 gerar.py --dados dados/imea-2026-11-19.json --produto soja --cidade Sorriso --loja android --render
   python3 gerar.py --baixar --produto milho --todas --render
      (--baixar lê SUPABASE_URL e SUPABASE_ANON_KEY do ambiente; só faz GET)
 """
@@ -93,11 +93,30 @@ def montar_comparacao(precos: dict[str, float], cidade: str) -> dict:
     }
 
 
-def montar_dados(base: dict, produto: str, cidade: str) -> dict:
+# Fecho por loja. "14 dias grátis" só no iPhone: é o único teste medido em produção
+# (anual, 14,0 dias, 6 trials até 04/11/2026). No Android nenhum trial foi registrado até
+# 24/11/2026, então o anúncio não promete teste lá. Mudou a oferta? Mude aqui e no README.
+FECHO_POR_LOJA = {
+    "ios": {
+        "cta": "Teste 14 dias grátis",
+        "lojas": "No iPhone · App Store",
+        "nota": "14 dias grátis no plano anual, para quem ainda não assinou.",
+    },
+    "android": {
+        "cta": "Baixe grátis",
+        "lojas": "No Android · Google Play",
+        "nota": "Download grátis. Plano Pro opcional.",
+    },
+}
+
+
+def montar_dados(base: dict, produto: str, cidade: str, loja: str = "ios") -> dict:
     precos = base["produtos"][produto]
     if cidade not in precos:
         raise SystemExit(f"Cidade sem preço de {produto}: {cidade}. Opções: {', '.join(sorted(precos))}")
     return {
+        "loja": loja,
+        "fecho": FECHO_POR_LOJA[loja],
         "produto": produto,
         "produto_rotulo": ROTULOS.get(produto, produto.capitalize()),
         "cidade": cidade,
@@ -121,7 +140,7 @@ def escrever_index(dados: dict) -> Path:
 
 
 def renderizar(dados: dict, data_iso: str) -> Path:
-    saida = AQUI / "out" / f"{dados['produto']}-{slug(dados['cidade'])}-{data_iso}.mp4"
+    saida = AQUI / "out" / f"{dados['produto']}-{slug(dados['cidade'])}-{dados['loja']}-{data_iso}.mp4"
     saida.parent.mkdir(exist_ok=True)
     temp = saida.with_name(saida.stem + ".parcial.mp4")
     cmd = ["npx", "--yes", f"hyperframes@{HYPERFRAMES}", "render", str(AQUI), "-o", str(temp), "-q", "delivery", "--quiet"]
@@ -171,6 +190,7 @@ def main(argv: list[str] | None = None) -> int:
     alvo = ap.add_mutually_exclusive_group(required=True)
     alvo.add_argument("--cidade")
     alvo.add_argument("--todas", action="store_true", help="um vídeo por cidade")
+    ap.add_argument("--loja", default="ios", choices=sorted(FECHO_POR_LOJA), help="fecho do vídeo por loja")
     ap.add_argument("--render", action="store_true", help="renderiza o MP4 (senão só escreve index.html)")
     a = ap.parse_args(argv)
 
@@ -184,7 +204,7 @@ def main(argv: list[str] | None = None) -> int:
 
     cidades = sorted(base["produtos"][a.produto]) if a.todas else [a.cidade]
     for cidade in cidades:
-        dados = montar_dados(base, a.produto, cidade)
+        dados = montar_dados(base, a.produto, cidade, a.loja)
         escrever_index(dados)
         if a.render:
             print(f"ok: {renderizar(dados, base['data_publicacao'])}")
