@@ -98,7 +98,7 @@ export const Legendas: React.FC<{ t: number; timeline: Timeline }> = ({ t, timel
               const ativo = falado && t < w.e + 0.05;
               const ka = ativo ? pop(t, w.s - 0.02, { damping: 12, stiffness: 300 }) : 1;
               return (
-                <span key={i} style={{ fontFamily: FONT, fontWeight: 800, fontSize: REELS.fonte, lineHeight: 1.18, color: w.hl ? C.amber : C.text, opacity: falado ? 1 : 0.35, display: 'inline-block', transform: `scale(${ativo ? 1 + 0.06 * Math.min(1, 7 / String(w.d).length) * Math.sin(Math.PI * clamp01(ka)) : 1})` /* 28/10: palavra longa crescia 6% e comia o espaço ("emChapada") */, textShadow: w.hl && falado ? '0 0 24px rgba(245,158,11,0.55)' : 'none' }}>
+                <span key={i} style={{ fontFamily: FONT, fontWeight: 800, fontSize: REELS.fonte, lineHeight: 1.18, color: w.hl ? C.amber : C.text, opacity: falado ? 1 : 0.6 /* 24/11: 0,35 deixava a palavra futura ilegível no fundo escuro */, display: 'inline-block', transform: `scale(${ativo ? 1 + 0.06 * Math.min(1, 7 / String(w.d).length) * Math.sin(Math.PI * clamp01(ka)) : 1})` /* 28/10: palavra longa crescia 6% e comia o espaço ("emChapada") */, textShadow: w.hl && falado ? '0 0 24px rgba(245,158,11,0.55)' : 'none' }}>
                   {w.d}
                 </span>
               );
