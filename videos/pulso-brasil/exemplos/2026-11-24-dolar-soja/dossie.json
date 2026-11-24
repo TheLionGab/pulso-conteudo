@@ -1,0 +1,209 @@
+{
+  "data": "2026-11-24",
+  "episodio": "pulso-brasil-2026-11-24-dolar-soja",
+  "pesquisado_em": "24/11/2026: PTAX do Banco Central (Olinda, consulta de 24/11) e IMEA MT pelo banco do Pulso (consulta só leitura 24/11 17:44 UTC).",
+  "tese": "O dólar subiu mais que a soja em reais entre 16 e 23/11; em dólar, a saca de MT caiu. Em 24/11 a PTAX recuou.",
+  "ressalvas": [
+    "IMEA é indicador médio de MT, não preço de balcão.",
+    "Saca em dólar é conta do Pulso (preço IMEA ÷ PTAX do mesmo dia), não cotação negociada.",
+    "Diferença entre praças inclui frete e logística; não é recomendação de venda."
+  ],
+  "linhas": [
+    {
+      "id": "ptax_16",
+      "numero": 5.7324,
+      "unidade": "R$/US$",
+      "descricao": "PTAX venda 16/11",
+      "banco": null,
+      "isento_motivo": "Ponto inicial da comparação semanal (16/11); o dado mais recente da PTAX está ancorado em ptax_24.",
+      "fonte_primaria": "Banco Central, PTAX",
+      "fonte_url": "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/",
+      "data_publicacao": "16/11/2026",
+      "json_campo": {
+        "arquivo": "fontes/bcb-ptax.json",
+        "caminho": [
+          "value",
+          0,
+          "cotacaoVenda"
+        ]
+      }
+    },
+    {
+      "id": "ptax_23",
+      "numero": 5.9708,
+      "unidade": "R$/US$",
+      "descricao": "PTAX venda 23/11",
+      "banco": null,
+      "isento_motivo": "Ponto final da comparação semanal (23/11, mesma data do IMEA); o dado mais recente da PTAX está ancorado em ptax_24.",
+      "fonte_primaria": "Banco Central, PTAX",
+      "fonte_url": "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/",
+      "data_publicacao": "23/11/2026",
+      "json_campo": {
+        "arquivo": "fontes/bcb-ptax.json",
+        "caminho": [
+          "value",
+          4,
+          "cotacaoVenda"
+        ]
+      }
+    },
+    {
+      "id": "ptax_24",
+      "numero": 5.8573,
+      "unidade": "R$/US$",
+      "descricao": "PTAX venda 24/11",
+      "banco": {"serie": "ptax", "campo": "valor", "data": "2026-11-24"},
+      "fonte_primaria": "Banco Central, PTAX",
+      "fonte_url": "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/",
+      "data_publicacao": "24/11/2026",
+      "json_campo": {
+        "arquivo": "fontes/bcb-ptax.json",
+        "caminho": [
+          "value",
+          5,
+          "cotacaoVenda"
+        ]
+      }
+    },
+    {
+      "id": "soja_16",
+      "numero": 136.51,
+      "unidade": "R$/sc",
+      "descricao": "Soja IMEA média MT 16/11",
+      "banco": null,
+      "isento_motivo": "Ponto inicial da comparação semanal (16/11); o dado mais recente do IMEA MT está ancorado em soja_23.",
+      "fonte_primaria": "IMEA",
+      "fonte_url": "https://www.imea.com.br/",
+      "data_publicacao": "16/11/2026",
+      "json_campo": {
+        "arquivo": "fontes/pulso-imea.json",
+        "caminho": [
+          "imea_mt",
+          "soja",
+          "2026-11-16"
+        ]
+      }
+    },
+    {
+      "id": "soja_23",
+      "numero": 138.66,
+      "unidade": "R$/sc",
+      "descricao": "Soja IMEA média MT 23/11",
+      "banco": {"serie": "imea", "commodity": "soja", "localidade": "Mato Grosso", "indicador": "708192508838936580", "campo": "valor", "data": "2026-11-23"},
+      "fonte_primaria": "IMEA",
+      "fonte_url": "https://www.imea.com.br/",
+      "data_publicacao": "23/11/2026",
+      "json_campo": {
+        "arquivo": "fontes/pulso-imea.json",
+        "caminho": [
+          "imea_mt",
+          "soja",
+          "2026-11-23"
+        ]
+      }
+    },
+    {
+      "id": "rondonopolis",
+      "numero": 145.5,
+      "unidade": "R$/sc",
+      "descricao": "Soja Rondonópolis 23/11",
+      "banco": {"serie": "imea", "commodity": "soja", "localidade": "Rondonópolis", "indicador": "708192508838936580", "campo": "valor", "data": "2026-11-23"},
+      "fonte_primaria": "IMEA",
+      "fonte_url": "https://www.imea.com.br/",
+      "data_publicacao": "23/11/2026",
+      "json_campo": {
+        "arquivo": "fontes/pulso-imea.json",
+        "caminho": [
+          "pracas_soja_2026-11-23",
+          "Rondonópolis"
+        ]
+      }
+    },
+    {
+      "id": "querencia",
+      "numero": 135.8,
+      "unidade": "R$/sc",
+      "descricao": "Soja Querência 23/11",
+      "banco": {"serie": "imea", "commodity": "soja", "localidade": "Querência", "indicador": "708192508838936580", "campo": "valor", "data": "2026-11-23"},
+      "fonte_primaria": "IMEA",
+      "fonte_url": "https://www.imea.com.br/",
+      "data_publicacao": "23/11/2026",
+      "json_campo": {
+        "arquivo": "fontes/pulso-imea.json",
+        "caminho": [
+          "pracas_soja_2026-11-23",
+          "Querência"
+        ]
+      }
+    }
+  ],
+  "derivados": [
+    {
+      "id": "ptax_var",
+      "de": [
+        "ptax_23",
+        "ptax_16"
+      ],
+      "formula": "A / B - 1",
+      "valor": 4.16
+    },
+    {
+      "id": "soja_var",
+      "de": [
+        "soja_23",
+        "soja_16"
+      ],
+      "formula": "A / B - 1",
+      "valor": 1.57
+    },
+    {
+      "id": "saca_usd_16",
+      "de": [
+        "soja_16",
+        "ptax_16"
+      ],
+      "formula": "A / B",
+      "valor": 23.81
+    },
+    {
+      "id": "saca_usd_23",
+      "de": [
+        "soja_23",
+        "ptax_23"
+      ],
+      "formula": "A / B",
+      "valor": 23.22
+    },
+    {
+      "id": "saca_usd_var",
+      "de": [
+        "saca_usd_23",
+        "saca_usd_16"
+      ],
+      "formula": "A / B - 1",
+      "valor": -2.48
+    },
+    {
+      "id": "ptax_dia",
+      "de": [
+        "ptax_24",
+        "ptax_23"
+      ],
+      "formula": "A / B - 1",
+      "valor": -1.9
+    },
+    {
+      "id": "praca_dif",
+      "de": [
+        "rondonopolis",
+        "querencia"
+      ],
+      "formula": "A - B",
+      "valor": 9.7
+    }
+  ],
+  "fontes_sha256": {
+    "fontes/bcb-ptax.json": "8a38d3d8d1fca629ac8e8241ec127ec8b9515096a91316d462cfcb60ba0bae03",
+    "fontes/pulso-imea.json": "26f2be9b0ebd249a9ea17294b199b8331c0e770ab83561e520d3a5d67fded3f2"
+  }
+}

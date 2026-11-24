@@ -37,5 +37,12 @@ comando imprime o MP4 em `$TMPDIR/pulso-brasil.*/out/`, junto com capa, manifest
   `ELEVENLABS_API_KEY` já no ambiente, até `PULSO_ELEVEN_TETO` caracteres
   novos (padrão 2500). Nunca troca de voz.
 
+Diário na nuvem: `.github/workflows/pulso-brasil-diario.yml` roda o mesmo
+`pulso-brasil.sh` no GitHub Actions (dados por `diario/coletar_dados.py`, o
+Claude só escreve `episodio.json` e `dossie.json`, acervo do bucket privado
+`pulso-acervo` por `assets/baixar_acervo.py`, modelo sherpa-onnx do release do
+k2-fsa). `diario/agendado.sh` (Mac) usa o mesmo `coletar_dados.py`.
+`exemplos/2026-11-24-dolar-soja/` é o episódio-exemplo (forma e prova do workflow).
+
 Verificação offline: `python3 -m unittest discover -s testes -v`.
 Com as dependências Node instaladas: `cd video && npx tsc --noEmit`.

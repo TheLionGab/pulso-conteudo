@@ -1,0 +1,196 @@
+{
+  "pauta_id": "dolar-soja-saca-em-dolar-2411",
+  "tema": "Câmbio e preço da soja em Mato Grosso",
+  "titulo": "Em dólar, a saca de soja de MT caiu 2,48%",
+  "data": "2026-11-24",
+  "cabecalho": "TERÇA, 24/11/2026 · DÓLAR E SOJA",
+  "resumo": "Entre 16 e 23/11 a PTAX subiu 4,16% e a soja IMEA de MT só 1,57%. Em dólar, a saca caiu 2,48%. Hoje a PTAX recuou 1,90%.",
+  "legenda_instagram": "O dólar subiu mais que a soja. 💵🌱\n\n📈 Dólar (PTAX venda, Banco Central), dia a dia:\n16/11 R$ 5,7324 · 17/11 R$ 5,7851 · 18/11 R$ 5,8102 · 19/11 R$ 5,8889 · 23/11 R$ 5,9708\nNa semana: +4,16%. Hoje (24/11) recuou para R$ 5,8573 (−1,90%).\n\n🌱 Soja IMEA, média de Mato Grosso (R$/saca):\n16/11 136,51 · 17/11 136,90 · 18/11 137,32 · 19/11 138,14 · 23/11 138,66\nNa semana: +1,57%.\n\n💵 A saca em dólar (conta do Pulso: preço IMEA ÷ PTAX do mesmo dia):\nUS$ 23,81 em 16/11 → US$ 23,22 em 23/11 (−2,48%).\nEm reais o preço subiu 1,57%; em dólar, caiu 2,48%, porque o dólar subiu mais.\n\n📍 A praça pesa: em 23/11 a soja ia de R$ 145,50 em Rondonópolis a R$ 135,80 em Querência, R$ 9,70 de diferença dentro de MT (IMEA, 22 praças). A diferença pode incluir frete e logística.\n\n✅ Antes de vender: câmbio do dia, preço da sua praça e frete.\n\nIMEA é indicador, não preço de balcão. Não é recomendação de venda. Sem PTAX em 20/11 (feriado).\n\nCotação por praça de MT, de graça no app Pulso do Campo. Link na bio.\n\n#soja #dolar #mercadoagricola #matogrosso #agro",
+  "fontes": [
+    {
+      "nome": "Banco Central do Brasil · PTAX",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/",
+      "data": "2026-11-24"
+    },
+    {
+      "nome": "IMEA · indicador soja MT",
+      "url": "https://www.imea.com.br/",
+      "data": "2026-11-23"
+    }
+  ],
+  "numeros_chave": [
+    {
+      "numero": 4.16,
+      "fonte": "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/",
+      "data": "2026-11-23"
+    },
+    {
+      "numero": 5.8573,
+      "fonte": "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/",
+      "data": "2026-11-24"
+    },
+    {
+      "numero": 138.66,
+      "fonte": "https://www.imea.com.br/",
+      "data": "2026-11-23"
+    },
+    {
+      "numero": 23.22,
+      "fonte": "https://www.imea.com.br/",
+      "data": "2026-11-23"
+    },
+    {
+      "numero": 9.7,
+      "fonte": "https://www.imea.com.br/",
+      "data": "2026-11-23"
+    }
+  ],
+  "push": {
+    "titulo": "Em dólar, a saca de soja de MT caiu 2,48%",
+    "corpo": "Em dólar, a saca de MT caiu 2,48% na semana. Veja a sua praça."
+  },
+  "roteiro": [
+    [
+      "intro",
+      "[gancho]Em uma semana, o dólar subiu *{4,2%|quatro vírgula dois por cento}*. A soja de Mato Grosso, só *{1,6%|um vírgula seis por cento}*.",
+      0.15
+    ],
+    [
+      "serie",
+      "A PTAX foi de *{5,73|cinco e setenta e três}* no {dia 16|dia dezesseis} para *{5,97|cinco e noventa e sete}* no {dia 23|dia vinte e três}. Hoje, recuou para *{5,86|cinco e oitenta e seis}*.",
+      0.15
+    ],
+    [
+      "conta",
+      "Na conta em dólar, a saca caiu: de *{US$ 23,81|vinte e três dólares e oitenta e um}* para *{US$ 23,22|vinte e três dólares e vinte e dois}*. O dólar subiu mais que o preço em reais.",
+      0.15
+    ],
+    [
+      "pracas",
+      "E a praça pesa: *{R$ 145,50|cento e quarenta e cinco e cinquenta}* em Rondonópolis, *{R$ 135,80|cento e trinta e cinco e oitenta}* em Querência.",
+      0.15
+    ],
+    [
+      "acao",
+      "Antes de vender, confira o câmbio do dia, o preço da sua praça e o frete.",
+      0.15
+    ],
+    [
+      "fecho",
+      "Cotação por praça de Mato Grosso, de graça no app Pulso do Campo.",
+      0.5
+    ]
+  ],
+  "cenas": [
+    {
+      "id": "intro",
+      "tipo": "gancho_numero",
+      "clipe": "cena05_porto",
+      "fonte": "Banco Central (PTAX) e IMEA · 16/11 a 23/11/2026.",
+      "chamada": "16/11 → 23/11",
+      "titulo": "O dólar subiu mais que a soja",
+      "numero": "+4,2%",
+      "rotulo": "DÓLAR (PTAX) NA SEMANA",
+      "percentual": 100,
+      "pergunta": "E a soja de MT? Só +1,6%."
+    },
+    {
+      "id": "serie",
+      "tipo": "serie_linha",
+      "clipe": "cena_porto_navio",
+      "fonte": "Banco Central · PTAX venda · 16/11 a 24/11/2026.",
+      "chamada": "1 · DÓLAR PTAX",
+      "titulo": "Subiu e hoje recuou",
+      "pontos": [
+        {
+          "rotulo": "16/11",
+          "valor": 5.7324
+        },
+        {
+          "rotulo": "17/11",
+          "valor": 5.7851
+        },
+        {
+          "rotulo": "18/11",
+          "valor": 5.8102
+        },
+        {
+          "rotulo": "19/11",
+          "valor": 5.8889
+        },
+        {
+          "rotulo": "23/11",
+          "valor": 5.9708
+        },
+        {
+          "rotulo": "24/11",
+          "valor": 5.8573
+        }
+      ]
+    },
+    {
+      "id": "conta",
+      "tipo": "barras",
+      "clipe": "cena_silos_metalicos",
+      "fonte": "IMEA (média MT) ÷ PTAX do mesmo dia · conta do Pulso, não cotação negociada.",
+      "chamada": "2 · A CONTA EM DÓLAR",
+      "titulo": "Em dólar, a saca caiu",
+      "itens": [
+        {
+          "rotulo": "SACA EM REAIS",
+          "numero": "+1,57%",
+          "percentual": 60,
+          "cor": "verde"
+        },
+        {
+          "rotulo": "SACA EM DÓLAR",
+          "numero": "−2,48%",
+          "percentual": 95,
+          "cor": "ouro"
+        }
+      ],
+      "nota": "US$ 23,81 → US$ 23,22 por saca (16/11 → 23/11)"
+    },
+    {
+      "id": "pracas",
+      "tipo": "cards",
+      "clipe": "cena_rodovia_caminhoes",
+      "fonte": "IMEA · soja por praça · 23/11/2026. Maior e menor entre 22 praças.",
+      "chamada": "3 · A SUA PRAÇA",
+      "titulo": "R$ 9,70 dentro de MT",
+      "itens": [
+        {
+          "titulo": "Rondonópolis",
+          "numero": "R$ 145,50",
+          "rotulo": "SOJA · SACA · 23/11",
+          "cor": "verde"
+        },
+        {
+          "titulo": "Querência",
+          "numero": "R$ 135,80",
+          "rotulo": "SOJA · SACA · 23/11",
+          "cor": "cinza"
+        }
+      ]
+    },
+    {
+      "id": "acao",
+      "tipo": "checklist_acao",
+      "clipe": "cena_caminhao_carregando",
+      "fonte": "IMEA é indicador, não preço de balcão. Não é recomendação de venda.",
+      "chamada": "O QUE COMPARAR",
+      "titulo": "Compare três coisas",
+      "destaque": "Câmbio do dia · preço da sua praça · frete",
+      "acao": "O IMEA é média; o seu comprador pode pagar diferente.",
+      "apoio": "PTAX de hoje: R$ 5,8573 (−1,90%)."
+    },
+    {
+      "id": "fecho",
+      "tipo": "fecho_app",
+      "clipe": "cena06_graos",
+      "fonte": "Fontes: Banco Central e IMEA. Voz sintética · imagens ilustrativas.",
+      "selo": "PULSO DO CAMPO · BAIXE GRÁTIS"
+    }
+  ],
+  "cta_final": "Cotação por praça de MT,\nde graça no app."
+}

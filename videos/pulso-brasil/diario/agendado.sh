@@ -23,32 +23,33 @@ fi
 trap 'codigo=$?; [ "$codigo" -eq 0 ] || avisar "Pulso: vídeo $dia falhou" "Saída $codigo. Detalhe no fim de Studio/pulso-videos/diario/agendado.log."' EXIT
 sem_episodio() { echo "Sem episódio: $(cat sem-episodio.txt)"; avisar "Pulso: sem vídeo $dia" "$(cat sem-episodio.txt)"; exit 0; }
 cd "$pasta"
-modelo="$base/2026-11-24-instagram"
 
 if [ ! -f episodio.json ]; then
-  inicio="$(date -j -v-15d -f %F "$dia" +%m-%d-%Y)"
-  fim="$(date -j -f %F "$dia" +%m-%d-%Y)"
-  curl -fsS --retry 3 --retry-delay 30 --max-time 60 -o fontes/bcb-ptax.json \
-    "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@i,dataFinalCotacao=@f)?@i='$inicio'&@f='$fim'&\$select=cotacaoVenda,dataHoraCotacao&\$format=json"
-  python3 -I -c 'import json,sys; sys.exit(0 if json.load(open(sys.argv[1])).get("value") else 1)' fontes/bcb-ptax.json ||
-    { echo "PTAX vazia no Banco Central" > sem-episodio.txt; sem_episodio; }
-  ptax_sha="$(shasum -a 256 fontes/bcb-ptax.json)"
+  # PTAX e IMEA vêm do script (mesmo da nuvem, .github/workflows/pulso-brasil-diario.yml): o modelo só lê.
+  # A service role do app fica no Chaves e vai só ao script, nunca ao claude.
+  chave_app="${SUPABASE_SERVICE_ROLE_KEY:-$(security find-generic-password -a "$USER" -s pulso-supabase-service -w 2>/dev/null)}" ||
+    { echo "Chave do app não encontrada. Rode uma vez: pulso-video --guardar-chave-app"; exit 1; }
+  coleta=0
+  SUPABASE_SERVICE_ROLE_KEY="$chave_app" python3 -I "$raiz/diario/coletar_dados.py" "$pasta" "$dia" || coleta=$?
+  unset chave_app
+  [ "$coleta" -ne 3 ] || sem_episodio
+  [ "$coleta" -eq 0 ] || { echo "Coleta de dados falhou (saída $coleta)"; exit 1; }
 
-  # Leitura e escrita só nas pastas do molde, do dia e do episódio modelo.
-  claude -p "$(cat "$raiz/diario/pauta.md")
+  # Leitura e escrita só nas pastas do molde e do dia (o episódio modelo está em $raiz/exemplos).
+  env -u SUPABASE_SERVICE_ROLE_KEY claude -p "$(cat "$raiz/diario/pauta.md")
 
 Dia: $dia
 Pasta: $pasta
 Molde: $raiz" \
-    --add-dir "$raiz" --add-dir "$modelo" \
-    --allowedTools "Read(/$raiz/**)" "Read(/$pasta/**)" "Read(/$modelo/**)" \
+    --add-dir "$raiz" \
+    --allowedTools "Read(/$raiz/**)" "Read(/$pasta/**)" \
       "Glob(/$raiz/**)" "Glob(/$pasta/**)" "Grep(/$raiz/**)" "Grep(/$pasta/**)" \
       "Write(/$pasta/**)" "Edit(/$pasta/**)" \
-      "Bash(python3 $raiz/episodio.py:*)" "mcp__supabase-pulso-ro__execute_sql"
+      "Bash(python3 $raiz/episodio.py:*)"
 
-  # A PTAX baixada pelo script não pode ter sido mexida pelo modelo.
-  [ "$(shasum -a 256 fontes/bcb-ptax.json)" = "$ptax_sha" ] ||
-    { echo "fontes/bcb-ptax.json mudou durante o claude; episódio descartado"; mv episodio.json episodio.rejeitado.json 2>/dev/null; exit 1; }
+  # PTAX e IMEA gravados pelo script não podem ter sido mexidos pelo modelo.
+  python3 -I "$raiz/diario/coletar_dados.py" --conferir "$pasta" ||
+    { echo "fonte mudou durante o claude; episódio descartado"; mv episodio.json episodio.rejeitado.json 2>/dev/null; exit 1; }
   if [ -f sem-episodio.txt ]; then sem_episodio; fi
 fi
 

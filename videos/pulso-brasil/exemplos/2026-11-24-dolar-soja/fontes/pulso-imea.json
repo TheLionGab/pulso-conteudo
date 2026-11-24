@@ -1,0 +1,21 @@
+{
+  "consulta_em": "2026-11-24 17:44:04.406637+00",
+  "origem": "Pulso do Campo, produção, consulta só leitura (prod-investigador); dado primário IMEA",
+  "tabela": "public.mercado_quotes",
+  "imea_mt": {
+    "soja": {"2026-11-16": 136.51, "2026-11-17": 136.90, "2026-11-18": 137.32, "2026-11-19": 138.14, "2026-11-23": 138.66},
+    "milho": {"2026-11-16": 45.50, "2026-11-17": 45.12, "2026-11-18": 44.97, "2026-11-19": 44.64, "2026-11-23": 44.32}
+  },
+  "pracas_soja_2026-11-23": {
+    "Rondonópolis": 145.50, "Alto Araguaia": 145.10, "Alto Garças": 144.50, "Primavera do Leste": 143.90,
+    "Campo Verde": 143.50, "Diamantino": 138.80, "Sorriso": 138.65, "Nova Mutum": 138.50, "Sinop": 138.35,
+    "Tangará da Serra": 138.25, "Lucas do Rio Verde": 138.10, "Campo Novo do Parecis": 138.05,
+    "Ipiranga do Norte": 137.95, "Sapezal": 137.80, "Campos de Júlio": 137.60, "Nova Ubiratã": 137.45,
+    "Alta Floresta": 137.40, "Matupá": 137.25, "Porto dos Gaúchos": 136.60, "Vila Rica": 136.10,
+    "Canarana": 136.00, "Querência": 135.80
+  },
+  "sql": [
+    "select now() as consulta_em, data_publicacao, cultura, valor from public.mercado_quotes where papel='imea' and localidade='Mato Grosso' and cultura in ('soja','milho') and data_publicacao between date '2026-11-16' and date '2026-11-23' order by cultura, data_publicacao",
+    "select localidade, valor from public.mercado_quotes where papel='praca' and cultura='soja' and data_publicacao=date '2026-11-23' order by valor desc, localidade"
+  ]
+}
