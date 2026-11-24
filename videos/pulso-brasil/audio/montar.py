@@ -1,4 +1,4 @@
-"""Monta voz.wav + timeline.json a partir dos trechos do Gemini TTS (audio/segs/).
+"""Monta voz.wav + timeline.json a partir dos trechos da voz oficial (audio/segs/).
 
 Uso: montar.py <pasta_audio> <pasta_saida> [atempo] [roteiro.json]
 Mesma lógica de tempo do narracao.py original (Kokoro), trocando só a origem do áudio.

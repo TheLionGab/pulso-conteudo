@@ -4,6 +4,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 from assets.integridade import verificar
 from audio.roteiro import parse_validado
@@ -13,6 +14,8 @@ from gates.g_repeticao import checar as checar_repeticao
 from gates.g_voz import checar as checar_voz
 
 ROOT = Path(__file__).resolve().parents[1]
+CANON_VOZ = {'provedor': 'elevenlabs', 'modelo': 'eleven_v4', 'voz': 'A0vayB3pXPiiEvllfYw5',
+             'ajustes': {'stability': 0.5, 'similarity_boost': 0.75}, 'seed': 4242}
 
 
 class Molde(unittest.TestCase):
@@ -29,11 +32,21 @@ class Molde(unittest.TestCase):
             parse_validado('texto {incompleto')
 
     def test_voz(self):
-        canon = {'provedor': 'gemini', 'modelo': 'gemini-3.8-flash-tts', 'voz': 'Sadaltager'}
+        canon = dict(CANON_VOZ)
         self.assertEqual(checar_voz(canon), canon)
-        for chave in ('modelo', 'voz'):
+        for chave in ('provedor', 'modelo', 'voz', 'ajustes', 'seed'):
             with self.subTest(chave=chave), self.assertRaisesRegex(ValueError, chave):
                 checar_voz(dict(canon, **{chave: 'alternativo'}))
+
+    def test_voz_sem_chave_nao_troca_de_voz(self):
+        from audio import voz
+        exemplo = json.loads((ROOT / 'exemplos/2026-11-04-soja.json').read_text())
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.dict('os.environ', {'ELEVENLABS_API_KEY': ''}), \
+                mock.patch.object(voz, 'sintetizar') as sintetizar:
+            with self.assertRaisesRegex(ValueError, 'ELEVENLABS_API_KEY ausente'):
+                voz.gerar(exemplo, Path(tmp) / 'audio', Path(tmp) / 'cache')
+            sintetizar.assert_not_called()
+            self.assertFalse((Path(tmp) / 'audio' / 'sintese.json').exists())
 
     def test_repeticao(self):
         antigo = dict(data='2026-10-28', tema='El Niño', pauta_id='el-nino-out', titulo='Sinal no Pacífico')
@@ -109,8 +122,7 @@ class Molde(unittest.TestCase):
             roteiro = [['intro', 'Texto.', 0.1]]
             (audio / 'roteiro.json').write_text(json.dumps(roteiro))
             (Path(tmp) / 'dossie.json').write_text(json.dumps({'linhas': []}))
-            (audio / 'sintese.json').write_text(json.dumps(
-                {'provedor': 'gemini', 'modelo': 'gemini-3.8-flash-tts', 'voz': 'Sadaltager'}))
+            (audio / 'sintese.json').write_text(json.dumps(CANON_VOZ))
             r = subprocess.run([sys.executable, str(ROOT / 'audio/montar.py'), str(audio), str(Path(tmp) / 'pub'),
                                 'auto', str(audio / 'roteiro.json')], capture_output=True, text=True, cwd=ROOT)
             self.assertNotEqual(r.returncode, 0)

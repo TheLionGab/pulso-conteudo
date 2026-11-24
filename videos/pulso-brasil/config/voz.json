@@ -1,5 +1,7 @@
 {
-  "provedor": "gemini",
-  "modelo": "gemini-3.8-flash-tts",
-  "voz": "Sadaltager"
+  "provedor": "elevenlabs",
+  "modelo": "eleven_v4",
+  "voz": "A0vayB3pXPiiEvllfYw5",
+  "ajustes": {"stability": 0.5, "similarity_boost": 0.75},
+  "seed": 4242
 }
