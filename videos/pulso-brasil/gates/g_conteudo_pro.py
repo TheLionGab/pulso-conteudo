@@ -18,16 +18,23 @@ from pathlib import Path
 
 CAMPOS_OFERTA = {"n_ofertas", "valor_min", "valor_max"}
 
-GRATIS = re.compile(r"\b(gratis|gratuit[oa]s?|de graca|free|sem (?:custo|pagar|cobranca|mensalidade)|custo zero"
-                    r"|nada a pagar|nao paga|sem pagamento)\b")
+# Sempre reprova: gratuidade explícita em qualquer texto do episódio.
+GRATIS = re.compile(r"\b(gratis|gratuit[oa]s?|de graca)\b")
+# Reprova só na frase que fala do app ou do Pro: "sem custo de frete" e "free on board" são fato de mercado.
+GRATIS_APP = re.compile(r"\b(free|sem (?:custo|pagar|cobranca|mensalidade|pagamento)|custo zero|nada a pagar|nao paga)\b")
+APP = re.compile(r"\b(pulso|app|aplicativo|assin\w*|baix[ea]\w*|plano|premium|mensalidade)\b")
+# Sempre reprova: promessa direta ao espectador.
 PROMESSA = re.compile(
-    r"\bganh(?:e|ar|ando)\b(?:\s+\w+){0,2}\s+mais\b|\b(?:vai|voce vai|voce pode|ira) ganhar\b|\blucr(?:e|ar|ando|aram|ou|aria)\b|"
-    r"\bmais lucros?\b|\bmaior lucro\b|\blucro garantido\b|\baumente (?:seu|sua|o|a|os|as) (?:lucro|renda|margem|ganho)s?\b"
+    r"\bganhe mais\b|\b(?:voce vai|voce pode|vai|ira) (?:ganhar|lucrar)\b|\blucre\b|\blucro garantido\b|"
+    r"\baumente (?:seu|sua|o|a|os|as) (?:lucro|renda|margem|ganho)s?\b"
 )
-PRO = re.compile(r"\b(pro|pulso pro|assinatura|assinaturas|assinar|assine|assinante|mensalidade|premium)\b")
+# Reprova só na frase do app/Pro: "ganhando mais de dois reais por saca em Sorriso" é fato.
+PROMESSA_APP = re.compile(r"\bganh(?:ar|ando)\b(?:\s+\w+){0,2}\s+mais\b|\blucr(?:ar|ando|aria)\b|\bmais lucros?\b|\bmaior lucro\b")
+# "pro" sozinho é "para o" ("vale pro produtor"): só nomes do plano contam.
+PRO = re.compile(r"\b(pulso pro|plano pro|versao pro|assinatura|assinaturas|assinar|assine|assinante|mensalidade|premium)\b")
 PRECO_PRO = re.compile(
     r"r\$\s*\d|\b\d+(?:[.,]\d+)?\s*reais\b|\bpor mes\b|\bao mes\b|\bdesconto\b|\bpromocao\b|\bpromocional\b|"
-    r"\btempo limitado\b|\b\d+\s*dias\b|\bprazo\b|\bteste\b"
+    r"\btempo limitado\b|\b\d+\s*dias\s+(?:gratis|de teste|de acesso|liberados?)\b|\bteste\b"
 )
 
 
@@ -59,6 +66,10 @@ def falhas_de_texto(episodio):
         if m := PROMESSA.search(texto):
             falhas.append(f"{onde}: promessa de resultado ({m.group(0)!r})")
         for frase in re.split(r"[.!?;\n]+", texto):
+            if APP.search(frase) and (m := GRATIS_APP.search(frase)):
+                falhas.append(f"{onde}: promessa de gratuidade do app ({m.group(0)!r})")
+            if APP.search(frase) and (m := PROMESSA_APP.search(frase)):
+                falhas.append(f"{onde}: promessa de resultado ligada ao app ({m.group(0)!r})")
             if PRO.search(frase) and (m := PRECO_PRO.search(frase)):
                 falhas.append(f"{onde}: preço, desconto, teste ou prazo ligado ao Pro ({m.group(0)!r})")
         if re.search(r"ofertas?_compra|n_ofertas|valor_min|valor_max", texto):

@@ -64,7 +64,8 @@ class ConteudoPro(unittest.TestCase):
         self.assertEqual(sorted(a.split("'")[1] for a in achados), ['dif', 'dif2', 'oferta'])
 
     def test_barra_gratuidade_em_cada_campo_de_texto(self):
-        for texto in ('grátis', 'GRÁTIS', 'gratis', 'baixe grátis', 'de graça', 'De Graça no app', 'teste gratuito', 'gratuita', 'sem custo', 'sem pagar', 'custo zero', 'nada a pagar'):
+        for texto in ('grátis', 'GRÁTIS', 'gratis', 'baixe grátis', 'de graça', 'De Graça no app', 'teste gratuito', 'gratuita', 'sem custo no app', 'use o app sem pagar',
+                      'Pulso custo zero', 'nada a pagar no aplicativo', 'baixe free'):
             for onde in ('roteiro', 'cena', 'legenda_instagram', 'selo', 'cta_final'):
                 episodio, dossie = exemplo()
                 if onde == 'roteiro':
@@ -77,6 +78,25 @@ class ConteudoPro(unittest.TestCase):
                     episodio[onde] += f' {texto}'
                 achados = gate.falhas_de(episodio, dossie)
                 self.assertTrue(any('gratuidade' in a for a in achados), (texto, onde, achados))
+
+    def test_libera_fato_de_mercado_com_palavras_parecidas(self):
+        for fato in ('O comprador cobre o frete, sem custo de frete adicional.', 'O produtor não paga o frete até o porto.',
+                     'Sem cobrança extra no frete.', 'Boi gordo free on board.', 'Sorriso ficou ganhando mais de dois reais por saca.',
+                     'O aviso do INMET vale por 3 dias.', 'Vale pro produtor que vende no prazo.'):
+            for onde in ('roteiro', 'legenda_instagram'):
+                episodio, dossie = exemplo()
+                if onde == 'roteiro':
+                    episodio['roteiro'][1][1] = fato
+                else:
+                    episodio['legenda_instagram'] += f'\n{fato}'
+                achados = gate.falhas_de_texto(episodio)
+                self.assertEqual(achados, [], (fato, onde))
+
+    def test_barra_promessa_ligada_ao_app(self):
+        for ruim in ('Com o app você acaba ganhando mais.', 'No Pulso, mais lucro na venda.'):
+            episodio, dossie = exemplo()
+            episodio['legenda_instagram'] += f'\n{ruim}'
+            self.assertTrue(any('resultado' in a for a in gate.falhas_de_texto(episodio)), ruim)
 
     def test_barra_preco_ligado_ao_pro_mas_libera_preco_de_mercado(self):
         for ruim in ('No Pulso Pro, por R$ 29,90 por mês.', 'Assine o Pulso Pro por 30 reais.', 'Pulso Pro com desconto de lançamento.',
