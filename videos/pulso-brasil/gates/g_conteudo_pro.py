@@ -18,7 +18,8 @@ from pathlib import Path
 
 CAMPOS_OFERTA = {"n_ofertas", "valor_min", "valor_max"}
 
-GRATIS = re.compile(r"\b(gratis|gratuit[oa]s?|de graca|free)\b")
+GRATIS = re.compile(r"\b(gratis|gratuit[oa]s?|de graca|free|sem (?:custo|pagar|cobranca|mensalidade)|custo zero"
+                    r"|nada a pagar|nao paga|sem pagamento)\b")
 PROMESSA = re.compile(
     r"\bganh(?:e|ar|ando)\b(?:\s+\w+){0,2}\s+mais\b|\b(?:vai|voce vai|voce pode|ira) ganhar\b|\blucr(?:e|ar|ando|aram|ou|aria)\b|"
     r"\bmais lucros?\b|\bmaior lucro\b|\blucro garantido\b|\baumente (?:seu|sua|o|a|os|as) (?:lucro|renda|margem|ganho)s?\b"

@@ -290,14 +290,16 @@ def _ref_date(meta, observado):
 
 # O metadata inteiro (jsonb de coletor) não sai do banco: só estas chaves, como colunas m_<chave> (PostgREST: alias:coluna->>chave).
 CHAVES_META = ("series", "place", "product", "source_label", "ref_date", "observed_at_basis", "oferta_id")
-COLUNAS_META = ",".join([f"m_{k}:metadata->>{k}" for k in CHAVES_META] + ["m_fob:metadata->extra->>fob"])
+# `extra` vem como objeto (->), não texto (->>): assim `fob: null` continua distinto de `fob` ausente e é recusado.
+COLUNAS_META = ",".join([f"m_{k}:metadata->>{k}" for k in CHAVES_META] + ["m_extra:metadata->extra"])
 
 
 def com_metadata(linha):
     """Remonta o `metadata` que o resto do coletor lê a partir das colunas m_*, sem chave nula (como no jsonb)."""
     meta = {k: linha[f"m_{k}"] for k in CHAVES_META if linha.get(f"m_{k}") is not None}
-    if linha.get("m_fob") is not None:
-        meta["extra"] = {"fob": linha["m_fob"]}
+    extra = linha.get("m_extra")
+    if isinstance(extra, dict) and "fob" in extra:
+        meta["extra"] = {"fob": extra["fob"]}
     return {k: v for k, v in linha.items() if not k.startswith("m_")} | {"metadata": meta}
 
 
@@ -363,7 +365,7 @@ def coletar_referencias(ctx):
         raise SemFonte("mercado.market_observations sem referência nem oferta válida")
     sql = [
         "select o.commodity, o.observed_at, o.received_at, o.value, o.unit, "
-        + ", ".join(f"o.metadata->>'{k}' as m_{k}" for k in CHAVES_META) + ", o.metadata->'extra'->>'fob' as m_fob, "
+        + ", ".join(f"o.metadata->>'{k}' as m_{k}" for k in CHAVES_META) + ", o.metadata->'extra' as m_extra, "
         "s.source_name, l.municipality, l.uf "
         "from mercado.market_observations o join mercado.market_sources s using (source_id) "
         "left join mercado.market_locations l on l.ibge_code = o.location_ibge "
@@ -423,7 +425,7 @@ def url_so_host(valor):
 
 def _vocabulo(valor, vocab):
     texto = " ".join(str(valor or "").split()).lower()
-    return texto if texto in vocab or re.fullmatch(r"[a-z0-9]{1,30}", texto) else None
+    return texto if texto in vocab else None
 
 
 def commodities_limpas(valor):
@@ -444,7 +446,9 @@ def coletar_noticias(ctx):
     artigos = []
     for l in ctx.ler(q, "noticias"):
         titulo = str(l.get("titulo") or "").strip()
-        fonte, url = fonte_limpa(l.get("fonte")), url_so_host(l.get("url"))
+        # O campo `fonte` do banco é texto livre (pode carregar instrução); a origem passa a ser o host do link.
+        url = url_so_host(l.get("url"))
+        fonte = url.removeprefix("https://") if url else None
         if not titulo or len(titulo) > 140 or re.search(r'[<>"\\]', titulo) or not fonte or not url:
             continue  # aspas e barra quebrariam a citação literal no JSON; fonte ou link fora do padrão não viram fonte
         artigos.append({"titulo": titulo, "fonte": fonte, "url": url, "publicado_em": str(l["publicado_em"])[:10],

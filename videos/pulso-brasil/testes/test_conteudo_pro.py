@@ -64,7 +64,7 @@ class ConteudoPro(unittest.TestCase):
         self.assertEqual(sorted(a.split("'")[1] for a in achados), ['dif', 'dif2', 'oferta'])
 
     def test_barra_gratuidade_em_cada_campo_de_texto(self):
-        for texto in ('grátis', 'GRÁTIS', 'gratis', 'baixe grátis', 'de graça', 'De Graça no app', 'teste gratuito', 'gratuita'):
+        for texto in ('grátis', 'GRÁTIS', 'gratis', 'baixe grátis', 'de graça', 'De Graça no app', 'teste gratuito', 'gratuita', 'sem custo', 'sem pagar', 'custo zero', 'nada a pagar'):
             for onde in ('roteiro', 'cena', 'legenda_instagram', 'selo', 'cta_final'):
                 episodio, dossie = exemplo()
                 if onde == 'roteiro':
