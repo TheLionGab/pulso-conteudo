@@ -4,7 +4,7 @@ Uso: g3_asr.py <pasta_episodio> <pasta_modelos | modelo ggml-*.bin> [teto_wer] [
 Com pasta: sherpa-onnx (Python com sherpa_onnx). Com .bin: whisper-cli do whisper.cpp.
 Números não entram no WER (ver NUMERAIS). O pipeline roda o G3 depois da montagem,
 com o Python que tem sherpa_onnx.
-<pasta_modelos> contém sherpa-onnx-whisper-base/ (já baixado; este script não baixa nada).
+<pasta_modelos> contém sherpa-onnx-whisper-small/ (preferido) ou sherpa-onnx-whisper-base/ (já baixado; não baixa nada).
 WER por segmento, em palavras normalizadas (minúsculas, sem acento e sem pontuação), em duas
 escutas: o trecho cru (audio/segs) e, sem --so-cru, o trecho como vai ao ar (video/public/voz.wav,
 com pausas encurtadas e atempo do montar.py; a timeline tem de ser da mesma voz do sintese.json).
@@ -30,7 +30,7 @@ if os.path.isfile(caminho):
     with open(caminho, encoding="utf-8") as entrada:
         ROTEIRO = json.load(entrada)["roteiro"]
 
-# Dois motores locais, nenhum baixa nada: <MOD> pode ser a pasta com sherpa-onnx-whisper-base/
+# Dois motores locais, nenhum baixa nada: <MOD> pode ser a pasta com sherpa-onnx-whisper-{small,base}/
 # (Python com sherpa_onnx) ou um arquivo ggml-*.bin do whisper.cpp (whisper-cli no PATH).
 if os.path.isfile(MOD) and MOD.endswith(".bin"):
     WHISPER_CLI = os.environ.get("PULSO_WHISPER_CLI", "whisper-cli")
@@ -38,10 +38,14 @@ if os.path.isfile(MOD) and MOD.endswith(".bin"):
     rec = None
 else:
     import sherpa_onnx
-    M = os.path.join(MOD, "sherpa-onnx-whisper-base")
-    MODELO_ASR = "sherpa-onnx-whisper-base"
+    # small primeiro: é o mesmo tamanho do ggml-small do Mac. O base ouvia "Matugroço" e "et" (app) e
+    # reprovou na nuvem um trecho com IMEA, Rondonópolis e R$ que o small do Mac aprovaria (25/11).
+    TAM = next(t for t in ("small", "base") if os.path.isfile(os.path.join(MOD, f"sherpa-onnx-whisper-{t}", f"{t}-encoder.onnx"))
+               or t == "base")
+    M = os.path.join(MOD, f"sherpa-onnx-whisper-{TAM}")
+    MODELO_ASR = f"sherpa-onnx-whisper-{TAM}"
     rec = sherpa_onnx.OfflineRecognizer.from_whisper(
-        encoder=f"{M}/base-encoder.onnx", decoder=f"{M}/base-decoder.onnx", tokens=f"{M}/base-tokens.txt",
+        encoder=f"{M}/{TAM}-encoder.onnx", decoder=f"{M}/{TAM}-decoder.onnx", tokens=f"{M}/{TAM}-tokens.txt",
         language="pt", num_threads=4)
 
 

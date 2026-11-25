@@ -26,7 +26,7 @@ for ferramenta in ffmpeg ffprobe node git; do
 done
 # G3: sherpa-onnx (pasta de modelos) se houver; senão whisper.cpp com um ggml-*.bin local.
 modelos="${PULSO_MODELOS:-${PULSO_ACERVO:-$HOME/Library/Mobile Documents/com~apple~CloudDocs/Pulso-Videos-Arquivo}/modelos}"
-if ! { "$python" -c 'import sherpa_onnx' 2>/dev/null && test -s "$modelos/sherpa-onnx-whisper-base/base-encoder.onnx"; }; then
+if ! { "$python" -c 'import sherpa_onnx' 2>/dev/null && { test -s "$modelos/sherpa-onnx-whisper-small/small-encoder.onnx" || test -s "$modelos/sherpa-onnx-whisper-base/base-encoder.onnx"; }; }; then
   modelos="${PULSO_WHISPER_MODELO:-$HOME/Library/Application Support/superwhisper/ggml-small.bin}"
   test -s "$modelos" || { echo "G3: sem sherpa-onnx e sem modelo whisper.cpp (PULSO_WHISPER_MODELO)" >&2; exit 1; }
   command -v "${PULSO_WHISPER_CLI:-whisper-cli}" >/dev/null || { echo "G3: instale whisper-cpp (whisper-cli)" >&2; exit 1; }

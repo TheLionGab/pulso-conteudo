@@ -232,26 +232,28 @@ jobs:
         working-directory: videos/pulso-brasil/video
         run: npx remotion browser ensure
 
-      - name: Cache do modelo sherpa-onnx whisper-base
+      # small, o mesmo tamanho do ggml-small do G3 no Mac: o base reprovou a prova de 24/11 ouvindo
+      # "Matugroço", "iméia" e "et" (app); no mesmo áudio de prova, base deu WER 0,25 e small 0,00.
+      - name: Cache do modelo sherpa-onnx whisper-small
         uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
         with:
           path: ${{ env.PULSO_MODELOS }}
-          key: sherpa-whisper-base-911b2083
+          key: sherpa-whisper-small-486a46af
 
-      - name: Modelo sherpa-onnx whisper-base (release público do k2-fsa)
+      - name: Modelo sherpa-onnx whisper-small (release público do k2-fsa)
         run: |
           set -euo pipefail
-          m="$PULSO_MODELOS/sherpa-onnx-whisper-base"
-          if [ -s "$m/base-encoder.onnx" ] && [ -s "$m/base-decoder.onnx" ] && [ -s "$m/base-tokens.txt" ]; then
+          m="$PULSO_MODELOS/sherpa-onnx-whisper-small"
+          if [ -s "$m/small-encoder.onnx" ] && [ -s "$m/small-decoder.onnx" ] && [ -s "$m/small-tokens.txt" ]; then
             echo "modelo no cache"; exit 0
           fi
           mkdir -p "$PULSO_MODELOS"
-          curl -fsSL --retry 3 --retry-delay 10 -o "$RUNNER_TEMP/whisper-base.tar.bz2" \
-            https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-whisper-base.tar.bz2
-          echo "911b2083efd7c0dca2ac3b358b75222660dc09fb716d64fbfc417ba6c99ff3de  $RUNNER_TEMP/whisper-base.tar.bz2" | sha256sum -c -
-          tar -xjf "$RUNNER_TEMP/whisper-base.tar.bz2" -C "$PULSO_MODELOS" --exclude='*/test_wavs'
-          rm -f "$RUNNER_TEMP/whisper-base.tar.bz2"
-          test -s "$m/base-encoder.onnx" && test -s "$m/base-decoder.onnx" && test -s "$m/base-tokens.txt"
+          curl -fsSL --retry 3 --retry-delay 10 -o "$RUNNER_TEMP/whisper-small.tar.bz2" \
+            https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-whisper-small.tar.bz2
+          echo "486a46afbb7ba798507190ffe02fea2dd726049af212e774537efac6afb210a6  $RUNNER_TEMP/whisper-small.tar.bz2" | sha256sum -c -
+          tar -xjf "$RUNNER_TEMP/whisper-small.tar.bz2" -C "$PULSO_MODELOS" --exclude='*/test_wavs' --exclude='*.int8.onnx'
+          rm -f "$RUNNER_TEMP/whisper-small.tar.bz2"
+          test -s "$m/small-encoder.onnx" && test -s "$m/small-decoder.onnx" && test -s "$m/small-tokens.txt"
 
       - name: Cache do acervo (chave = manifest.json)
         uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0

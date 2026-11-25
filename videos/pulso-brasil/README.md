@@ -21,7 +21,7 @@ comando imprime o MP4 em `$TMPDIR/pulso-brasil.*/out/`, junto com capa, manifest
 - Instale FFmpeg, Node e as dependências em `video/` (`npm install` para gerar
   o lock se ausente; depois `npm ci`). Use Python ≥3.11 com `numpy`,
   `soundfile`; `PULSO_PYTHON` pode apontar ao ambiente virtual. O G3 usa
-  `sherpa-onnx` com `PULSO_MODELOS` (pasta com `sherpa-onnx-whisper-base/`)
+  `sherpa-onnx` com `PULSO_MODELOS` (pasta com `sherpa-onnx-whisper-small/`, preferido, ou `sherpa-onnx-whisper-base/`)
   ou, sem ele, `whisper-cli` com `PULSO_WHISPER_MODELO` (um `ggml-*.bin`).
   `PULSO_CHROME` aponta um chrome-headless-shell já baixado. O G5 usa a
   `origin/main` **local** do checkout `PULSO_APP_REPO` (padrão:
