@@ -22,7 +22,10 @@ CAMPOS_OFERTA = {"n_ofertas", "valor_min", "valor_max"}
 GRATIS = re.compile(r"\b(gratis|gratuit[oa]s?|de graca)\b")
 # Reprova só na frase que fala do app ou do Pro: "sem custo de frete" e "free on board" são fato de mercado.
 GRATIS_APP = re.compile(r"\b(free|sem (?:custo|pagar|cobranca|mensalidade|pagamento)|custo zero|nada a pagar|nao paga)\b")
-APP = re.compile(r"\b(pulso|app|aplicativo|assin\w*|baix[ea]\w*|plano|premium|mensalidade)\b")
+# "Pro" sozinho é o plano quando abre a frase ou vem depois de artigo/verbo ("no Pro", "teste o Pro");
+# "vale pro produtor" (pro = para o) não casa.
+PRO_SOLO = r"(?:^\s*|\b(?:o|no|do|ao|pelo|com o|teste o|assine o|experimente o|use o|abra o)\s+)pro\b"
+APP = re.compile(r"\b(pulso|app|aplicativo|assin\w*|baixe|baixar|plano|premium|mensalidade)\b|" + PRO_SOLO)
 # Sempre reprova: promessa direta ao espectador.
 PROMESSA = re.compile(
     r"\bganhe mais\b|\b(?:voce vai|voce pode|vai|ira) (?:ganhar|lucrar)\b|\blucre\b|\blucro garantido\b|"
@@ -31,7 +34,8 @@ PROMESSA = re.compile(
 # Reprova só na frase do app/Pro: "ganhando mais de dois reais por saca em Sorriso" é fato.
 PROMESSA_APP = re.compile(r"\bganh(?:ar|ando)\b(?:\s+\w+){0,2}\s+mais\b|\blucr(?:ar|ando|aria)\b|\bmais lucros?\b|\bmaior lucro\b")
 # "pro" sozinho é "para o" ("vale pro produtor"): só nomes do plano contam.
-PRO = re.compile(r"\b(pulso pro|plano pro|versao pro|assinatura|assinaturas|assinar|assine|assinante|mensalidade|premium)\b")
+PRO = re.compile(r"\b(pulso pro|plano pro|versao pro|assinatura|assinaturas|assinar|assine|assinante|mensalidade|premium)\b|"
+                 + PRO_SOLO)
 PRECO_PRO = re.compile(
     r"r\$\s*\d|\b\d+(?:[.,]\d+)?\s*reais\b|\bpor mes\b|\bao mes\b|\bdesconto\b|\bpromocao\b|\bpromocional\b|"
     r"\btempo limitado\b|\b\d+\s*dias\s+(?:gratis|de teste|de acesso|liberados?)\b|\bteste\b"
@@ -60,12 +64,14 @@ def falhas_de_texto(episodio):
     falhas = []
     for onde, bruto in textos(episodio):
         # *{exibe|fala}*: as duas formas contam
-        texto = norm(re.sub(r"\*\{([^|}]*)\|([^}]*)\}\*", r"\1 \2", bruto))
+        marcado = re.sub(r"\*\{([^|}]*)\|([^}]*)\}\*", r"\1 \2", bruto)
+        texto = norm(marcado)
         if m := GRATIS.search(texto):
             falhas.append(f"{onde}: promessa de gratuidade ({m.group(0)!r})")
         if m := PROMESSA.search(texto):
             falhas.append(f"{onde}: promessa de resultado ({m.group(0)!r})")
-        for frase in re.split(r"[.!?;\n]+", texto):
+        # Frases cortadas antes do norm (que junta as linhas): cada linha da legenda é uma frase.
+        for frase in (norm(f) for f in re.split(r"[.!?;\n]+", marcado)):
             if APP.search(frase) and (m := GRATIS_APP.search(frase)):
                 falhas.append(f"{onde}: promessa de gratuidade do app ({m.group(0)!r})")
             if APP.search(frase) and (m := PROMESSA_APP.search(frase)):

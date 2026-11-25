@@ -92,6 +92,13 @@ class ConteudoPro(unittest.TestCase):
                 achados = gate.falhas_de_texto(episodio)
                 self.assertEqual(achados, [], (fato, onde))
 
+    def test_barra_pro_sozinho_com_preco_ou_gratuidade(self):
+        for ruim in ('No Pro, R$ 29,90 por mês.', 'Experimente o Pro sem custo.', 'Teste o Pro sem pagar.',
+                     'O Pro libera por 7 dias de teste.', 'Pro com desconto.'):
+            episodio, dossie = exemplo()
+            episodio['legenda_instagram'] += f'\n{ruim}'
+            self.assertNotEqual(gate.falhas_de_texto(episodio), [], ruim)
+
     def test_barra_promessa_ligada_ao_app(self):
         for ruim in ('Com o app você acaba ganhando mais.', 'No Pulso, mais lucro na venda.'):
             episodio, dossie = exemplo()
