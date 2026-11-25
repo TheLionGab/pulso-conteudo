@@ -9,9 +9,9 @@ name: Pulso Brasil diário
 # Gatilhos (sem pull_request: segredo de produção e crédito de voz não rodam por push de branch):
 #   workflow_dispatch  dia (AAAA-MM-DD, padrão hoje em Cuiabá), publicar (padrão false), exemplo
 #                      (padrão false; usa videos/pulso-brasil/exemplos/2026-11-24-dolar-soja, nunca publica).
-#   schedule           DESLIGADO por enquanto (bloco comentado abaixo). Quem liga é a sessão dona, depois
-#                      da prova por dispatch na main. Mesmo ligado, o agendado só publica com a variável do
-#                      repositório PULSO_PUBLICAR_AGENDADO=true; sem ela gera, confere e guarda o artifact.
+#   schedule           todo dia às 13:30 em Cuiabá (pedido do dono: "todos os dias"). O agendado só publica
+#                      com a variável do repositório PULSO_PUBLICAR_AGENDADO=true; sem ela gera, confere e
+#                      guarda o artifact.
 #
 # Tudo só roda na main (github.ref) e os jobs com segredo de produção usam o ambiente `producao`
 # (deployment branch policy: só main). Idempotência: grupo de concorrência único, historico.jsonl com o dia
@@ -46,8 +46,8 @@ on:
         required: false
         type: boolean
         default: false
-  # schedule:   # DESLIGADO: a sessão dona liga depois da prova (remova o "# " das duas linhas).
-  #   - cron: '30 17 * * 1-5'   # 17:30 UTC = 13:30 em Cuiabá, segunda a sexta
+  schedule:
+    - cron: '30 17 * * *'   # 17:30 UTC = 13:30 em Cuiabá, todos os dias
 
 permissions:
   contents: read
