@@ -19,8 +19,22 @@ def chaves(episodio):
     }
 
 
+ULTIMOS = 5  # o assunto de um dos últimos 5 episódios não volta, mesmo com título e id novos
+
+
+def familia(pauta_id):
+    """Assunto do pauta_id sem o sufixo de data (soja-pracas-mt-2511 -> soja-pracas-mt)."""
+    return re.sub(r"-(?:\d{4}|\d{2}-\d{2})$", "", normalizar(str(pauta_id or "")).replace(" ", "-"))
+
+
 def checar(episodio, publicados):
     data = date.fromisoformat(episodio["data"])
+    publicados = list(publicados)
+    recentes = sorted((p for p in publicados if date.fromisoformat(p["data"]) <= data), key=lambda p: p["data"], reverse=True)[:ULTIMOS]
+    mia = familia(episodio.get("pauta_id"))
+    for publicado in recentes:
+        if mia and mia == familia(publicado.get("pauta_id")):
+            raise ValueError(f"g_repeticao: assunto {mia!r} já saiu em {publicado['data']} (um dos últimos {ULTIMOS} episódios)")
     for publicado in publicados:
         dias = (data - date.fromisoformat(publicado["data"])).days
         if not 0 <= dias <= 7:

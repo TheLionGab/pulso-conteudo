@@ -9,8 +9,18 @@ Grava em <pasta_do_dia>/fontes/:
   pulso-imea.json   IMEA soja e milho de MT na semana do último pregão, e as praças da soja nesse dia
                     (public.mercado_quotes do Supabase do Pulso, REST só leitura, service role).
   pulso-imea.sql    A mesma leitura em SQL e as URLs REST usadas, para quem revisar refazer.
-E a trava (--trava, FORA da pasta do dia, onde o modelo não escreve): sha256 dos três arquivos. O
---conferir reprova se algum mudou ou sumiu, ou se fontes/ ganhou qualquer arquivo (nem link simbólico).
+Fontes OPCIONAIS (mesmo banco do app e INMET), cada uma com o JSON e a consulta registrada ao lado. Ausente,
+vazia ou com erro, a fonte é pulada e a coleta segue; só PTAX e IMEA derrubam a coleta:
+  pulso-mercado.json/.sql      public.mercado_quotes do último pregão: todas as culturas e papéis (imea, praça),
+                               com o pregão anterior e o resumo das praças (média, maior, menor, distância à média).
+  pulso-referencias.json/.sql  mercado.market_observations PUBLIC_PRICE: referências (DERAL e afins) e a faixa
+                               agregada das ofertas de compra (sem nome de comprador nem id de oferta).
+  pulso-insumos.json/.sql      cotacoes.v_insumos_precos_vigentes (insumos, Conab MT) com a variação.
+  pulso-noticias.json/.sql     noticias.artigos das últimas 72 h (manchetes).
+  inmet-avisos.json/.consulta.txt  avisos ativos do INMET com município de MT (API pública do INMET).
+E a trava (--trava, FORA da pasta do dia, onde o modelo não escreve): sha256 dos arquivos obrigatórios e dos
+opcionais que foram gravados. O --conferir reprova se algum mudou ou sumiu, ou se fontes/ ganhou qualquer
+arquivo (nem link simbólico).
 
 Ambiente: SUPABASE_SERVICE_ROLE_KEY (obrigatória; nunca impressa nem gravada) e SUPABASE_URL
 (padrão: projeto do Pulso). Mac (agendado.sh) e nuvem (pulso-brasil-diario.yml) usam este mesmo caminho.
@@ -20,6 +30,7 @@ import datetime as dt
 import hashlib
 import json
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -33,10 +44,28 @@ PTAX = ("https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/"
 IDADE_MAX_DIAS = 4  # mesma janela do app (scripts/pulso-news/diario/constantes.mjs): sem dado velho
 JANELA_DIAS = 7  # semana do último pregão, inclusive (ex.: 16 a 23/11)
 ARQUIVOS = ("fontes/bcb-ptax.json", "fontes/pulso-imea.json", "fontes/pulso-imea.sql")
+# Fonte opcional: nome -> (dados, consulta registrada). Os dois arquivos existem juntos ou nenhum existe.
+OPCIONAIS = {
+    "mercado": ("fontes/pulso-mercado.json", "fontes/pulso-mercado.sql"),
+    "referencias": ("fontes/pulso-referencias.json", "fontes/pulso-referencias.sql"),
+    "insumos": ("fontes/pulso-insumos.json", "fontes/pulso-insumos.sql"),
+    "noticias": ("fontes/pulso-noticias.json", "fontes/pulso-noticias.sql"),
+    "inmet": ("fontes/inmet-avisos.json", "fontes/inmet-avisos.consulta.txt"),
+}
+ARQUIVOS_OPCIONAIS = tuple(a for par in OPCIONAIS.values() for a in par)
+CONHECIDOS = frozenset(ARQUIVOS) | frozenset(ARQUIVOS_OPCIONAIS)
+LIMITE_LINHAS = 1000  # teto padrão do PostgREST do Supabase: resposta no teto pode estar cortada
+URL_INMET = "https://apiprevmet3.inmet.gov.br/avisos/ativos"
+TOTAL_MUNICIPIOS_MT = 142
+SEVERIDADE_INMET = {6: "Perigo potencial", 7: "Perigo", 8: "Grande perigo"}
 
 
 class SemEpisodio(Exception):
     pass
+
+
+class SemFonte(Exception):
+    """Fonte opcional sem dado utilizável: a coleta segue sem ela."""
 
 
 def sha256(caminho):
@@ -126,6 +155,308 @@ def coletar_imea(dia, base, chave, pasta):
         + "\n".join(f"-- {r}" for r in rest) + "\n", encoding="utf-8")
 
 
+class Contexto:
+    """O que cada fonte opcional precisa: o dia, a base do Supabase e a chave (que nunca sai daqui)."""
+
+    def __init__(self, dia, base, chave):
+        self.dia, self.base, self.chave = dia, base, chave
+
+    def dias_antes(self, n):
+        return (dt.date.fromisoformat(self.dia) - dt.timedelta(days=n)).isoformat()
+
+    def ler(self, consulta, schema=None):
+        """GET REST (PostgREST) só leitura; schema diferente de public vai em Accept-Profile."""
+        cab = {"apikey": self.chave, "Authorization": f"Bearer {self.chave}", "Accept": "application/json"}
+        if schema:
+            cab["Accept-Profile"] = schema
+        # Fonte opcional não merece 3 tentativas de 30 s: 2 de 5 s.
+        linhas = json.loads(baixar(f"{self.base}/rest/v1/{consulta}", cab, tentativas=2, espera=5), parse_float=float)
+        if not isinstance(linhas, list):
+            raise RuntimeError(f"resposta inesperada em {consulta.split('?')[0]}")
+        return linhas
+
+    def ler_completo(self, consulta, schema=None):
+        """Como ler(), mas resposta no teto de linhas é recusada (pode estar cortada)."""
+        linhas = self.ler(consulta, schema)
+        if len(linhas) >= LIMITE_LINHAS:
+            raise RuntimeError(f"{consulta.split('?')[0]}: {len(linhas)} linhas, no teto do PostgREST; pode estar cortada")
+        return linhas
+
+
+def texto_consulta(titulo, sqls, rests):
+    corpo = f"-- {titulo} (coletar_dados.py, só leitura). Refazer = rodar as consultas.\n" + ";\n".join(sqls) + ";\n"
+    return corpo + "\n-- Mesma leitura por REST (PostgREST):\n" + "\n".join(f"-- {r}" for r in rests) + "\n"
+
+
+def agora_utc():
+    return dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M:%S+00")
+
+
+def coletar_mercado(ctx):
+    """Todas as culturas e papéis de public.mercado_quotes no último pregão, com o pregão anterior."""
+    filtro = "papel=in.(imea,praca)"
+    tab = "mercado_quotes"
+    ultimo = ctx.ler(f"{tab}?select=data_publicacao&{filtro}&data_publicacao=lte.{ctx.dia}&order=data_publicacao.desc&limit=1")
+    if not ultimo:
+        raise SemFonte("mercado_quotes sem pregão até o dia")
+    data = str(ultimo[0]["data_publicacao"])[:10]
+    if (dt.date.fromisoformat(ctx.dia) - dt.date.fromisoformat(data)).days > IDADE_MAX_DIAS:
+        raise SemFonte(f"mercado_quotes de {data} é velho demais para {ctx.dia}")
+    colunas = "cultura,papel,localidade,source,valor,unidade,data_publicacao"
+    q_dia = f"{tab}?select={colunas}&{filtro}&data_publicacao=eq.{data}&order=cultura.asc,papel.asc,localidade.asc"
+    linhas = ctx.ler_completo(f"{q_dia}&limit={LIMITE_LINHAS}")
+    q_ant = f"select=data_publicacao&{filtro}&data_publicacao=lt.{data}&order=data_publicacao.desc&limit=1"
+    anterior = ctx.ler(f"{tab}?{q_ant}")
+    data_ant, valores_ant = None, {}
+    if anterior:
+        data_ant = str(anterior[0]["data_publicacao"])[:10]
+        for l in ctx.ler_completo(f"{tab}?select={colunas}&{filtro}&data_publicacao=eq.{data_ant}&limit={LIMITE_LINHAS}"):
+            valores_ant[(l["cultura"], l["papel"], l["localidade"], l.get("source") or "sem-fonte")] = float(l["valor"])
+
+    mercado = {}
+    for l in linhas:
+        cultura, papel, local, fonte = str(l["cultura"]), str(l["papel"]), str(l["localidade"]), str(l.get("source") or "sem-fonte")
+        reg = {"valor": float(l["valor"]), "unidade": str(l["unidade"]), "data": data}
+        ant = valores_ant.get((cultura, papel, local, fonte))
+        if ant is not None:
+            reg["anterior"] = {"data": data_ant, "valor": ant}
+        mercado.setdefault(cultura, {}).setdefault(papel, {}).setdefault(local, {})[fonte] = reg
+    if not mercado:
+        raise SemFonte(f"mercado_quotes sem linhas em {data}")
+
+    resumo = {}
+    for cultura, papeis in mercado.items():
+        grupos = {}
+        for local, fontes in papeis.get("praca", {}).items():
+            for fonte, reg in fontes.items():
+                grupos.setdefault((reg["unidade"], fonte), []).append((local, reg))
+        if not grupos:
+            continue
+        (unidade, fonte), membros = max(grupos.items(), key=lambda kv: (len(kv[1]), kv[0]))
+        if len(membros) < 3:
+            continue
+        media = round(sum(r["valor"] for _, r in membros) / len(membros), 2)
+        ordem = sorted(membros, key=lambda m: (-m[1]["valor"], m[0]))
+        for local, reg in membros:
+            reg["distancia_media"] = round(reg["valor"] - media, 2)
+        resumo[cultura] = {
+            "unidade": unidade, "fonte": fonte, "n_pracas": len(membros), "media": media,
+            "maior": {"localidade": ordem[0][0], "valor": ordem[0][1]["valor"]},
+            "menor": {"localidade": ordem[-1][0], "valor": ordem[-1][1]["valor"]},
+            "amplitude": round(ordem[0][1]["valor"] - ordem[-1][1]["valor"], 2),
+        }
+
+    sql = [
+        f"select cultura, papel, localidade, source, valor, unidade, data_publicacao from public.{tab} "
+        f"where papel in ('imea','praca') and data_publicacao = date '{data}' order by cultura, papel, localidade",
+    ]
+    if data_ant:
+        sql.append(f"select cultura, papel, localidade, source, valor from public.{tab} "
+                   f"where papel in ('imea','praca') and data_publicacao = date '{data_ant}'")
+    dados = {
+        "consulta_em": agora_utc(),
+        "origem": "Pulso do Campo, produção, leitura só leitura por REST (coletar_dados.py); dado primário IMEA e praças do app",
+        "tabela": f"public.{tab}", "data": data, "data_anterior": data_ant,
+        "mercado": mercado, "resumo_pracas": resumo, "sql": sql,
+    }
+    return dados, texto_consulta("public.mercado_quotes, último pregão", sql, [f"GET {ctx.base}/rest/v1/{q_dia}&limit={LIMITE_LINHAS}"])
+
+
+def _ref_date(meta, observado):
+    """metadata.ref_date (AAAA-MM-DD válida), como mercado.observation_ref_date; sem ela a linha não vale."""
+    texto = meta.get("ref_date")
+    if not isinstance(texto, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", texto):
+        return None
+    try:
+        dia = dt.date.fromisoformat(texto)
+        local = (dt.datetime.fromisoformat(observado) - dt.timedelta(hours=4)).date()  # Cuiabá, UTC-4
+    except ValueError:
+        return None
+    if meta.get("observed_at_basis") == "collection" and dia > local:
+        return None
+    return texto
+
+
+def coletar_referencias(ctx):
+    """DERAL e afins (referências) e a faixa das ofertas de compra, de mercado.market_observations."""
+    colunas = ("commodity,observed_at,received_at,value,unit,metadata,"
+               "market_sources!inner(source_name,can_be_named,active,default_trust_class),market_locations(municipality,uf)")
+    base = (f"market_observations?select={colunas}&kind=eq.PUBLIC_PRICE&evidence_id=not.is.null&value=gt.0"
+            "&market_sources.active=is.true")
+    q_ofertas = f"{base}&metadata->>series=eq.gd_oferta&observed_at=gte.{ctx.dias_antes(4)}T00:00:00Z&order=observed_at.desc&limit={LIMITE_LINHAS}"
+    q_outras = f"{base}&metadata->>series=neq.gd_oferta&observed_at=gte.{ctx.dias_antes(21)}T00:00:00Z&order=observed_at.desc&limit={LIMITE_LINHAS}"
+    ofertas_brutas = ctx.ler(q_ofertas, "mercado")
+    outras_brutas = ctx.ler(q_outras, "mercado")
+    truncado = len(ofertas_brutas) >= LIMITE_LINHAS or len(outras_brutas) >= LIMITE_LINHAS
+
+    def valida(l):
+        """Mesmos filtros de public.referencia_cultura_fora_mt: fonte ativa e nomeável, BENCHMARK ou DERIVED, sem FOB."""
+        fonte, meta = l.get("market_sources") or {}, l.get("metadata") or {}
+        extra = meta.get("extra") if isinstance(meta.get("extra"), dict) else {}
+        return (fonte.get("active") is True and fonte.get("can_be_named") is True
+                and fonte.get("default_trust_class") in ("BENCHMARK", "DERIVED")
+                and ("fob" not in extra or str(extra["fob"]).lower() == "true")
+                and l.get("commodity") and float(l["value"]) > 0)
+
+    def praca(l, preferir_local):
+        meta, loc = l.get("metadata") or {}, l.get("market_locations") or {}
+        cidade = f"{loc['municipality']}/{loc['uf']}" if loc.get("municipality") and loc.get("uf") else None
+        place = str(meta.get("place") or "").strip() or None
+        return (cidade or place) if preferir_local else (place or cidade)
+
+    ref, ofertas = {}, {}
+    for l in sorted((x for x in outras_brutas if valida(x)), key=lambda x: (x["observed_at"], x["received_at"]), reverse=True):
+        meta = l["metadata"]
+        dia_ref, lugar = _ref_date(meta, l["observed_at"]), praca(l, False)
+        if not dia_ref or not lugar:
+            continue
+        serie = str(meta.get("series") or "sem-serie")
+        alvo = ref.setdefault(l["commodity"], {}).setdefault(lugar, {})
+        chave = f"{serie}|{meta.get('product') or ''}|{l['unit']}"
+        if chave in alvo and alvo[chave]["data"] >= dia_ref:
+            continue
+        alvo[chave] = {"serie": serie, "produto": meta.get("product") or None, "valor": float(l["value"]), "unidade": l["unit"],
+                       "data": dia_ref, "fonte": str(meta.get("source_label") or l["market_sources"].get("source_name") or ""),
+                       "uf": (l.get("market_locations") or {}).get("uf")}
+
+    por_oferta = {}  # (commodity, praça, unidade) -> {dia: {oferta_id: (instante, valor)}}
+    for l in (x for x in ofertas_brutas if valida(x)):
+        meta = l["metadata"]
+        dia_ref, lugar, oid = _ref_date(meta, l["observed_at"]), praca(l, True), str(meta.get("oferta_id") or "").strip()
+        if not dia_ref or not lugar or not oid:
+            continue  # sem oferta_id não dá para contar oferta, só linha repetida do coletor
+        dias = por_oferta.setdefault((l["commodity"], lugar, l["unit"]), {})
+        atual = dias.setdefault(dia_ref, {}).get(oid)
+        if atual is None or (l["observed_at"], l["received_at"]) > atual[0]:
+            dias[dia_ref][oid] = ((l["observed_at"], l["received_at"]), float(l["value"]))
+    for (cultura, lugar, unidade), dias in sorted(por_oferta.items()):
+        recente = max(dias)
+        valores = [v for _, v in dias[recente].values()]
+        uf = lugar.rsplit("/", 1)[-1] if re.fullmatch(r".+/[A-Z]{2}", lugar) else None
+        ofertas.setdefault(cultura, {})[lugar] = {"unidade": unidade, "data": recente, "n_ofertas": len(valores),
+                                                  "valor_min": min(valores), "valor_max": max(valores), "uf": uf}
+    if not ref and not ofertas:
+        raise SemFonte("mercado.market_observations sem referência nem oferta válida")
+    sql = [
+        "select o.commodity, o.observed_at, o.value, o.unit, o.metadata, s.source_name, l.municipality, l.uf "
+        "from mercado.market_observations o join mercado.market_sources s using (source_id) "
+        "left join mercado.market_locations l on l.ibge_code = o.location_ibge "
+        "where o.kind = 'PUBLIC_PRICE' and o.evidence_id is not null and o.value > 0 and s.active "
+        f"and o.metadata->>'series' = 'gd_oferta' and o.observed_at >= date '{ctx.dias_antes(4)}'",
+        "-- idem com o.metadata->>'series' <> 'gd_oferta' e janela desde " + ctx.dias_antes(21),
+    ]
+    dados = {
+        "consulta_em": agora_utc(),
+        "origem": "Pulso do Campo, produção, mercado.market_observations (PUBLIC_PRICE), leitura só leitura por REST",
+        "tabela": "mercado.market_observations",
+        "aviso": "ofertas_compra é oferta de compra de um comprador, não preço de mercado; sem nome de comprador",
+        "truncado": truncado, "referencias": ref, "ofertas_compra": ofertas, "sql": sql,
+    }
+    return dados, texto_consulta("mercado.market_observations", sql, [f"GET (Accept-Profile: mercado) {ctx.base}/rest/v1/{q_ofertas}",
+                                                                      f"GET (Accept-Profile: mercado) {ctx.base}/rest/v1/{q_outras}"])
+
+
+def coletar_insumos(ctx):
+    """Preço vigente de insumos (Conab MT e afins) com a variação já calculada pelo app."""
+    colunas = "slug,nome,categoria,localidade,valor,unidade,variacao_pct,fonte,vigente_em"
+    q = (f"v_insumos_precos_vigentes?select={colunas}&vigente_em=gte.{ctx.dias_antes(60)}"
+         f"&order=vigente_em.desc,slug.asc&limit={LIMITE_LINHAS}")
+    linhas = ctx.ler_completo(q, "cotacoes")
+    insumos = {}
+    for l in linhas:
+        reg = {"nome": str(l["nome"]), "categoria": l.get("categoria"), "valor": float(l["valor"]), "unidade": str(l["unidade"]),
+               "variacao_pct": None if l.get("variacao_pct") is None else float(l["variacao_pct"]),
+               "fonte": l.get("fonte"), "vigente_em": str(l["vigente_em"])[:10]}
+        insumos.setdefault(str(l["slug"]), {}).setdefault(str(l["localidade"]), reg)  # 1ª = a mais recente
+    if not insumos:
+        raise SemFonte("sem insumo vigente nos últimos 60 dias")
+    sql = [f"select {colunas} from cotacoes.v_insumos_precos_vigentes where vigente_em >= date '{ctx.dias_antes(60)}' "
+           "order by vigente_em desc, slug"]
+    dados = {"consulta_em": agora_utc(), "origem": "Pulso do Campo, cotacoes.v_insumos_precos_vigentes (Conab MT e afins), só leitura por REST",
+             "tabela": "cotacoes.v_insumos_precos_vigentes", "insumos": insumos, "sql": sql}
+    return dados, texto_consulta("cotacoes.v_insumos_precos_vigentes", sql, [f"GET (Accept-Profile: cotacoes) {ctx.base}/rest/v1/{q}"])
+
+
+def coletar_noticias(ctx):
+    """Manchetes das últimas 72 h de noticias.artigos (só título, fonte, link e data)."""
+    q = (f"artigos?select=titulo,fonte,url,publicado_em,commodities,regiao&publicado_em=gte.{ctx.dias_antes(3)}T00:00:00Z"
+         f"&publicado_em=lte.{ctx.dia}T23:59:59Z&order=publicado_em.desc&limit=40")
+    artigos = []
+    for l in ctx.ler(q, "noticias"):
+        titulo = str(l.get("titulo") or "").strip()
+        if not titulo or len(titulo) > 140 or re.search(r'[<>"\\]', titulo) or not re.fullmatch(r"https?://\S+", str(l.get("url") or "")):
+            continue  # aspas e barra quebrariam a citação literal no JSON; link inválido não vira fonte
+        artigos.append({"titulo": titulo, "fonte": str(l["fonte"]), "url": l["url"], "publicado_em": str(l["publicado_em"])[:10],
+                        "commodities": l.get("commodities") or [], "regiao": l.get("regiao")})
+    if not artigos:
+        raise SemFonte("sem manchete utilizável nas últimas 72 h")
+    sql = [f"select titulo, fonte, url, publicado_em, commodities, regiao from noticias.artigos where publicado_em >= date '{ctx.dias_antes(3)}' "
+           "order by publicado_em desc limit 40"]
+    dados = {"consulta_em": agora_utc(), "origem": "Pulso do Campo, noticias.artigos, só leitura por REST",
+             "tabela": "noticias.artigos", "artigos": artigos, "sql": sql}
+    return dados, texto_consulta("noticias.artigos", sql, [f"GET (Accept-Profile: noticias) {ctx.base}/rest/v1/{q}"])
+
+
+def coletar_inmet(ctx):
+    """Avisos ativos do INMET que cobrem município de MT no dia ou nos 3 dias seguintes."""
+    corpo = json.loads(baixar(URL_INMET, {"Accept": "application/json", "User-Agent": "Mozilla/5.0 (compatible; PulsoBrasil/1.0)"},
+                              tentativas=2, espera=5))
+    if not isinstance(corpo, dict):
+        raise SemFonte("resposta do INMET fora do formato")
+    fim_janela = (dt.date.fromisoformat(ctx.dia) + dt.timedelta(days=3)).isoformat()
+    avisos, municipios = {}, set()
+    for aviso in [*(corpo.get("hoje") or []), *(corpo.get("futuro") or [])]:
+        if not isinstance(aviso, dict) or aviso.get("id") is None:
+            continue
+        mt = {g.strip() for g in str(aviso.get("geocodes") or "").split(",") if re.fullmatch(r"51\d{5}", g.strip())}
+        inicio, fim = str(aviso.get("data_inicio") or "")[:10], str(aviso.get("data_fim") or aviso.get("data_inicio") or "")[:10]
+        if not mt or not (inicio and fim) or fim < ctx.dia or inicio > fim_janela:
+            continue
+        tipo = str(aviso.get("descricao") or "").strip()
+        try:
+            sev = int(aviso.get("id_severidade"))
+        except (TypeError, ValueError):
+            sev = None
+        avisos[str(aviso["id"])] = {
+            "tipo": tipo if re.fullmatch(r"[^\W\d_]+(?: [^\W\d_]+)*", tipo) and len(tipo) <= 40 else "aviso meteorológico",
+            "severidade": SEVERIDADE_INMET.get(sev, "não informada"), "inicio": inicio, "fim": fim, "municipios_mt": len(mt),
+            "url": f"https://alertas2.inmet.gov.br/{aviso['id']}"}
+        municipios |= mt
+    if not avisos:
+        raise SemFonte("sem aviso do INMET para Mato Grosso na janela")
+    consulta = f"GET {URL_INMET}\n# Filtro: geocódigo IBGE de MT (51xxxxx), aviso que termina em {ctx.dia} ou depois e começa até {fim_janela}.\n"
+    dados = {"consulta_em": agora_utc(), "origem": "INMET, avisos ativos (API pública)", "url": URL_INMET, "dia": ctx.dia,
+             "total_municipios_mt": TOTAL_MUNICIPIOS_MT, "municipios_mt_com_aviso": len(municipios), "avisos": dict(sorted(avisos.items()))}
+    return dados, consulta
+
+
+COLETORES = (("mercado", coletar_mercado), ("referencias", coletar_referencias), ("insumos", coletar_insumos),
+             ("noticias", coletar_noticias), ("inmet", coletar_inmet))
+
+
+def gravar_opcional(pasta, nome, dados, consulta):
+    arq_dados, arq_consulta = OPCIONAIS[nome]
+    (pasta / arq_dados).write_text(json.dumps(dados, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (pasta / arq_consulta).write_text(consulta, encoding="utf-8")
+
+
+def coletar_opcionais(ctx, pasta, coletores=COLETORES):
+    """Roda cada fonte opcional; nenhuma falha aqui derruba a coleta. Devolve {nome: 'ok' | 'vazia: ..' | 'ausente: ..'}."""
+    resultado = {}
+    for nome, coletor in coletores:
+        try:
+            dados, consulta = coletor(ctx)
+        except SemFonte as motivo:
+            resultado[nome] = f"vazia: {motivo}"
+        except Exception as erro:  # opcional nunca derruba; a mensagem de baixar() não leva cabeçalho nem chave
+            detalhe = str(erro)[:160] if isinstance(erro, RuntimeError) else type(erro).__name__
+            resultado[nome] = f"ausente: {detalhe}"
+        else:
+            gravar_opcional(pasta, nome, dados, consulta)
+            resultado[nome] = "ok"
+    return resultado
+
+
 def fora_da_pasta(pasta, trava):
     """A trava fica fora da pasta onde o modelo escreve: senão ele refaz arquivo e trava juntos."""
     if trava == pasta or pasta in trava.parents:
@@ -143,20 +474,32 @@ def arquivos_em_fontes(pasta):
     return achados
 
 
+def pares_completos(nomes):
+    """Cada fonte opcional tem os dois arquivos (dados e consulta) ou nenhum."""
+    for nome, (dados, consulta) in OPCIONAIS.items():
+        if (dados in nomes) != (consulta in nomes):
+            raise RuntimeError(f"fonte opcional {nome} pela metade (dados e consulta andam juntos)")
+
+
 def gravar_trava(pasta, trava):
-    extras = [a for a in arquivos_em_fontes(pasta) if a not in ARQUIVOS]
+    presentes = arquivos_em_fontes(pasta)
+    extras = [a for a in presentes if a not in CONHECIDOS]
     if extras:
         raise RuntimeError(f"fontes/ tem arquivo que a coleta não gravou: {', '.join(extras)}")
+    pares_completos(presentes)
+    arquivos = [*ARQUIVOS, *(a for a in ARQUIVOS_OPCIONAIS if a in presentes)]
     trava.parent.mkdir(parents=True, exist_ok=True)
-    trava.write_text("".join(f"{sha256(pasta / rel)}  {rel}\n" for rel in ARQUIVOS))
+    trava.write_text("".join(f"{sha256(pasta / rel)}  {rel}\n" for rel in arquivos))
+    return arquivos
 
 
 def conferir(pasta, trava):
     """Falha se fonte mudou, sumiu ou se fontes/ ganhou qualquer arquivo depois da coleta."""
     fora_da_pasta(pasta, trava)
     travas = dict(reversed(linha.split("  ", 1)) for linha in trava.read_text().splitlines())
-    if set(travas) != set(ARQUIVOS):
+    if not set(ARQUIVOS) <= set(travas) or not set(travas) <= CONHECIDOS:
         raise RuntimeError("trava da coleta incompleta")
+    pares_completos(set(travas))
     atuais = arquivos_em_fontes(pasta)
     extras = [a for a in atuais if a not in travas]
     if extras:
@@ -166,7 +509,7 @@ def conferir(pasta, trava):
             raise RuntimeError(f"{rel} sumiu depois da coleta")
         if sha256(pasta / rel) != sha:
             raise RuntimeError(f"{rel} mudou depois da coleta (o modelo não pode alterar fonte)")
-    print("fontes da coleta intactas:", ", ".join(ARQUIVOS))
+    print("fontes da coleta intactas:", ", ".join(travas))
 
 
 def main(argv):
@@ -193,9 +536,11 @@ def main(argv):
         print("coletar_dados: SUPABASE_URL tem de ser https", file=sys.stderr)
         return 1
     (pasta / "fontes").mkdir(parents=True, exist_ok=True)
-    sobras = [a for a in arquivos_em_fontes(pasta) if a not in ARQUIVOS]
+    sobras = [a for a in arquivos_em_fontes(pasta) if a not in CONHECIDOS]
     if sobras:  # coleta nova não herda arquivo de execução anterior
         raise RuntimeError(f"fontes/ já tem arquivo que não é da coleta: {', '.join(sobras)}")
+    for rel in ARQUIVOS_OPCIONAIS:  # opcional de execução anterior é velho: só entra o que esta coleta gravar
+        (pasta / rel).unlink(missing_ok=True)
     try:
         coletar_ptax(dia, pasta / "fontes/bcb-ptax.json")
         coletar_imea(dia, base, chave, pasta)
@@ -203,11 +548,14 @@ def main(argv):
         (pasta / "sem-episodio.txt").write_text(f"{motivo}\n")
         print(f"Sem episódio: {motivo}")
         return 3
+    opcionais = coletar_opcionais(Contexto(dia, base, chave), pasta)
     gravar_trava(pasta, trava)
     imea = json.loads((pasta / "fontes/pulso-imea.json").read_text())
     print(f"coleta ok: {dia}; PTAX {len(json.loads((pasta / 'fontes/bcb-ptax.json').read_text())['value'])} dias; "
           f"IMEA soja {sorted(imea['imea_mt']['soja'])[-1]}, {len(imea['imea_mt']['soja'])} pregões; "
           f"{len(imea[[k for k in imea if k.startswith('pracas_soja_')][0]])} praças")
+    for nome, estado in opcionais.items():
+        print(f"fonte opcional {nome}: {estado}")
     return 0
 
 

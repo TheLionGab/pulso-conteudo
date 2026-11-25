@@ -5,7 +5,7 @@ from pathlib import Path
 import tempfile
 import unittest
 from unittest import mock
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -129,6 +129,218 @@ class Coleta(unittest.TestCase):
     def test_sem_chave_falha(self):
         with mock.patch.dict('os.environ', {'SUPABASE_SERVICE_ROLE_KEY': ''}):
             self.assertEqual(coleta.main([str(self.pasta), '2026-11-24', '--trava', str(self.trava)]), 1)
+
+
+FONTE_OK = {'source_name': 'Fonte', 'can_be_named': True, 'active': True, 'default_trust_class': 'BENCHMARK'}
+
+
+def linha_oferta(oferta_id, valor, instante, **extra):
+    meta = {'series': 'gd_oferta', 'ref_date': '2026-11-23'}
+    if oferta_id:
+        meta['oferta_id'] = oferta_id
+    return {'commodity': 'soja', 'observed_at': f'2026-11-23T{instante}+00:00', 'received_at': f'2026-11-23T{instante}+00:00',
+            'value': valor, 'unit': 'R$/sc', 'metadata': meta, 'market_sources': dict(FONTE_OK, **extra),
+            'market_locations': {'municipality': 'Sorriso', 'uf': 'MT'}}
+
+
+def completo(**kw):
+    """Banco com todas as fontes opcionais. O que vier em kw vai para falso() (PTAX e IMEA)."""
+    obrigatorias = falso(**kw)
+
+    def baixar(url, cabecalhos=None, **resto):
+        cab = cabecalhos or {}
+        if 'apiprevmet3.inmet.gov.br' in url:
+            return json.dumps({'hoje': [{'id': 77, 'descricao': 'Tempestade', 'id_severidade': 7, 'data_inicio': '2026-11-24',
+                                         'data_fim': '2026-11-25', 'geocodes': '5102678,5107602,3550308'}],
+                               'futuro': [{'id': 78, 'descricao': 'Onda de calor', 'id_severidade': 6, 'data_inicio': '2026-11-24',
+                                           'data_fim': '2026-11-26', 'geocodes': '3550308'}]}).encode()
+        if 'mercado_quotes?select=data_publicacao&papel=in.' in url:
+            return json.dumps([{'data_publicacao': '2026-11-16' if 'data_publicacao=lt.' in url else '2026-11-23'}]).encode()
+        if 'mercado_quotes?select=cultura,papel' in url:
+            if 'data_publicacao=eq.2026-11-16' in url:
+                return json.dumps([{'cultura': 'soja', 'papel': 'praca', 'localidade': 'Rondonópolis', 'source': 'imea',
+                                    'valor': 143.0, 'unidade': 'R$/sc', 'data_publicacao': '2026-11-16'}]).encode()
+            pracas = [('Rondonópolis', 145.5), ('Sorriso', 136.0), ('Sapezal', 139.0)]
+            linhas = [{'cultura': 'soja', 'papel': 'praca', 'localidade': l, 'source': 'imea', 'valor': v, 'unidade': 'R$/sc',
+                       'data_publicacao': '2026-11-23'} for l, v in pracas]
+            linhas.append({'cultura': 'milho', 'papel': 'imea', 'localidade': 'Mato Grosso', 'source': 'imea', 'valor': 46.0,
+                           'unidade': 'R$/sc', 'data_publicacao': '2026-11-23'})
+            return json.dumps(linhas).encode()
+        if 'market_observations' in url:
+            assert cab.get('Accept-Profile') == 'mercado'
+            if 'series=eq.gd_oferta' in url:
+                return json.dumps([
+                    linha_oferta('a', 141.0, '15:00:00'), linha_oferta('a', 140.0, '12:00:00'), linha_oferta('b', 143.0, '13:00:00'),
+                    linha_oferta(None, 150.0, '14:00:00'),                      # sem oferta_id: não conta
+                    linha_oferta('c', 160.0, '14:00:00', can_be_named=False),   # fonte não nomeável: fora
+                ]).encode()
+            return json.dumps([{'commodity': 'feijao', 'observed_at': '2026-11-21T10:00:00+00:00', 'received_at': '2026-11-21T10:00:00+00:00',
+                                'value': 300.0, 'unit': 'R$/sc', 'metadata': {'series': 'deral', 'place': 'Curitiba/PR', 'ref_date': '2026-11-20',
+                                                                              'source_label': 'DERAL/SEAB-PR', 'product': 'Carioca'},
+                                'market_sources': FONTE_OK, 'market_locations': None}]).encode()
+        if 'v_insumos_precos_vigentes' in url:
+            assert cab.get('Accept-Profile') == 'cotacoes'
+            return json.dumps([{'slug': 'ureia', 'nome': 'Ureia', 'categoria': 'fertilizante', 'localidade': 'MT', 'valor': 3500.0,
+                                'unidade': 'R$/t', 'variacao_pct': 4.2, 'fonte': 'Conab', 'vigente_em': '2026-11-20'}]).encode()
+        if 'artigos?select=' in url:
+            assert cab.get('Accept-Profile') == 'noticias'
+            return json.dumps([
+                {'titulo': 'Soja sobe em Sorriso', 'fonte': 'Canal', 'url': 'https://x.test/a', 'publicado_em': '2026-11-24T10:00:00+00:00',
+                 'commodities': ['soja'], 'regiao': 'mt'},
+                {'titulo': 'Título com "aspas"', 'fonte': 'Canal', 'url': 'https://x.test/b', 'publicado_em': '2026-11-24T09:00:00+00:00'},
+                {'titulo': 'Sem link', 'fonte': 'Canal', 'url': 'javascript:1', 'publicado_em': '2026-11-24T08:00:00+00:00'},
+            ]).encode()
+        return obrigatorias(url, cabecalhos, **resto)
+    return baixar
+
+
+def so_obrigatorias(**kw):
+    """Opcionais fora do ar: 404 no banco, lista vazia onde o banco responde vazio, INMET sem rede."""
+    obrigatorias = falso(**kw)
+
+    def baixar(url, cabecalhos=None, **resto):
+        if 'apiprevmet3.inmet.gov.br' in url:
+            raise URLError('sem rede')
+        if 'mercado_quotes?select=data_publicacao&papel=in.' in url or 'v_insumos_precos_vigentes' in url:
+            raise RuntimeError(f"{url.split('?')[0]}: HTTP 404 relation does not exist")
+        if 'market_observations' in url or 'artigos?select=' in url or 'mercado_quotes?select=cultura' in url:
+            return b'[]'
+        return obrigatorias(url, cabecalhos, **resto)
+    return baixar
+
+
+class FontesOpcionais(unittest.TestCase):
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.pasta, self.trava = Path(tmp.name) / 'dia', Path(tmp.name) / 'trava' / 'coleta.sha256'
+        self.pasta.mkdir()
+        env = mock.patch.dict('os.environ', {'SUPABASE_SERVICE_ROLE_KEY': 'chave-falsa'})
+        env.start()
+        self.addCleanup(env.stop)
+
+    def coletar(self, banco, dia='2026-11-24'):
+        with mock.patch.object(coleta, 'baixar', banco):
+            return coleta.main([str(self.pasta), dia, '--trava', str(self.trava)])
+
+    def conferir(self):
+        return coleta.main(['--conferir', str(self.pasta), '--trava', str(self.trava)])
+
+    def lido(self, rel):
+        return json.loads((self.pasta / rel).read_text())
+
+    def test_grava_cada_fonte_com_a_consulta_e_a_trava_cobre_todas(self):
+        self.assertEqual(self.coletar(completo()), 0)
+        for dados, consulta in coleta.OPCIONAIS.values():
+            self.assertTrue((self.pasta / dados).is_file() and (self.pasta / consulta).is_file(), dados)
+        self.assertEqual(len(self.trava.read_text().splitlines()), 3 + 2 * len(coleta.OPCIONAIS))
+        self.assertEqual(self.conferir(), 0)
+        todo = ''.join(p.read_text() for p in self.pasta.rglob('*') if p.is_file()) + self.trava.read_text()
+        self.assertNotIn('chave-falsa', todo)
+
+    def test_mercado_traz_todas_as_culturas_o_anterior_e_o_resumo_das_pracas(self):
+        self.coletar(completo())
+        m = self.lido('fontes/pulso-mercado.json')
+        self.assertEqual(m['data'], '2026-11-23')
+        self.assertEqual(m['mercado']['milho']['imea']['Mato Grosso']['imea']['valor'], 46.0)
+        ron = m['mercado']['soja']['praca']['Rondonópolis']['imea']
+        self.assertEqual(ron['anterior'], {'data': '2026-11-16', 'valor': 143.0})
+        self.assertNotIn('anterior', m['mercado']['soja']['praca']['Sorriso']['imea'])
+        r = m['resumo_pracas']['soja']
+        self.assertEqual((r['n_pracas'], r['media'], r['amplitude']), (3, 140.17, 9.5))
+        self.assertEqual((r['maior']['localidade'], r['menor']['localidade']), ('Rondonópolis', 'Sorriso'))
+        self.assertEqual(ron['distancia_media'], 5.33)
+        self.assertNotIn('resumo_pracas', m['mercado'])
+        self.assertIn('public.mercado_quotes', (self.pasta / 'fontes/pulso-mercado.sql').read_text())
+
+    def test_referencias_agregam_oferta_sem_comprador_e_respeitam_os_filtros(self):
+        self.coletar(completo())
+        r = self.lido('fontes/pulso-referencias.json')
+        self.assertEqual(r['ofertas_compra']['soja']['Sorriso/MT'],
+                         {'unidade': 'R$/sc', 'data': '2026-11-23', 'n_ofertas': 2, 'valor_min': 141.0, 'valor_max': 143.0, 'uf': 'MT'})
+        self.assertEqual(r['referencias']['feijao']['Curitiba/PR']['deral|Carioca|R$/sc']['fonte'], 'DERAL/SEAB-PR')
+        self.assertFalse(r['truncado'])
+        texto = (self.pasta / 'fontes/pulso-referencias.json').read_text()
+        self.assertNotIn('oferta_id', texto)
+        self.assertIn('Accept-Profile: mercado', (self.pasta / 'fontes/pulso-referencias.sql').read_text())
+
+    def test_insumos_noticias_e_inmet(self):
+        self.coletar(completo())
+        self.assertEqual(self.lido('fontes/pulso-insumos.json')['insumos']['ureia']['MT']['variacao_pct'], 4.2)
+        titulos = [a['titulo'] for a in self.lido('fontes/pulso-noticias.json')['artigos']]
+        self.assertEqual(titulos, ['Soja sobe em Sorriso'])  # aspas e link inválido ficam fora
+        inmet = self.lido('fontes/inmet-avisos.json')
+        self.assertEqual(list(inmet['avisos']), ['77'])  # o aviso 78 não cobre município de MT
+        self.assertEqual((inmet['avisos']['77']['municipios_mt'], inmet['municipios_mt_com_aviso']), (2, 2))
+        self.assertIn('apiprevmet3.inmet.gov.br', (self.pasta / 'fontes/inmet-avisos.consulta.txt').read_text())
+
+    def test_fonte_opcional_ausente_ou_vazia_nao_derruba_a_coleta(self):
+        self.assertEqual(self.coletar(so_obrigatorias()), 0)
+        self.assertEqual([p.name for p in sorted((self.pasta / 'fontes').iterdir())], ['bcb-ptax.json', 'pulso-imea.json', 'pulso-imea.sql'])
+        self.assertEqual(len(self.trava.read_text().splitlines()), 3)
+        self.assertEqual(self.conferir(), 0)
+
+    def test_so_a_fonte_que_falhou_some_e_o_resto_segue(self):
+        def sem_insumos(url, cabecalhos=None, **resto):
+            if 'v_insumos_precos_vigentes' in url:
+                raise RuntimeError('HTTP 500')
+            return completo()(url, cabecalhos, **resto)
+        self.assertEqual(self.coletar(sem_insumos), 0)
+        self.assertFalse((self.pasta / 'fontes/pulso-insumos.json').exists())
+        self.assertFalse((self.pasta / 'fontes/pulso-insumos.sql').exists())
+        self.assertTrue((self.pasta / 'fontes/pulso-mercado.json').is_file())
+        self.assertEqual(len(self.trava.read_text().splitlines()), 3 + 2 * (len(coleta.OPCIONAIS) - 1))
+
+    def test_resposta_no_teto_de_linhas_e_recusada_como_cortada(self):
+        def cheia(url, cabecalhos=None, **resto):
+            if 'v_insumos_precos_vigentes' in url:
+                return json.dumps([{'slug': f'i{n}', 'nome': 'x', 'localidade': 'MT', 'valor': 1, 'unidade': 'R$/t', 'vigente_em': '2026-11-20'}
+                                   for n in range(coleta.LIMITE_LINHAS)]).encode()
+            return completo()(url, cabecalhos, **resto)
+        self.assertEqual(self.coletar(cheia), 0)
+        self.assertFalse((self.pasta / 'fontes/pulso-insumos.json').exists())
+
+    def test_opcional_de_execucao_anterior_nao_vira_dado_do_dia(self):
+        (self.pasta / 'fontes').mkdir()
+        for rel in coleta.OPCIONAIS['insumos']:
+            (self.pasta / rel).write_text('velho')
+        self.assertEqual(self.coletar(so_obrigatorias()), 0)
+        self.assertEqual(len(self.trava.read_text().splitlines()), 3)
+        self.assertFalse((self.pasta / 'fontes/pulso-insumos.json').exists())
+
+    def test_trava_pega_opcional_alterado_removido_ou_criado_pelo_modelo(self):
+        self.coletar(completo())
+        alvo = self.pasta / 'fontes/pulso-insumos.json'
+        original = alvo.read_text()
+        alvo.write_text('{"insumos": {"ureia": {"MT": {"valor": 1}}}}')
+        with self.assertRaisesRegex(RuntimeError, r'pulso-insumos.json mudou depois da coleta'):
+            self.conferir()
+        alvo.unlink()
+        with self.assertRaisesRegex(RuntimeError, r'pulso-insumos.json sumiu depois da coleta'):
+            self.conferir()
+        alvo.write_text(original)
+        self.assertEqual(self.conferir(), 0)
+
+    def test_modelo_nao_cria_fonte_opcional_que_a_coleta_nao_gravou(self):
+        self.coletar(so_obrigatorias())
+        (self.pasta / 'fontes/pulso-insumos.json').write_text('{"insumos": {}}')
+        with self.assertRaisesRegex(RuntimeError, 'arquivo novo em fontes/.*pulso-insumos.json'):
+            self.conferir()
+
+    def test_trava_com_nome_desconhecido_ou_par_incompleto_e_recusada(self):
+        self.coletar(completo())
+        original = self.trava.read_text()
+        self.trava.write_text(original + 'a' * 64 + '  fontes/inventado.json\n')
+        with self.assertRaisesRegex(RuntimeError, 'trava da coleta incompleta'):
+            self.conferir()
+        sem_consulta = ''.join(l for l in original.splitlines(True) if 'pulso-insumos.sql' not in l)
+        self.trava.write_text(sem_consulta)
+        with self.assertRaisesRegex(RuntimeError, 'pela metade'):
+            self.conferir()
+
+    def test_ptax_e_imea_continuam_obrigatorios(self):
+        self.assertEqual(self.coletar(completo(imea_ate=None)), 3)
+        self.assertFalse(self.trava.exists())
 
 
 class Resposta:

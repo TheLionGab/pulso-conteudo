@@ -66,6 +66,20 @@ class Molde(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'tema'):
             checar_repeticao(dict(candidato, tema='FRETE DE GRAOS!', numeros_chave=[]), [publicado])
 
+    def test_repeticao_assunto_dos_ultimos_5_episodios(self):
+        def pub(dia, pauta):
+            return dict(data=f'2026-11-{dia:02d}', pauta_id=pauta, tema=f'Tema {pauta}', titulo=f'Título {pauta}')
+        recentes = [pub(16, 'milho-1611'), pub(17, 'insumos-ureia-1711'), pub(18, 'clima-inmet-1811'), pub(19, 'cambio-1911'),
+                    pub(20, 'soja-pracas-mt-2011')]
+        novo = dict(data='2026-11-23', pauta_id='soja-pracas-mt-2311', tema='Outro tema', titulo='Outro título', numeros_chave=[])
+        with self.assertRaisesRegex(ValueError, "assunto 'soja-pracas-mt'.*2026-11-20"):
+            checar_repeticao(novo, recentes)
+        self.assertIsNone(checar_repeticao(dict(novo, pauta_id='algodao-pracas-2311'), recentes))
+        # Fora dos 5 últimos o assunto pode voltar (o 1º da lista é o 6º mais recente).
+        self.assertIsNone(checar_repeticao(dict(novo, pauta_id='milho-2311'), recentes + [pub(21, 'a-2111')]))
+        # Episódio publicado depois do dia que se confere não conta como "recente".
+        self.assertIsNone(checar_repeticao(dict(novo, data='2026-11-19', pauta_id='soja-pracas-mt-1911'), [recentes[-1]]))
+
     def test_hash(self):
         with tempfile.TemporaryDirectory() as tmp:
             arquivo = Path(tmp) / 'trilha.wav'

@@ -74,11 +74,16 @@ def sintetizar(fala, chave, destino, anteriores):
     return id_pedido
 
 
-def gerar(episodio, destino, cache):
-    roteiro = validar(episodio)["roteiro"]
+def arquivos_do_cache(roteiro, cache):
+    """Fala enviada à voz e arquivo de cache de cada segmento (a mesma chave que o gerar usa)."""
     prefixo = json.dumps(CANON, sort_keys=True) + "\n"
     falas = [pronunciar(" ".join(u["fala"] for u in parse(texto))) for _, texto, _ in roteiro]
-    arquivos = [cache / (hashlib.sha256((prefixo + fala).encode()).hexdigest() + ".wav") for fala in falas]
+    return falas, [cache / (hashlib.sha256((prefixo + fala).encode()).hexdigest() + ".wav") for fala in falas]
+
+
+def gerar(episodio, destino, cache):
+    roteiro = validar(episodio)["roteiro"]
+    falas, arquivos = arquivos_do_cache(roteiro, cache)
     faltam = {arq: fala for arq, fala in zip(arquivos, falas) if not cache_valido(arq)}
     if faltam:
         novos = sum(len(f) for f in faltam.values())
