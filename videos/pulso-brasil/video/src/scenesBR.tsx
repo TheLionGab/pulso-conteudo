@@ -1,7 +1,7 @@
 import React from 'react';
-import { C, Camada, FONT, clamp01, pathDe, pop, prog } from './lib';
+import { C, Camada, FONT, ate, clamp01, pathDe, pop, prog } from './lib';
 import { MapaBR } from './MapaBR';
-import { LogoMarca } from './chrome';
+import { BEAT, LogoMarca, TOPO_CENA } from './chrome';
 import type { Cena, Janela, Tom } from './tipos';
 
 const GREEN = '#34D399';
@@ -15,11 +15,38 @@ const note: React.CSSProperties = { fontFamily: FONT, fontWeight: 600, fontSize:
 const linhas: React.CSSProperties = { whiteSpace: 'pre-line' };
 const texto: React.CSSProperties = { fontFamily: FONT, lineHeight: 1.3, ...linhas };
 
-const Bar: React.FC<{ value: number; color: string }> = ({ value, color }) => (
-  <div style={{ width: '100%', height: 38, borderRadius: 12, background: 'rgba(148,163,184,.2)', overflow: 'hidden' }}>
-    <div style={{ width: `${value}%`, height: '100%', background: color, borderRadius: 12 }} />
-  </div>
-);
+/** Valor de um número exibido em pt-BR ("−2,48%", "R$ 145,50", "+4,2%"); null se não for número. */
+export const valorDe = (s: string): number | null => {
+  const m = s.replace(/−/g, '-').replace(/\./g, '').replace(',', '.').match(/([+-]?)\s*(?:R\$|US\$)?\s*(\d+(?:\.\d+)?)/);
+  if (!m) return null;
+  const v = Number(m[2]);
+  return m[1] === '-' ? -v : v;
+};
+
+/** Barras a partir do zero. Parte de um todo (o número é o próprio percentual, ex.: 90,8% da área):
+ * escala fixa de 0 a 100%. Senão, proporcionais entre si: largura = |valor| ÷ maior |valor|;
+ * com sinais misturados, o zero fica no meio (positivo à direita, negativo à esquerda). */
+const larguras = (itens: { numero: string; percentual: number }[]) => {
+  const vs = itens.map((i) => valorDe(i.numero));
+  if (vs.some((v) => v === null) || vs.every((v, i) => Math.abs(Math.abs(v as number) - itens[i].percentual) <= 0.5)) {
+    return { zero: 0, w: itens.map((i) => i.percentual) };
+  }
+  const num = vs as number[];
+  const max = Math.max(...num.map(Math.abs)) || 1;
+  const misto = num.some((v) => v < 0) && num.some((v) => v > 0);
+  return { zero: misto ? 50 : num.every((v) => v <= 0) ? 100 : 0, w: num.map((v) => (v / max) * (misto ? 50 : 100)) };
+};
+
+const Bar: React.FC<{ value: number; color: string; zero?: number; k?: number }> = ({ value, color, zero = 0, k = 1 }) => {
+  const w = Math.abs(value) * k;
+  const esquerda = value < 0 ? zero - w : zero;
+  return (
+    <div style={{ position: 'relative', width: '100%', height: 38, borderRadius: 12, background: 'rgba(148,163,184,.2)', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', left: `${esquerda}%`, width: `${w}%`, top: 0, bottom: 0, background: color, borderRadius: 12 }} />
+      {zero > 0 && zero < 100 && <div style={{ position: 'absolute', left: `calc(${zero}% - 2px)`, width: 4, top: -6, bottom: -6, background: '#E2E8F0' }} />}
+    </div>
+  );
+};
 
 const Numero: React.FC<{ valor: string; tamanho: number; cor: string; margem?: string }> = ({ valor, tamanho, cor, margem }) => (
   <div style={{ fontFamily: FONT, fontSize: tamanho, fontWeight: 900, color: cor, letterSpacing: tamanho >= 180 ? -8 : 0, lineHeight: 1.1, margin: margem }}>{valor}</div>
@@ -39,9 +66,12 @@ const Conteudo: React.FC<ConteudoProps> = ({ dados, t, inicio, cta }) => {
     case 'gancho_numero':
       return <>
         <Titulo {...dados} cor={GREEN} primeira />
-        <Numero valor={dados.numero} tamanho={182} cor={GREEN} margem="12px 0 0" />
+        {/* quadro 0 já mostra o número inteiro (é a capa no feed); o soco de escala só reforça */}
+        <div style={{ transform: `scale(${1 + 0.06 * Math.exp(-4 * Math.max(0, t - inicio)) * Math.cos(9 * Math.max(0, t - inicio))})`, transformOrigin: '0% 50%' }}>
+          <Numero valor={dados.numero} tamanho={182} cor={GREEN} margem="12px 0 0" />
+        </div>
         <div style={{ ...label, fontSize: 32, color: C.text, letterSpacing: 1 }}>{dados.rotulo}</div>
-        {dados.percentual !== undefined && <div style={{ marginTop: 12 }}><Bar value={dados.percentual} color={GREEN} /></div>}
+        {dados.percentual !== undefined && <div style={{ marginTop: 12 }}><Bar value={dados.percentual} color={GREEN} k={prog(t, inicio + 0.2, 0.8)} /></div>}
         {dados.mapa_mt && <div style={{ marginTop: 22 }}><MapaBR altura={440} fracao={{}} rotuloMT={dados.mapa_mt} /></div>}
         {dados.pergunta && <div style={{ ...box, ...texto, marginTop: 8, borderColor: GREEN, fontWeight: 800, fontSize: 42 }}>{dados.pergunta}</div>}
       </>;
@@ -53,20 +83,40 @@ const Conteudo: React.FC<ConteudoProps> = ({ dados, t, inicio, cta }) => {
         // y do SVG cresce para baixo: o maior valor fica em cima
         i / (valores.length - 1), alto === baixo ? 0.5 : (alto - p.valor) / (alto - baixo),
       ]);
+      // Eixo explícito: a linha usa a faixa mínimo–máximo (não começa no zero), então as duas
+      // guias mostram o valor de cada extremo e o pico leva data e valor.
+      const iPico = valores.indexOf(alto);
+      const casas = Math.min(4, Math.max(0, ...valores.map((v) => (String(v).split('.')[1] ?? '').length)));
+      const num = (v: number) => v.toLocaleString('pt-BR', { minimumFractionDigits: casas, maximumFractionDigits: casas });
+      const X = (x: number) => 30 + x * 640;
+      const Y = (y: number) => 60 + y * 300;
+      const [px, py] = pontos[iPico];
+      const kLinha = prog(t, inicio, 1.2);
+      const kPico = prog(t, inicio + 0.9, 0.4);
       return <>
         <Titulo {...dados} cor={BLUE} />
         <div style={{ ...box, borderColor: BLUE, marginTop: 32 }}>
           <svg width="100%" viewBox="0 0 820 420" style={{ opacity: prog(t, inicio, 0.5) }}>
-            <path d={pathDe(pontos, 760, 340)} transform="translate(30 30)" stroke={BLUE} strokeWidth={9} fill="none" strokeLinejoin="round" />
+            {/* guia do máximo (o valor vai no rótulo do pico) e do mínimo, com o valor à direita */}
+            {[0, 1].map((y) => <line key={y} x1={30} x2={680} y1={Y(y)} y2={Y(y)} stroke="rgba(148,163,184,.35)" strokeWidth={2} strokeDasharray="8 10" />)}
+            {alto !== baixo && <text x={790} y={Y(1) + 40} textAnchor="end" fill={C.muted} fontFamily={FONT} fontWeight={700} fontSize={26}>MÍN {num(baixo)}</text>}
+            <path d={pathDe(ate(pontos, kLinha), 640, 300)} transform="translate(30 60)" stroke={BLUE} strokeWidth={9} fill="none" strokeLinejoin="round" strokeLinecap="round" />
+            {kPico > 0 && <g opacity={kPico}>
+              <circle cx={X(px)} cy={Y(py)} r={14} fill={GOLD} stroke="#05070A" strokeWidth={4} />
+              <text x={Math.min(Math.max(X(px), 130), 560)} y={Y(py) - 26} textAnchor="middle" fill={GOLD} fontFamily={FONT} fontWeight={900} fontSize={30}>
+                PICO {dados.pontos[iPico].rotulo} · {num(alto)}
+              </text>
+            </g>}
           </svg>
           <div style={{ ...label, display: 'flex', justifyContent: 'space-between' }}>
-            <span>{dados.pontos[0].rotulo} · {valores[0].toLocaleString('pt-BR')}</span>
-            <span>{dados.pontos.at(-1)?.rotulo} · {valores.at(-1)?.toLocaleString('pt-BR')}</span>
+            <span>{dados.pontos[0].rotulo} · {num(valores[0])}</span>
+            <span>{dados.pontos.at(-1)?.rotulo} · {num(valores[valores.length - 1])}</span>
           </div>
         </div>
       </>;
     }
-    case 'barras':
+    case 'barras': {
+      const { zero, w } = larguras(dados.itens);
       return <>
         <Titulo {...dados} cor={GREEN} />
         <div style={{ ...box, marginTop: 32 }}>
@@ -75,12 +125,14 @@ const Conteudo: React.FC<ConteudoProps> = ({ dados, t, inicio, cta }) => {
             return <div key={i} style={i === 0 ? undefined : { borderTop: '2px solid rgba(148,163,184,.25)', marginTop: 34, paddingTop: 26 }}>
               <div style={{ ...label, fontSize: 30, color: cor }}>{item.rotulo}</div>
               <Numero valor={item.numero} tamanho={i === 0 ? 110 : 132} cor={cor} margem="12px 0 18px" />
-              <Bar value={item.percentual} color={cor} />
+              <Bar value={w[i]} zero={zero} color={cor} k={prog(t, inicio + 0.25 + 0.35 * i, 0.7)} />
             </div>;
           })}
+          {zero === 50 && <div style={{ ...label, fontSize: 22, display: 'flex', justifyContent: 'space-between', marginTop: 12 }}><span>◀ CAIU</span><span>0</span><span>SUBIU ▶</span></div>}
         </div>
         <div style={{ ...texto, fontWeight: 800, fontSize: 40, color: GREEN, textAlign: 'center', marginTop: 26 }}>{dados.nota}</div>
       </>;
+    }
     case 'mapa_regioes':
       return <>
         <Titulo {...dados} cor={GREEN} />
@@ -116,7 +168,15 @@ const Conteudo: React.FC<ConteudoProps> = ({ dados, t, inicio, cta }) => {
         <div style={{ ...headline, marginTop: 42, textAlign: 'center', fontSize: 82 }}>PULSO <span style={{ color: GREEN }}>NEWS</span></div>
         <div style={{ fontFamily: FONT, fontSize: 34, fontWeight: 700, color: C.muted, textAlign: 'center', marginTop: 16 }}>DO PULSO DO CAMPO</div>
         <div style={{ ...box, ...texto, marginTop: 46, borderColor: GREEN, textAlign: 'center', fontSize: 49, fontWeight: 800, lineHeight: 1.2 }}>{cta}</div>
-        <div style={{ ...label, textAlign: 'center', color: GOLD, marginTop: 46, fontSize: 32 }}>{dados.selo}</div>
+        {/* CTA como botão: entra com mola depois do texto e pulsa na batida da trilha */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 44 }}>
+          <div style={{
+            transform: `scale(${(0.6 + 0.4 * clamp01(pop(t, inicio + 0.6))) * (1 + 0.035 * Math.exp(-((Math.max(0, t - inicio) % BEAT) / BEAT) * 5))})`,
+            opacity: clamp01(pop(t, inicio + 0.6) * 1.5),
+            background: `linear-gradient(90deg, ${GREEN}, #10B981)`, borderRadius: 999, padding: '26px 52px',
+            boxShadow: '0 0 50px rgba(52,211,153,.45)', fontFamily: FONT, fontWeight: 900, fontSize: 40, letterSpacing: 1, color: '#04130D', textAlign: 'center',
+          }}>{dados.selo}</div>
+        </div>
       </>;
   }
 };
@@ -125,7 +185,7 @@ export const CenaBR: React.FC<{ dados: Cena; t: number; janela: Janela; primeira
   ({ dados, t, janela, primeira, cta }) => (
     <Camada t={t} de={primeira ? -0.5 : janela.s - 0.15} ate={janela.e + (dados.tipo === 'fecho_app' ? 0.2 : 0)}
       fin={primeira ? 0.2 : 0.25} fout={0.2} dy={primeira ? 0 : 24}>
-      <div style={{ position: 'absolute', left: 58, right: 58, top: 248, color: C.text }}>
+      <div style={{ position: 'absolute', left: 58, right: 58, top: TOPO_CENA, color: C.text }}>
         <Conteudo dados={dados} t={t} inicio={janela.s} cta={cta} />
         {dados.fonte && <div style={{ ...note, ...linhas, marginTop: 24 }}>{dados.fonte}</div>}
       </div>

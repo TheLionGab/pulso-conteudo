@@ -133,6 +133,47 @@ class Molde(unittest.TestCase):
             self.assertNotEqual(r.returncode, 0)
             self.assertIn('segmentos_sha256', r.stderr)
 
+    def _dolar(self):
+        return json.loads((ROOT / 'exemplos/2026-11-24-dolar-soja/episodio.json').read_text())
+
+    def test_gancho_abre_pelo_numero(self):
+        ep = self._dolar()
+        validar(ep)
+        ep['roteiro'][0][1] = '[gancho]Em uma semana inteira, o dólar subiu *{4,2%|quatro vírgula dois por cento}*.'
+        with self.assertRaisesRegex(ValueError, 'gancho'):
+            validar(ep)
+        ep['roteiro'][0][1] = '[gancho]O dólar subiu muito nesta semana.'
+        with self.assertRaisesRegex(ValueError, 'gancho'):
+            validar(ep)
+
+    def test_clipe_da_cultura_errada(self):
+        ep = self._dolar()
+        ep['cenas'][-1]['clipe'] = 'cena06_graos'  # milho, num episódio de soja
+        with self.assertRaisesRegex(ValueError, 'cena06_graos mostra milho'):
+            validar(ep)
+        ep['cenas'][-1]['clipe'] = 'soja03_vagens'
+        ep['tema'], ep['titulo'] = 'Câmbio', 'Dólar sobe na semana'  # sem cultura: clipe de soja também sai
+        with self.assertRaisesRegex(ValueError, 'soja03_vagens mostra soja'):
+            validar(ep)
+
+    def test_clipe_repetido(self):
+        ep = self._dolar()
+        ep['cenas'][1]['clipe'] = ep['cenas'][0]['clipe']
+        with self.assertRaisesRegex(ValueError, 'clipe repetido'):
+            validar(ep)
+
+    def test_barra_honesta(self):
+        ep = self._dolar()
+        ep['cenas'][0]['percentual'] = 100  # +4,2% desenhado como barra cheia
+        with self.assertRaisesRegex(ValueError, 'barra só para %'):
+            validar(ep)
+        ep['cenas'][0]['percentual'] = 4.2
+        validar(ep)
+        conta = next(c for c in ep['cenas'] if c['tipo'] == 'barras')
+        conta['itens'][0]['numero'] = 'subiu'
+        with self.assertRaisesRegex(ValueError, 'cada barra precisa de número'):
+            validar(ep)
+
     def test_formato(self):
         video = dict(width=1080, height=1920, avg_frame_rate='30/1', r_frame_rate='30/1')
         ep = dict(legenda_instagram='Legenda', cenas=[{'tipo': 'fecho_app'}])

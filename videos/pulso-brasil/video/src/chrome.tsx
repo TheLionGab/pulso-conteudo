@@ -3,8 +3,11 @@ import { C, FONT, H, W, clamp01, pop, prog } from './lib';
 import type { Palavra, Timeline } from './tipos';
 
 export const BEAT = 60 / 104;
-/** Reels: topo ~120 px, base ~420 px, largura da legenda 840. */
-export const REELS = { topo: 120, baseLegenda: 420, larguraLegenda: 840, fonte: 52 };
+/** Reels: a interface do app (título "Reels", câmera) cobre até ~220 px no topo; base ~420 px;
+ * largura da legenda 840. 24/11: o cabeçalho em 120 px ficava embaixo do título do Reels. */
+export const REELS = { topo: 232, baseLegenda: 420, larguraLegenda: 840, fonte: 52 };
+/** Topo do conteúdo das cenas: logo abaixo do cabeçalho. */
+export const TOPO_CENA = REELS.topo + 112;
 
 export const LogoMarca: React.FC<{ size: number; k?: number; brilho?: number; id?: string }> = ({ size, k = 1, brilho = 0, id = 'lg' }) => {
   const pulso = 'M220 462H350L405 405L467 536L548 310L618 462H804';

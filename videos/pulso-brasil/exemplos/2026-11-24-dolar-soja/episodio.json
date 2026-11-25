@@ -52,7 +52,7 @@
   "roteiro": [
     [
       "intro",
-      "[gancho]Em uma semana, o dólar subiu *{4,2%|quatro vírgula dois por cento}*. A soja de Mato Grosso, só *{1,6%|um vírgula seis por cento}*.",
+      "[gancho]O dólar subiu *{4,2%|quatro vírgula dois por cento}* em uma semana. A soja de Mato Grosso, só *{1,6%|um vírgula seis por cento}*.",
       0.15
     ],
     [
@@ -91,7 +91,6 @@
       "titulo": "O dólar subiu mais que a soja",
       "numero": "+4,2%",
       "rotulo": "DÓLAR (PTAX) NA SEMANA",
-      "percentual": 100,
       "pergunta": "E a soja de MT? Só +1,6%."
     },
     {
@@ -187,7 +186,7 @@
     {
       "id": "fecho",
       "tipo": "fecho_app",
-      "clipe": "cena06_graos",
+      "clipe": "soja03_vagens",
       "fonte": "Fontes: Banco Central e IMEA. Voz sintética · imagens ilustrativas.",
       "selo": "PULSO DO CAMPO · BAIXE GRÁTIS"
     }
