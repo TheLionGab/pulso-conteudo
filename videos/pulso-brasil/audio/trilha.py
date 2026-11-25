@@ -31,6 +31,8 @@ def ler(arquivo, sr):
 
 def musica(origem, n, sr):
     x = ler(origem, sr)
+    if len(x) < 2:
+        raise ValueError(f"{origem.name}: faixa com menos de 2 amostras")  # o laço abaixo não cresceria
     if len(x) < n:
         # Repete a abertura com crossfade, sem trocar de faixa.
         sobreposicao = min(round(sr * 1.2), len(x) // 2)
@@ -72,6 +74,8 @@ def efeitos(arquivos, tl, n, sr):
         x = ler(arquivos[nome], sr)
         x = x * (NIVEL[nome] / (np.sqrt(np.mean(x * x)) + 1e-9))
         inicio = round(t * sr) - (len(x) // 2 if alinhamento == "meio" else 0)
+        if inicio >= n:
+            continue  # marca depois do fim: n - inicio negativo viraria fatia do fim do efeito
         corte = max(0, -inicio)
         inicio = max(0, inicio)
         trecho = x[corte:corte + n - inicio]

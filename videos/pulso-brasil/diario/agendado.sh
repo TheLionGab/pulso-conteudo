@@ -57,7 +57,9 @@ fi
 
 test -f episodio.json && test -f dossie.json || { echo "Claude não gerou episodio.json e dossie.json"; exit 1; }
 # O que o modelo escreveu tem de ser do dia pedido (data do episódio e do dossiê, id do dossiê).
-python3 -I "$raiz/diario/conferir_episodio.py" "$dia" "$pasta"
+# Reprovado sai do caminho: senão a próxima rodada pularia o claude e reprovaria o mesmo arquivo.
+python3 -I "$raiz/diario/conferir_episodio.py" "$dia" "$pasta" ||
+  { mv episodio.json episodio.rejeitado.json; echo "episódio reprovado na conferência; a próxima rodada gera outro"; exit 1; }
 grep -q fontes_sha256 dossie.json || python3 -I "$raiz/gates/g1_dossie.py" "$pasta" --travar
 pulso-video "$dia"
 touch .pronto
