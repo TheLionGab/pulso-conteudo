@@ -94,7 +94,8 @@ class ConteudoPro(unittest.TestCase):
 
     def test_barra_pro_sozinho_com_preco_ou_gratuidade(self):
         for ruim in ('No Pro, R$ 29,90 por mês.', 'Experimente o Pro sem custo.', 'Teste o Pro sem pagar.',
-                     'O Pro libera por 7 dias de teste.', 'Pro com desconto.'):
+                     'O Pro libera por 7 dias de teste.', 'Pro com desconto.', 'O Pro libera por 7 dias.',
+                     'Plano Pro: 7 dias.', 'O Pro tem prazo de 7 dias.'):
             episodio, dossie = exemplo()
             episodio['legenda_instagram'] += f'\n{ruim}'
             self.assertNotEqual(gate.falhas_de_texto(episodio), [], ruim)

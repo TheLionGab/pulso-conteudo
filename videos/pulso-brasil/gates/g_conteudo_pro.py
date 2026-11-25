@@ -38,7 +38,7 @@ PRO = re.compile(r"\b(pulso pro|plano pro|versao pro|assinatura|assinaturas|assi
                  + PRO_SOLO)
 PRECO_PRO = re.compile(
     r"r\$\s*\d|\b\d+(?:[.,]\d+)?\s*reais\b|\bpor mes\b|\bao mes\b|\bdesconto\b|\bpromocao\b|\bpromocional\b|"
-    r"\btempo limitado\b|\b\d+\s*dias\s+(?:gratis|de teste|de acesso|liberados?)\b|\bteste\b"
+    r"\btempo limitado\b|\b\d+\s*dias\b|\bprazo\b|\bteste\b"
 )
 
 
