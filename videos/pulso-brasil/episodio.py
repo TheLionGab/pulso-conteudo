@@ -102,7 +102,7 @@ def validar_gancho(roteiro):
     """O vídeo abre pelo número: o 1º destaque *{…}* cai nas primeiras palavras da fala."""
     unidades = parse_validado(roteiro[0][1])
     pos = next((i for i, u in enumerate(unidades) if u["hl"]), None)
-    if pos is None or pos > GANCHO_MAX:
+    if pos is None or pos > GANCHO_MAX or not re.search(r"\d", unidades[pos]["exibe"]):
         raise ValueError(f"roteiro: o gancho abre pelo número; o 1º *{{…}}* deve vir até a palavra {GANCHO_MAX + 1} da 1ª frase")
 
 
@@ -142,10 +142,9 @@ def validar_barras(cenas):
             if item.get("percentual") is None:
                 continue
             numero = item.get("numero", "").strip()
-            if not numero.endswith("%"):
-                continue  # contagem com barra de parte do todo ("1.189" de 1.191): o rótulo diz o todo
             v = valor_exibido(numero)
-            if v is None or abs(abs(v) - item["percentual"]) > 0.5:
+            # Barra solta desenha o próprio percentual, da esquerda: só % positivo de um todo, igual ao número.
+            if not numero.endswith("%") or v is None or v < 0 or abs(v - item["percentual"]) > 0.5:
                 raise ValueError(f"cenas: {cena['id']}: barra só para % de um todo, com o tamanho igual ao número ({item.get('numero')!r} ≠ {item['percentual']})")
         if cena["tipo"] == "barras" and any(valor_exibido(i["numero"]) is None for i in cena["itens"]):
             raise ValueError(f"cenas: {cena['id']}: cada barra precisa de número para o tamanho sair dele")

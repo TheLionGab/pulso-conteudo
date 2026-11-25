@@ -145,6 +145,9 @@ class Molde(unittest.TestCase):
         ep['roteiro'][0][1] = '[gancho]O dólar subiu muito nesta semana.'
         with self.assertRaisesRegex(ValueError, 'gancho'):
             validar(ep)
+        ep['roteiro'][0][1] = '[gancho]*{Pulso News|Pulso News}* mostra o dólar.'  # destaque sem número
+        with self.assertRaisesRegex(ValueError, 'gancho'):
+            validar(ep)
 
     def test_clipe_da_cultura_errada(self):
         ep = self._dolar()
@@ -167,7 +170,11 @@ class Molde(unittest.TestCase):
         ep['cenas'][0]['percentual'] = 100  # +4,2% desenhado como barra cheia
         with self.assertRaisesRegex(ValueError, 'barra só para %'):
             validar(ep)
-        ep['cenas'][0]['percentual'] = 4.2
+        for numero, pct in (('R$ 145', 80), ('−2,48%', 2.48)):  # não é % de um todo; sinal perdido na barra
+            ep['cenas'][0].update(numero=numero, percentual=pct)
+            with self.assertRaisesRegex(ValueError, 'barra só para %'):
+                validar(ep)
+        ep['cenas'][0].update(numero='+4,2%', percentual=4.2)
         validar(ep)
         conta = next(c for c in ep['cenas'] if c['tipo'] == 'barras')
         conta['itens'][0]['numero'] = 'subiu'

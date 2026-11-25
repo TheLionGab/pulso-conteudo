@@ -16,11 +16,12 @@ const linhas: React.CSSProperties = { whiteSpace: 'pre-line' };
 const texto: React.CSSProperties = { fontFamily: FONT, lineHeight: 1.3, ...linhas };
 
 /** Valor de um número exibido em pt-BR ("−2,48%", "R$ 145,50", "+4,2%"); null se não for número. */
+// Mesma regra de episodio.py (valor_exibido): 1º número do texto; ponto é milhar, vírgula é decimal.
 export const valorDe = (s: string): number | null => {
-  const m = s.replace(/−/g, '-').replace(/\./g, '').replace(',', '.').match(/([+-]?)\s*(?:R\$|US\$)?\s*(\d+(?:\.\d+)?)/);
+  const m = s.match(/([+\-−]?)\s*(?:R\$|US\$)?\s*(\d[\d.]*(?:,\d+)?)/);
   if (!m) return null;
-  const v = Number(m[2]);
-  return m[1] === '-' ? -v : v;
+  const v = Number(m[2].replace(/\./g, '').replace(',', '.'));
+  return m[1] === '-' || m[1] === '−' ? -v : v;
 };
 
 /** Barras a partir do zero. Parte de um todo (o número é o próprio percentual, ex.: 90,8% da área):
@@ -28,7 +29,8 @@ export const valorDe = (s: string): number | null => {
  * com sinais misturados, o zero fica no meio (positivo à direita, negativo à esquerda). */
 const larguras = (itens: { numero: string; percentual: number }[]) => {
   const vs = itens.map((i) => valorDe(i.numero));
-  if (vs.some((v) => v === null) || vs.every((v, i) => Math.abs(Math.abs(v as number) - itens[i].percentual) <= 0.5)) {
+  // (episodio.py garante número em todo item de barras; o null aqui é só defesa)
+  if (vs.some((v) => v === null) || vs.every((v, i) => (v as number) >= 0 && Math.abs((v as number) - itens[i].percentual) <= 0.5)) {
     return { zero: 0, w: itens.map((i) => i.percentual) };
   }
   const num = vs as number[];
