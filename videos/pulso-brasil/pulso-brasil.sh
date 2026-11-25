@@ -20,6 +20,8 @@ cp "${PULSO_DOSSIE:-$origem/dossie.json}" "$trabalho/dossie.json"
 cp -R "${PULSO_FONTES:-$origem/fontes}" "$trabalho/fontes"
 "$python" -I gates/g1_dossie.py "$trabalho"
 "$python" -I gates/g2_fala.py "$trabalho"
+# Oferta de compra e promessa de gratuidade/preço/resultado reprovam antes de qualquer voz ou render.
+"$python" -I gates/g_conteudo_pro.py "$trabalho"
 "$python" -c 'import numpy, soundfile'
 for ferramenta in ffmpeg ffprobe node git; do
   command -v "$ferramenta" >/dev/null || { echo "Instale $ferramenta" >&2; exit 1; }
@@ -46,10 +48,28 @@ done
 export PULSO_APP_REPO="$app"
 PULSO_PYTHON="$python" assets/obter.sh "$public"
 "$python" -c 'import json, sys; from pathlib import Path; p = Path(sys.argv[1]); (p/"audio/roteiro.json").write_text(json.dumps(json.loads((p/"episodio.json").read_text())["roteiro"], ensure_ascii=False))' "$trabalho"
-"$python" -m audio.voz "$trabalho/episodio.json" "$trabalho/audio" "${PULSO_CACHE_VOZ:-$HOME/Library/Caches/Pulso-Brasil/voz}"
-"$python" gates/g_voz.py "$trabalho/audio/sintese.json"
-"$python" audio/montar.py "$trabalho/audio" "$public" auto "$trabalho/audio/roteiro.json"
-"$python" -I gates/g3_asr.py "$trabalho" "$modelos"
+cache_voz="${PULSO_CACHE_VOZ:-$HOME/Library/Caches/Pulso-Brasil/voz}"
+# Voz (só sintetiza o que falta no cache), G voz e montagem; cada passo falha o pipeline.
+voz_e_montagem() {
+  "$python" -m audio.voz "$trabalho/episodio.json" "$trabalho/audio" "$cache_voz"
+  "$python" gates/g_voz.py "$trabalho/audio/sintese.json"
+  "$python" audio/montar.py "$trabalho/audio" "$public" auto "$trabalho/audio/roteiro.json"
+}
+voz_e_montagem
+# G3 reprovou segmentos: uma única nova tentativa, regerando só esses (cache da voz invalidado só deles).
+# Reprovou de novo, ou o motivo não foi WER de segmento (regerar sai 1): falha como antes. O G3 não é afrouxado.
+g3=0
+"$python" -I gates/g3_asr.py "$trabalho" "$modelos" || g3=$?
+if [ "$g3" -ne 0 ]; then
+  echo "G3 reprovou (saída $g3); nova tentativa, uma só, só nos segmentos reprovados"
+  "$python" -m audio.regerar "$trabalho/episodio.json" "$trabalho/audio/asr.json" "$cache_voz" ||
+    { echo "G3: não há segmento reprovado a regerar; reprovado" >&2; exit "$g3"; }
+  # Seed diferente só nos trechos regerados; com a canônica a voz repetiria a mesma fala reprovada.
+  export PULSO_VOZ_SEED=$("$python" -I -c 'import json; print(json.load(open("config/voz.json"))["seed"] + 1)')
+  voz_e_montagem
+  unset PULSO_VOZ_SEED
+  "$python" -I gates/g3_asr.py "$trabalho" "$modelos"
+fi
 "$python" -m audio.trilha "$public"
 bash audio/mix.sh "$public" "$public/mix.m4a"
 

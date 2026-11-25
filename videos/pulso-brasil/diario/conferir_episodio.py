@@ -4,15 +4,26 @@ Uso: python3 -I conferir_episodio.py <AAAA-MM-DD> <pasta> [--ep]
 <pasta> tem episodio.json e dossie.json; com --ep exige também out/ep.json (o meta que o publicar.mjs usa).
 Reprova (código 1) se: episodio.data ou dossie.data forem diferentes do dia; dossie.episodio não casar
 ^pulso-brasil-AAAA-MM-DD(-slug)?$ com a data do dia (até 80 caracteres, mesmo contrato do app); ou, no ep.json,
-id for diferente de dossie.episodio ou publicado_em diferente do dia.
+id for diferente de dossie.episodio ou publicado_em diferente do dia; ou o gate gates/g_conteudo_pro.py achar oferta
+de compra no dossiê, gratuidade, preço do Pro ou promessa de resultado no texto.
 """
 import datetime as dt
+import importlib.util
 import json
 import re
 import sys
 from pathlib import Path
 
 ID_RE = re.compile(r"^pulso-brasil-(\d{4}-\d{2}-\d{2})(?:-[a-z0-9]+)*$")
+
+
+def conteudo_pro():
+    """Carrega gates/g_conteudo_pro.py pelo caminho (com python -I a pasta do script não entra no sys.path)."""
+    caminho = Path(__file__).resolve().parents[1] / "gates/g_conteudo_pro.py"
+    spec = importlib.util.spec_from_file_location("g_conteudo_pro", caminho)
+    modulo = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(modulo)
+    return modulo
 
 
 def checar_id(id_, dia, rotulo):
@@ -31,6 +42,7 @@ def conferir(dia, pasta, exigir_ep=False):
         if valor != dia:
             falhas.append(f"{rotulo} {valor!r} diferente do dia {dia}")
     falhas += checar_id(dossie.get("episodio"), dia, "dossie.json episodio")
+    falhas += conteudo_pro().falhas_de(episodio, dossie)
     if exigir_ep or (pasta / "out/ep.json").is_file():
         ep = ler("out/ep.json")
         if ep.get("publicado_em") != dia:

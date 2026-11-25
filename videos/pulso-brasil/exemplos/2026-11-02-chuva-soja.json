@@ -87,7 +87,7 @@
     ],
     [
       "fecho",
-      "Veja a chance de chuva da sua cidade dia a dia, de graça no app Pulso do Campo.",
+      "No Pulso Pro, veja o clima do seu município e a janela de aplicação.",
       0.5
     ]
   ],
@@ -172,8 +172,8 @@
       "tipo": "fecho_app",
       "clipe": "campo03_horizonte",
       "fonte": "Voz sintética · imagens ilustrativas.",
-      "selo": "PULSO DO CAMPO · BAIXE GRÁTIS"
+      "selo": "PULSO DO CAMPO · PULSO PRO"
     }
   ],
-  "cta_final": "Chance de chuva da sua cidade\ndia a dia, grátis."
+  "cta_final": "No Pulso Pro, veja o clima\ndo seu município."
 }
