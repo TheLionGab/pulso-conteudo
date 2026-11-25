@@ -24,7 +24,10 @@ GRATIS = re.compile(r"\b(gratis|gratuit[oa]s?|de graca)\b")
 GRATIS_APP = re.compile(r"\b(free|sem (?:custo|pagar|cobranca|mensalidade|pagamento)|custo zero|nada a pagar|nao paga)\b")
 # "Pro" sozinho é o plano quando abre a frase ou vem depois de artigo/verbo ("no Pro", "teste o Pro");
 # "vale pro produtor" (pro = para o) não casa.
-PRO_SOLO = r"(?:^\s*|\b(?:o|no|do|ao|pelo|com o|teste o|assine o|experimente o|use o|abra o)\s+)pro\b"
+# No início da frase, "Pro produtor/Pro bolso…" é "para o": substantivo ou artigo depois não é o plano.
+PRO_SOLO = (r"(?:\b(?:o|no|do|ao|pelo|com o|teste o|assine o|experimente o|use o|abra o)\s+pro\b|"
+            r"^\s*pro\b(?!\s+(?:produtor|produtores|produtora|bolso|mercado|campo|porto|comprador|compradores|"
+            r"agricultor|pecuarista|seu|sua|seus|suas|o|a|os|as|lado|caso|preco|frete|caminhao|silo|armazem)\b))")
 APP = re.compile(r"\b(pulso|app|aplicativo|assin\w*|baixe|baixar|plano|premium|mensalidade)\b|" + PRO_SOLO)
 # Sempre reprova: promessa direta ao espectador.
 PROMESSA = re.compile(

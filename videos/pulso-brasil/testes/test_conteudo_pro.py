@@ -82,7 +82,8 @@ class ConteudoPro(unittest.TestCase):
     def test_libera_fato_de_mercado_com_palavras_parecidas(self):
         for fato in ('O comprador cobre o frete, sem custo de frete adicional.', 'O produtor não paga o frete até o porto.',
                      'Sem cobrança extra no frete.', 'Boi gordo free on board.', 'Sorriso ficou ganhando mais de dois reais por saca.',
-                     'O aviso do INMET vale por 3 dias.', 'Vale pro produtor que vende no prazo.'):
+                     'O aviso do INMET vale por 3 dias.', 'Vale pro produtor que vende no prazo.',
+                     'Pro produtor de MT, a saca ficou em R$ 145,50.', 'Pro produtor, o prazo de 3 dias do aviso pesa.'):
             for onde in ('roteiro', 'legenda_instagram'):
                 episodio, dossie = exemplo()
                 if onde == 'roteiro':
