@@ -39,7 +39,7 @@ def publicados_no_dia(dia, base, chave, abrir=urlopen):
 
 
 def status_do_id(id_, base, chave, abrir=urlopen):
-    if not ID_RE.match(id_):
+    if not ID_RE.fullmatch(id_):  # fullmatch: com match, o $ aceita "\n" no fim
         raise ValueError(f"id inválido: {id_!r}")
     achados = consultar(base, chave, f"id=eq.{id_}", abrir)
     return achados[0][1] if achados else None

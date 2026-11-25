@@ -16,7 +16,7 @@ ID_RE = re.compile(r"^pulso-brasil-(\d{4}-\d{2}-\d{2})(?:-[a-z0-9]+)*$")
 
 
 def checar_id(id_, dia, rotulo):
-    if not isinstance(id_, str) or len(id_) > 80 or not (m := ID_RE.match(id_)):
+    if not isinstance(id_, str) or len(id_) > 80 or not (m := ID_RE.fullmatch(id_)):  # fullmatch: com match, o $ aceita "\n" no fim
         return [f"{rotulo} {id_!r} não casa pulso-brasil-AAAA-MM-DD(-slug) (até 80 caracteres)"]
     return [] if m.group(1) == dia else [f"{rotulo} {id_!r} é de {m.group(1)}, não do dia {dia}"]
 

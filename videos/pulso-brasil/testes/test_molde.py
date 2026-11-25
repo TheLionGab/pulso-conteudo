@@ -181,6 +181,23 @@ class Molde(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'cada barra precisa de número'):
             validar(ep)
 
+    def test_trilha_bordas(self):
+        import numpy as np
+        import soundfile as sf
+        from audio import trilha
+        with tempfile.TemporaryDirectory() as tmp:
+            curta = Path(tmp) / 'curta.wav'
+            sf.write(curta, np.zeros((1, 2), dtype='float32'), 44100)
+            with self.assertRaisesRegex(ValueError, 'menos de 2 amostras'):
+                trilha.musica(curta, 44100, 44100)  # antes: laço infinito
+            efeito = Path(tmp) / 'efeito.wav'
+            sf.write(efeito, np.full((4410, 2), 0.1, dtype='float32'), 44100)
+            arquivos = {k: efeito for k in trilha.NIVEL}
+            tl = {'cenas': {'a': {'s': 0}, 'fecho': {'s': 5.0}}, 'palavras': []}  # fecho depois do fim (n = 1 s)
+            pista, usados = trilha.efeitos(arquivos, tl, 44100, 44100)
+            self.assertEqual(pista.shape, (44100, 2))
+            self.assertEqual([u['efeito'] for u in usados], ['riser_abertura'])
+
     def test_formato(self):
         video = dict(width=1080, height=1920, avg_frame_rate='30/1', r_frame_rate='30/1')
         ep = dict(legenda_instagram='Legenda', cenas=[{'tipo': 'fecho_app'}])

@@ -217,7 +217,7 @@ class JaPublicado(unittest.TestCase):
 
         self.assertEqual(publicado.status_do_id('pulso-brasil-2026-11-24-x', 'https://x.test', 'k', abrir), 'retirado')
         self.assertIn('id=eq.pulso-brasil-2026-11-24-x', pedidos[0])
-        for ruim in ('x&status=eq.publicado', 'A B', '', 'a' * 81):
+        for ruim in ('x&status=eq.publicado', 'A B', '', 'a' * 81, 'pulso-brasil-2026-11-24-x\n'):
             with self.assertRaisesRegex(ValueError, 'id inválido'):
                 publicado.status_do_id(ruim, 'https://x.test', 'k', abrir)
         self.assertEqual(len(pedidos), 1)
@@ -296,7 +296,7 @@ class ConferirEpisodio(unittest.TestCase):
 
     def test_reprova_id_do_dossie_de_outro_dia_ou_fora_do_formato(self):
         for ruim in ('pulso-brasil-2026-11-23-dolar', 'pulso-news-2026-11-24', 'pulso-brasil-2026-11-24-', 'Pulso-Brasil-2026-11-24',
-                     'pulso-brasil-2026-11-24-' + 'a' * 60, None):
+                     'pulso-brasil-2026-11-24-' + 'a' * 60, 'pulso-brasil-2026-11-24-dolar\n', None):
             with tempfile.TemporaryDirectory() as tmp:
                 with self.assertRaisesRegex(ValueError, 'dossie.json episodio'):
                     conferir.conferir('2026-11-24', self.pasta(tmp, dossie_ep=ruim))
