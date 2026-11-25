@@ -62,7 +62,10 @@ if [ "$g3" -ne 0 ]; then
   echo "G3 reprovou (saída $g3); nova tentativa, uma só, só nos segmentos reprovados"
   "$python" -m audio.regerar "$trabalho/episodio.json" "$trabalho/audio/asr.json" "$cache_voz" ||
     { echo "G3: não há segmento reprovado a regerar; reprovado" >&2; exit "$g3"; }
+  # Seed diferente só nos trechos regerados; com a canônica a voz repetiria a mesma fala reprovada.
+  export PULSO_VOZ_SEED=$("$python" -I -c 'import json; print(json.load(open("config/voz.json"))["seed"] + 1)')
   voz_e_montagem
+  unset PULSO_VOZ_SEED
   "$python" -I gates/g3_asr.py "$trabalho" "$modelos"
 fi
 "$python" -m audio.trilha "$public"

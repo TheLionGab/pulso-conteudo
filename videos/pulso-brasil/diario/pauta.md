@@ -18,7 +18,9 @@ Entradas (no fim deste texto): Dia, Pasta e Molde.
        `media`, `maior`, `menor`, `amplitude`, `n_pracas`; em cada praça, `distancia_media` = valor menos a média).
      `pulso-referencias.json`: `referencias` (outras praças e fontes, como DERAL do Paraná: diga que é do Paraná) e
        `ofertas_compra` (faixa agregada de ofertas de compra por praça: `n_ofertas`, `valor_min`, `valor_max`).
-       Oferta de compra é oferta de um comprador, não preço de mercado: rotule assim e nunca cite nome de comprador.
+       Oferta de compra é conteúdo do Pulso Pro: nenhum número de `ofertas_compra` (valor, faixa ou contagem) vai
+       para roteiro, cena, legenda, dossiê ou `numeros_chave`. Use só para saber se vale fechar com "compare
+       compradores após o frete no Pulso".
        Se `truncado` for `true`, não use este arquivo.
      `pulso-insumos.json`: `insumos.<slug>.<localidade>` com `valor`, `unidade`, `variacao_pct`, `fonte`, `vigente_em`.
      `pulso-noticias.json`: manchetes recentes (`artigos`: título, fonte, link, dia).
@@ -36,8 +38,7 @@ Entradas (no fim deste texto): Dia, Pasta e Molde.
      assunto repetido, escolha o seguinte da lista.
    - Candidatos, do que mais pesa para o produtor ao que menos pesa. Calcule o tamanho do impacto só com
      número das fontes e escolha o maior que não repete assunto:
-     a) Distância entre praças ou entre oferta de compra e a média da praça (`distancia_media`, `amplitude`,
-        `ofertas_compra.valor_max` contra `resumo_pracas.media`, mesma unidade): reais por saca em jogo.
+     a) Distância entre praças (`distancia_media`, `amplitude`, mesma unidade): reais por saca em jogo.
      b) Insumo que mudou: maior `variacao_pct` em módulo entre os insumos com `vigente_em` recente.
      c) Aviso do INMET que cobre muitos municípios de MT nos próximos dias (afeta a janela de aplicação).
      d) Variação da semana de uma cultura além de soja e milho (algodão, boi) ou de soja e milho, em reais e em dólar.

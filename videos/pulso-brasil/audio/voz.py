@@ -43,7 +43,9 @@ def pronunciar(fala):
 def sintetizar(fala, chave, destino, anteriores):
     """Voz oficial ElevenLabs, mesmos parâmetros do app (scripts/pulso-news/remotion/audio/voz_elevenlabs.py)."""
     corpo = {"text": fala, "model_id": CANON["modelo"], "language_code": "pt",
-             "voice_settings": CANON["ajustes"], "seed": CANON["seed"]}
+             "voice_settings": CANON["ajustes"],
+             # Só a nova tentativa do G3 troca a seed: com a mesma seed a voz repetiria o trecho reprovado.
+             "seed": int(os.environ.get("PULSO_VOZ_SEED") or CANON["seed"])}
     if anteriores:
         corpo["previous_request_ids"] = anteriores[-3:]
     pedido = Request(
