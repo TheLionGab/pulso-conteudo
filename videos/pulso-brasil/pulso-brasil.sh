@@ -20,6 +20,8 @@ cp "${PULSO_DOSSIE:-$origem/dossie.json}" "$trabalho/dossie.json"
 cp -R "${PULSO_FONTES:-$origem/fontes}" "$trabalho/fontes"
 "$python" -I gates/g1_dossie.py "$trabalho"
 "$python" -I gates/g2_fala.py "$trabalho"
+# Oferta de compra e promessa de gratuidade/preço/resultado reprovam antes de qualquer voz ou render.
+"$python" -I gates/g_conteudo_pro.py "$trabalho"
 "$python" -c 'import numpy, soundfile'
 for ferramenta in ffmpeg ffprobe node git; do
   command -v "$ferramenta" >/dev/null || { echo "Instale $ferramenta" >&2; exit 1; }

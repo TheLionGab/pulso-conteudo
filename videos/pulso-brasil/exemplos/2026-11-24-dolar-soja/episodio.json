@@ -5,7 +5,7 @@
   "data": "2026-11-24",
   "cabecalho": "TERÇA, 24/11/2026 · DÓLAR E SOJA",
   "resumo": "Entre 16 e 23/11 a PTAX subiu 4,16% e a soja IMEA de MT só 1,57%. Em dólar, a saca caiu 2,48%. Hoje a PTAX recuou 1,90%.",
-  "legenda_instagram": "O dólar subiu mais que a soja. 💵🌱\n\n📈 Dólar (PTAX venda, Banco Central), dia a dia:\n16/11 R$ 5,7324 · 17/11 R$ 5,7851 · 18/11 R$ 5,8102 · 19/11 R$ 5,8889 · 23/11 R$ 5,9708\nNa semana: +4,16%. Hoje (24/11) recuou para R$ 5,8573 (−1,90%).\n\n🌱 Soja IMEA, média de Mato Grosso (R$/saca):\n16/11 136,51 · 17/11 136,90 · 18/11 137,32 · 19/11 138,14 · 23/11 138,66\nNa semana: +1,57%.\n\n💵 A saca em dólar (conta do Pulso: preço IMEA ÷ PTAX do mesmo dia):\nUS$ 23,81 em 16/11 → US$ 23,22 em 23/11 (−2,48%).\nEm reais o preço subiu 1,57%; em dólar, caiu 2,48%, porque o dólar subiu mais.\n\n📍 A praça pesa: em 23/11 a soja ia de R$ 145,50 em Rondonópolis a R$ 135,80 em Querência, R$ 9,70 de diferença dentro de MT (IMEA, 22 praças). A diferença pode incluir frete e logística.\n\n✅ Antes de vender: câmbio do dia, preço da sua praça e frete.\n\nIMEA é indicador, não preço de balcão. Não é recomendação de venda. Sem PTAX em 20/11 (feriado).\n\nCotação por praça de MT, de graça no app Pulso do Campo. Link na bio.\n\n#soja #dolar #mercadoagricola #matogrosso #agro",
+  "legenda_instagram": "O dólar subiu mais que a soja. 💵🌱\n\n📈 Dólar (PTAX venda, Banco Central), dia a dia:\n16/11 R$ 5,7324 · 17/11 R$ 5,7851 · 18/11 R$ 5,8102 · 19/11 R$ 5,8889 · 23/11 R$ 5,9708\nNa semana: +4,16%. Hoje (24/11) recuou para R$ 5,8573 (−1,90%).\n\n🌱 Soja IMEA, média de Mato Grosso (R$/saca):\n16/11 136,51 · 17/11 136,90 · 18/11 137,32 · 19/11 138,14 · 23/11 138,66\nNa semana: +1,57%.\n\n💵 A saca em dólar (conta do Pulso: preço IMEA ÷ PTAX do mesmo dia):\nUS$ 23,81 em 16/11 → US$ 23,22 em 23/11 (−2,48%).\nEm reais o preço subiu 1,57%; em dólar, caiu 2,48%, porque o dólar subiu mais.\n\n📍 A praça pesa: em 23/11 a soja ia de R$ 145,50 em Rondonópolis a R$ 135,80 em Querência, R$ 9,70 de diferença dentro de MT (IMEA, 22 praças). A diferença pode incluir frete e logística.\n\n✅ Antes de vender: câmbio do dia, preço da sua praça e frete.\n\nIMEA é indicador, não preço de balcão. Não é recomendação de venda. Sem PTAX em 20/11 (feriado).\n\nNo Pulso Pro, veja a cotação da sua praça, não a média. Link na bio.\n\n#soja #dolar #mercadoagricola #matogrosso #agro",
   "fontes": [
     {
       "nome": "Banco Central do Brasil · PTAX",
@@ -77,7 +77,7 @@
     ],
     [
       "fecho",
-      "Cotação por praça de Mato Grosso, de graça no app Pulso do Campo.",
+      "No Pulso Pro, veja a cotação da sua praça, não a média.",
       0.5
     ]
   ],
@@ -188,8 +188,8 @@
       "tipo": "fecho_app",
       "clipe": "soja03_vagens",
       "fonte": "Fontes: Banco Central e IMEA. Voz sintética · imagens ilustrativas.",
-      "selo": "PULSO DO CAMPO · BAIXE GRÁTIS"
+      "selo": "PULSO DO CAMPO · PULSO PRO"
     }
   ],
-  "cta_final": "Cotação por praça de MT,\nde graça no app."
+  "cta_final": "No Pulso Pro, veja a cotação\nda sua praça, não a média."
 }

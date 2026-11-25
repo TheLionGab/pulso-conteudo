@@ -68,26 +68,36 @@ class SemFonte(Exception):
     """Fonte opcional sem dado utilizável: a coleta segue sem ela."""
 
 
+class ErroFonte(RuntimeError):
+    """Falha de leitura. A mensagem pode levar URL e corpo da resposta; só `categoria` (HTTP 404, URLError,
+    resposta no teto) é segura para log público."""
+
+    def __init__(self, mensagem, categoria):
+        super().__init__(mensagem)
+        self.categoria = categoria
+
+
 def sha256(caminho):
     return hashlib.sha256(Path(caminho).read_bytes()).hexdigest()
 
 
 def baixar(url, cabecalhos=None, tentativas=3, espera=30):
     """GET com nova tentativa; o erro nunca leva cabeçalho (a chave não vaza em log)."""
-    ultimo = "sem resposta"
+    ultimo = categoria = "sem resposta"
     for n in range(tentativas):
         try:
             with urlopen(Request(url, headers=cabecalhos or {}), timeout=60) as r:
                 return r.read()
         except HTTPError as e:
-            ultimo = f"HTTP {e.code} {e.read().decode(errors='replace')[:200]}"
+            categoria = f"HTTP {e.code}"
+            ultimo = f"{categoria} {e.read().decode(errors='replace')[:200]}"
             if 400 <= e.code < 500 and e.code != 429:
                 break
         except (URLError, TimeoutError, OSError) as e:
-            ultimo = type(e).__name__
+            ultimo = categoria = type(e).__name__
         if n + 1 < tentativas:
             time.sleep(espera)
-    raise RuntimeError(f"{url.split('?')[0]}: {ultimo}")
+    raise ErroFonte(f"{url.split('?')[0]}: {ultimo}", categoria)
 
 
 def coletar_ptax(dia, destino):
@@ -172,14 +182,15 @@ class Contexto:
         # Fonte opcional não merece 3 tentativas de 30 s: 2 de 5 s.
         linhas = json.loads(baixar(f"{self.base}/rest/v1/{consulta}", cab, tentativas=2, espera=5), parse_float=float)
         if not isinstance(linhas, list):
-            raise RuntimeError(f"resposta inesperada em {consulta.split('?')[0]}")
+            raise ErroFonte(f"resposta inesperada em {consulta.split('?')[0]}", "resposta fora do formato")
         return linhas
 
     def ler_completo(self, consulta, schema=None):
         """Como ler(), mas resposta no teto de linhas é recusada (pode estar cortada)."""
         linhas = self.ler(consulta, schema)
         if len(linhas) >= LIMITE_LINHAS:
-            raise RuntimeError(f"{consulta.split('?')[0]}: {len(linhas)} linhas, no teto do PostgREST; pode estar cortada")
+            raise ErroFonte(f"{consulta.split('?')[0]}: {len(linhas)} linhas, no teto do PostgREST; pode estar cortada",
+                            "resposta no teto de linhas (pode estar cortada)")
         return linhas
 
 
@@ -277,16 +288,29 @@ def _ref_date(meta, observado):
     return texto
 
 
+# O metadata inteiro (jsonb de coletor) não sai do banco: só estas chaves, como colunas m_<chave> (PostgREST: alias:coluna->>chave).
+CHAVES_META = ("series", "place", "product", "source_label", "ref_date", "observed_at_basis", "oferta_id")
+COLUNAS_META = ",".join([f"m_{k}:metadata->>{k}" for k in CHAVES_META] + ["m_fob:metadata->extra->>fob"])
+
+
+def com_metadata(linha):
+    """Remonta o `metadata` que o resto do coletor lê a partir das colunas m_*, sem chave nula (como no jsonb)."""
+    meta = {k: linha[f"m_{k}"] for k in CHAVES_META if linha.get(f"m_{k}") is not None}
+    if linha.get("m_fob") is not None:
+        meta["extra"] = {"fob": linha["m_fob"]}
+    return {k: v for k, v in linha.items() if not k.startswith("m_")} | {"metadata": meta}
+
+
 def coletar_referencias(ctx):
     """DERAL e afins (referências) e a faixa das ofertas de compra, de mercado.market_observations."""
-    colunas = ("commodity,observed_at,received_at,value,unit,metadata,"
+    colunas = ("commodity,observed_at,received_at,value,unit," + COLUNAS_META + ","
                "market_sources!inner(source_name,can_be_named,active,default_trust_class),market_locations(municipality,uf)")
     base = (f"market_observations?select={colunas}&kind=eq.PUBLIC_PRICE&evidence_id=not.is.null&value=gt.0"
             "&market_sources.active=is.true")
     q_ofertas = f"{base}&metadata->>series=eq.gd_oferta&observed_at=gte.{ctx.dias_antes(4)}T00:00:00Z&order=observed_at.desc&limit={LIMITE_LINHAS}"
     q_outras = f"{base}&metadata->>series=neq.gd_oferta&observed_at=gte.{ctx.dias_antes(21)}T00:00:00Z&order=observed_at.desc&limit={LIMITE_LINHAS}"
-    ofertas_brutas = ctx.ler(q_ofertas, "mercado")
-    outras_brutas = ctx.ler(q_outras, "mercado")
+    ofertas_brutas = [com_metadata(l) for l in ctx.ler(q_ofertas, "mercado")]
+    outras_brutas = [com_metadata(l) for l in ctx.ler(q_outras, "mercado")]
     truncado = len(ofertas_brutas) >= LIMITE_LINHAS or len(outras_brutas) >= LIMITE_LINHAS
 
     def valida(l):
@@ -338,7 +362,9 @@ def coletar_referencias(ctx):
     if not ref and not ofertas:
         raise SemFonte("mercado.market_observations sem referência nem oferta válida")
     sql = [
-        "select o.commodity, o.observed_at, o.value, o.unit, o.metadata, s.source_name, l.municipality, l.uf "
+        "select o.commodity, o.observed_at, o.received_at, o.value, o.unit, "
+        + ", ".join(f"o.metadata->>'{k}' as m_{k}" for k in CHAVES_META) + ", o.metadata->'extra'->>'fob' as m_fob, "
+        "s.source_name, l.municipality, l.uf "
         "from mercado.market_observations o join mercado.market_sources s using (source_id) "
         "left join mercado.market_locations l on l.ibge_code = o.location_ibge "
         "where o.kind = 'PUBLIC_PRICE' and o.evidence_id is not null and o.value > 0 and s.active "
@@ -377,6 +403,40 @@ def coletar_insumos(ctx):
     return dados, texto_consulta("cotacoes.v_insumos_precos_vigentes", sql, [f"GET (Accept-Profile: cotacoes) {ctx.base}/rest/v1/{q}"])
 
 
+VOCAB_COMMODITIES = frozenset({"soja", "milho", "algodão", "algodao", "boi", "boi gordo", "café", "cafe", "trigo", "cana", "arroz",
+                               "feijão", "feijao", "sorgo", "leite", "suíno", "suino", "frango", "fertilizantes", "câmbio", "cambio"})
+VOCAB_REGIOES = frozenset({"mt", "mato grosso", "brasil", "centro-oeste", "sul", "sudeste", "norte", "nordeste", "mundo", "global"})
+
+
+def fonte_limpa(valor):
+    """Nome do veículo: só letras, espaço e ponto, até 40 caracteres. Fora disso, None (a manchete não entra)."""
+    texto = " ".join(str(valor or "").split())
+    return texto if re.fullmatch(r"(?:[^\W\d_]|[ .]){1,40}", texto) else None
+
+
+def url_so_host(valor):
+    """Só `https://host`: até 300 caracteres, sem usuário, porta, caminho, consulta nem fragmento. Fora disso, None."""
+    texto = str(valor or "")
+    m = re.fullmatch(r"https://([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+)(?::443)?(?:[/?#]\S*)?", texto)
+    return f"https://{m.group(1).lower()}" if m and len(texto) <= 300 else None
+
+
+def _vocabulo(valor, vocab):
+    texto = " ".join(str(valor or "").split()).lower()
+    return texto if texto in vocab or re.fullmatch(r"[a-z0-9]{1,30}", texto) else None
+
+
+def commodities_limpas(valor):
+    """Até 8 itens do vocabulário curto ou alfanuméricos de até 30 caracteres; o resto é descartado."""
+    itens = valor if isinstance(valor, list) else []
+    limpos = (_vocabulo(i, VOCAB_COMMODITIES) for i in itens[:8] if isinstance(i, str))
+    return list(dict.fromkeys(i for i in limpos if i))
+
+
+def regiao_limpa(valor):
+    return _vocabulo(valor, VOCAB_REGIOES) if isinstance(valor, str) else None
+
+
 def coletar_noticias(ctx):
     """Manchetes das últimas 72 h de noticias.artigos (só título, fonte, link e data)."""
     q = (f"artigos?select=titulo,fonte,url,publicado_em,commodities,regiao&publicado_em=gte.{ctx.dias_antes(3)}T00:00:00Z"
@@ -384,10 +444,11 @@ def coletar_noticias(ctx):
     artigos = []
     for l in ctx.ler(q, "noticias"):
         titulo = str(l.get("titulo") or "").strip()
-        if not titulo or len(titulo) > 140 or re.search(r'[<>"\\]', titulo) or not re.fullmatch(r"https?://\S+", str(l.get("url") or "")):
-            continue  # aspas e barra quebrariam a citação literal no JSON; link inválido não vira fonte
-        artigos.append({"titulo": titulo, "fonte": str(l["fonte"]), "url": l["url"], "publicado_em": str(l["publicado_em"])[:10],
-                        "commodities": l.get("commodities") or [], "regiao": l.get("regiao")})
+        fonte, url = fonte_limpa(l.get("fonte")), url_so_host(l.get("url"))
+        if not titulo or len(titulo) > 140 or re.search(r'[<>"\\]', titulo) or not fonte or not url:
+            continue  # aspas e barra quebrariam a citação literal no JSON; fonte ou link fora do padrão não viram fonte
+        artigos.append({"titulo": titulo, "fonte": fonte, "url": url, "publicado_em": str(l["publicado_em"])[:10],
+                        "commodities": commodities_limpas(l.get("commodities")), "regiao": regiao_limpa(l.get("regiao"))})
     if not artigos:
         raise SemFonte("sem manchete utilizável nas últimas 72 h")
     sql = [f"select titulo, fonte, url, publicado_em, commodities, regiao from noticias.artigos where publicado_em >= date '{ctx.dias_antes(3)}' "
@@ -448,9 +509,9 @@ def coletar_opcionais(ctx, pasta, coletores=COLETORES):
             dados, consulta = coletor(ctx)
         except SemFonte as motivo:
             resultado[nome] = f"vazia: {motivo}"
-        except Exception as erro:  # opcional nunca derruba; a mensagem de baixar() não leva cabeçalho nem chave
-            detalhe = str(erro)[:160] if isinstance(erro, RuntimeError) else type(erro).__name__
-            resultado[nome] = f"ausente: {detalhe}"
+        except Exception as erro:  # opcional nunca derruba. O estado vai a log público: só a categoria do erro
+            # (código HTTP ou tipo), nunca corpo de resposta, URL ou mensagem livre.
+            resultado[nome] = f"ausente: {erro.categoria if isinstance(erro, ErroFonte) else type(erro).__name__}"
         else:
             gravar_opcional(pasta, nome, dados, consulta)
             resultado[nome] = "ok"
