@@ -34,12 +34,19 @@ Entradas (no fim deste texto): Dia, Pasta e Molde.
    - Roteiro: número na fala por extenso com marcação `*{exibe|fala}*`; data com
      `{dia 23|dia vinte e três}` para a legenda não partir a data. Escreva "PTAX"
      (a voz já diz "petax").
+   - Gancho: a 1ª frase abre pelo número. O 1º `*{…}*` vem até a 5ª palavra
+     ("O dólar subiu *{4,2%|…}* em uma semana."), e a cena 1 (`gancho_numero`) mostra
+     esse número. O `episodio.py` reprova se não vier.
    - Gráfico `serie_linha`: todos os pontos da série, em ordem de data.
+   - Barras são medida, não enfeite. `percentual` só quando o número é parte de um todo
+     (90,8% da área): o `percentual` é o próprio número. Para comparar variações
+     (+1,57% contra −2,48%), use `barras`: o tamanho sai dos números, a partir do zero.
    - Clipe de fundo (`clipe`): só chave de `Molde/assets/manifest.json` com destino `cenas/`.
      Prefira os 17 de origem `fundos-omni/` (campo, chuva, colheita, estrada, grãos, milho,
-     porto, silos, soja); um clipe diferente por cena, ligado ao assunto da cena (cultura
-     errada, como milho num episódio de soja, não entra) e sem repetir a sequência de
-     clipes do episódio anterior.
+     porto, silos, soja); um clipe diferente por cena, ligado ao assunto da cena, e sem
+     repetir a sequência de clipes do episódio anterior. A cultura de cada clipe está em
+     `Molde/config/clipes.json`: clipe de milho só em episódio cujo tema ou título cita
+     milho (idem soja). O `episodio.py` reprova cultura errada e clipe repetido.
    - `legenda_instagram` rica: série dia a dia dos números do vídeo, a conta explicada,
      a ressalva "IMEA é indicador, não preço de balcão. Não é recomendação de venda.",
      dias sem dado (feriado) ditos, chamada para o app e até 5 hashtags.

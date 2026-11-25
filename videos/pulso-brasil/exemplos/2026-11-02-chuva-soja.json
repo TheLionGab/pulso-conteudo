@@ -62,7 +62,7 @@
   "roteiro": [
     [
       "intro",
-      "[gancho]A chuva desta semana não chega igual. No Sul, *{1.189|mil cento e oitenta e nove}* municípios até domingo. No Nordeste, só *{1|um}*.",
+      "[gancho]No Sul, *{1.189|mil cento e oitenta e nove}* municípios com chuva até domingo. No Nordeste, só *{1|um}*. A chuva desta semana não chega igual.",
       0.15
     ],
     [
@@ -101,7 +101,6 @@
       "titulo": "A chuva não chega igual",
       "numero": "1.189",
       "rotulo": "DE 1.191 MUNICÍPIOS NO SUL",
-      "percentual": 99.8320738874895,
       "pergunta": "E no Nordeste? 1 de 1.794 municípios."
     },
     {
@@ -134,7 +133,7 @@
     {
       "id": "serie",
       "tipo": "serie_linha",
-      "clipe": "cena09_plantio_soja",
+      "clipe": "chuva02_nuvens",
       "fonte": "ECMWF · rodada de 02/11/2026 · previsão, não certeza.",
       "chamada": "A VIRADA · CENTRO-OESTE",
       "titulo": "Muda no fim de semana",
@@ -171,7 +170,7 @@
     {
       "id": "fecho",
       "tipo": "fecho_app",
-      "clipe": "cena03_silos",
+      "clipe": "campo03_horizonte",
       "fonte": "Voz sintética · imagens ilustrativas.",
       "selo": "PULSO DO CAMPO · BAIXE GRÁTIS"
     }

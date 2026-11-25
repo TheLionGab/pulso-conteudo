@@ -1,0 +1,13 @@
+{
+  "_nota": "Cultura que aparece em cada clipe de cenas/. Clipe com cultura só entra em episódio cujo tema ou título cita essa cultura (milho num episódio de soja reprova). Clipe fora desta lista é neutro (porto, estrada, silos, chuva, campo).",
+  "cultura": {
+    "cena09_plantio_soja": "soja",
+    "soja03_vagens": "soja",
+    "graos02_moega": "soja",
+    "silos03_interior": "soja",
+    "cena06_graos": "milho",
+    "graos03_mao": "milho",
+    "milho02_lavoura": "milho",
+    "milho03_colheita": "milho"
+  }
+}

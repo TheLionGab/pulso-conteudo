@@ -89,11 +89,65 @@ def validar(episodio):
             ordem.append(cena)
     if ordem != ids:
         raise ValueError("roteiro: as cenas devem aparecer uma vez em blocos, na ordem declarada")
-    clipes = json.loads((ROOT / "assets/manifest.json").read_text())
-    for cena in cenas:
-        if "clipe" in cena and not clipes.get(cena["clipe"], {}).get("destino", "").startswith("cenas/"):
-            raise ValueError(f"cenas: clipe não canônico: {cena['clipe']}")
+    validar_gancho(episodio["roteiro"])
+    validar_clipes(episodio)
+    validar_barras(cenas)
     return episodio
+
+
+GANCHO_MAX = 4  # palavras faladas antes do 1º número em destaque: ~1 s de voz
+
+
+def validar_gancho(roteiro):
+    """O vídeo abre pelo número: o 1º destaque *{…}* cai nas primeiras palavras da fala."""
+    unidades = parse_validado(roteiro[0][1])
+    pos = next((i for i, u in enumerate(unidades) if u["hl"]), None)
+    if pos is None or pos > GANCHO_MAX or not re.search(r"\d", unidades[pos]["exibe"]):
+        raise ValueError(f"roteiro: o gancho abre pelo número; o 1º *{{…}}* deve vir até a palavra {GANCHO_MAX + 1} da 1ª frase")
+
+
+def cultura_do_episodio(episodio):
+    texto = f"{episodio.get('tema', '')} {episodio.get('titulo', '')}".lower()
+    return {c for c in ("soja", "milho", "algodão", "boi") if c in texto}
+
+
+def validar_clipes(episodio):
+    manifesto = json.loads((ROOT / "assets/manifest.json").read_text())
+    cultura = json.loads((ROOT / "config/clipes.json").read_text())["cultura"]
+    assunto = cultura_do_episodio(episodio)
+    usados = [c["clipe"] for c in episodio["cenas"] if "clipe" in c]
+    for clipe in usados:
+        if not manifesto.get(clipe, {}).get("destino", "").startswith("cenas/"):
+            raise ValueError(f"cenas: clipe não canônico: {clipe}")
+        if clipe in cultura and cultura[clipe] not in assunto:
+            raise ValueError(f"cenas: clipe {clipe} mostra {cultura[clipe]}, fora do assunto do episódio")
+    if len(set(usados)) != len(usados):
+        raise ValueError("cenas: clipe repetido no mesmo episódio")
+
+
+def valor_exibido(texto):
+    """Número de um texto exibido em pt-BR ("−2,48%", "R$ 145,50"); None se não houver."""
+    m = re.search(r"([+\-−]?)\s*(?:R\$|US\$)?\s*(\d[\d.]*(?:,\d+)?)", texto)
+    if not m:
+        return None
+    v = float(m.group(2).replace(".", "").replace(",", "."))
+    return -v if m.group(1) in ("-", "−") else v
+
+
+def validar_barras(cenas):
+    """Barra é medida: em % de um todo, o tamanho é o próprio número; em barras, todos os itens têm número."""
+    for cena in cenas:
+        itens = cena.get("itens", []) if cena["tipo"] == "cards" else [cena] if cena["tipo"] == "gancho_numero" else []
+        for item in itens:
+            if item.get("percentual") is None:
+                continue
+            numero = item.get("numero", "").strip()
+            v = valor_exibido(numero)
+            # Barra solta desenha o próprio percentual, da esquerda: só % positivo de um todo, igual ao número.
+            if not numero.endswith("%") or v is None or v < 0 or abs(v - item["percentual"]) > 0.5:
+                raise ValueError(f"cenas: {cena['id']}: barra só para % de um todo, com o tamanho igual ao número ({item.get('numero')!r} ≠ {item['percentual']})")
+        if cena["tipo"] == "barras" and any(valor_exibido(i["numero"]) is None for i in cena["itens"]):
+            raise ValueError(f"cenas: {cena['id']}: cada barra precisa de número para o tamanho sair dele")
 
 
 if __name__ == "__main__":
