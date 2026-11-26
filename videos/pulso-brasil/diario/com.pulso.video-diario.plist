@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<!-- Episódio diário do Pulso Brasil às 13:30 (hora do Mac, Cuiabá). Não publica.
-     Instalar: cp diario/com.pulso.video-diario.plist ~/Library/LaunchAgents/ &&
-               launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.pulso.video-diario.plist -->
+<!-- Rascunho local às 13:30 (hora do Mac, Cuiabá). Publicação automática: workflow 05:30 Cuiabá
+     + com.lion.pulso-manha-diario (reserva). Instalar: cp diario/com.pulso.video-diario.plist
+     ~/Library/LaunchAgents/ && launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.pulso.video-diario.plist -->
 <plist version="1.0">
 <dict>
   <key>Label</key><string>com.pulso.video-diario</string>
   <key>ProgramArguments</key>
   <array>
     <string>/bin/bash</string>
-    <string>/Users/mac/Developer/_worktrees/pulso-conteudo-molde/videos/pulso-brasil/diario/agendado.sh</string>
+    <string>/Users/mac/Developer/pulso-conteudo/videos/pulso-brasil/diario/agendado.sh</string>
   </array>
   <key>StartCalendarInterval</key>
   <dict><key>Hour</key><integer>13</integer><key>Minute</key><integer>30</integer></dict>

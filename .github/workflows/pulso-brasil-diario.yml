@@ -47,7 +47,7 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: '30 17 * * *'   # 17:30 UTC = 13:30 em Cuiabá, todos os dias
+    - cron: '30 9 * * *'   # 09:30 UTC = 05:30 Cuiabá — episódio publicado antes do push às 06:00
 
 permissions:
   contents: read
