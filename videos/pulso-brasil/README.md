@@ -41,7 +41,10 @@ Diário na nuvem: `.github/workflows/pulso-brasil-diario.yml` roda o mesmo
 `pulso-brasil.sh` no GitHub Actions (dados por `diario/coletar_dados.py`, o
 Claude só escreve `episodio.json` e `dossie.json`, acervo do bucket privado
 `pulso-acervo` por `assets/baixar_acervo.py`, modelo sherpa-onnx do release do
-k2-fsa). `diario/agendado.sh` (Mac) usa o mesmo `coletar_dados.py`.
+k2-fsa). Agenda: **05:30 Cuiabá** (publicar automático com `PULSO_PUBLICAR_AGENDADO=true`).
+Push no app: **06:00 Cuiabá** (`push-pulso-news-diario`, Pulso-Do-Campo). Reserva no Mac:
+`~/bin/lion-pulso-manha-diario` + `com.lion.pulso-manha-diario.plist` (05:30 e 06:00).
+`diario/agendado.sh` (Mac, 13:30) só prepara rascunho local para revisão.
 `exemplos/2026-11-24-dolar-soja/` é o episódio-exemplo (forma e prova do workflow).
 
 Verificação offline: `python3 -m unittest discover -s testes -v`.
