@@ -542,6 +542,8 @@ jobs:
         if: steps.ja.outputs.pulado != 'true'
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_URL: ${{ env.SUPABASE_URL }}
+          PULSO_CRON_PUSH_SECRET: ${{ secrets.PULSO_CRON_PUSH_SECRET }}
         run: |
           set -euo pipefail
           tmp="$RUNNER_TEMP/publicar"
