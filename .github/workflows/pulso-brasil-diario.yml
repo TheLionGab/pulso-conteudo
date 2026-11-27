@@ -9,7 +9,7 @@ name: Pulso Brasil diário
 # Gatilhos (sem pull_request: segredo de produção e crédito de voz não rodam por push de branch):
 #   workflow_dispatch  dia (AAAA-MM-DD, padrão hoje em Cuiabá), publicar (padrão false), exemplo
 #                      (padrão false; usa videos/pulso-brasil/exemplos/2026-11-24-dolar-soja, nunca publica).
-#   schedule           todo dia às 13:30 em Cuiabá (pedido do dono: "todos os dias"). O agendado só publica
+#   schedule           todo dia às 05:30 em Cuiabá (antes do push News 06:00). O agendado só publica
 #                      com a variável do repositório PULSO_PUBLICAR_AGENDADO=true; sem ela gera, confere e
 #                      guarda o artifact.
 #
@@ -47,7 +47,8 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: '30 9 * * *'   # 09:30 UTC = 05:30 Cuiabá — episódio publicado antes do push às 06:00
+    # 09:45 UTC = 05:45 Cuiabá — folga pro atraso do schedule GHA; episódio antes do push 06:00.
+    - cron: '45 9 * * *'
 
 permissions:
   contents: read
